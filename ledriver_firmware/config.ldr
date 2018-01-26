@@ -1,0 +1,4 @@
+name=stjean
+dhcp=true
+ip=10.0.0.42
+mac=42-E2-42-66-F3-21
