@@ -11,11 +11,6 @@ void LEDriverView::begin(){
     oled.setScroll(true);
 }
 
-void LEDriverView::test(){
-    oled.clear();
-    oled.print("Hello world!");
-}
-
 size_t LEDriverView::write(uint8_t _c){
     oled.write(_c);
     Serial.write(_c);

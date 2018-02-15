@@ -1,4 +1,12 @@
 name=stjean
-dhcp=true
+startupTest=0
+dhcp=1
 ip=10.0.0.42
 mac=42-E2-42-66-F3-21
+universe=1
+color_order=RGB
+dmxport=(1,2,3)
+dmxaddr=11
+star=0
+end=512
+(artnet=1) | (dmxin=2 + dmxaddr=0)

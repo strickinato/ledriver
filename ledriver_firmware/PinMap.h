@@ -25,7 +25,7 @@
 #define I2C_SCL_PIN 19
 #define DATA_6_PIN 20
 #define DATA_7_PIN 21
-#define SATUS_LED_PIN 22
+#define STATUS_LED_PIN 22
 #define WIZNET_RESET_PIN 23
 
 #endif
