@@ -1,7 +1,8 @@
 #include "LEDriverView.h"
 
 LEDriverView::LEDriverView(){
-
+    useOled = true;
+    useSerial = true;
 }
 
 void LEDriverView::begin(){
@@ -12,6 +13,6 @@ void LEDriverView::begin(){
 }
 
 size_t LEDriverView::write(uint8_t _c){
-    oled.write(_c);
-    Serial.write(_c);
+    if(useOled) oled.write(_c);
+    if(useSerial) Serial.write(_c);
 }

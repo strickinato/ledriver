@@ -3,20 +3,13 @@
 
 Network::Network(){
     useDHCP = true;
-    ip[0] = 0;
-    ip[1] = 0;
-    ip[2] = 0;
-    ip[3] = 0;
-    mac[0] = 0x00;
-    mac[1] = 0xAA;
-    mac[2] = 0xBB;
-    mac[3] = 0xCC;
-    mac[4] = 0xDE;
-    mac[5] = 0x02;
+    memcpy(ip, DEFAULT_STATIC_IP, 4);
+    memcpy(mac, DEFAULT_MAC, 6);
 }
 
 
 void Network::begin(){
+    // do the pin toggling to reset the wiznet
     pinMode(WIZNET_RESET_PIN, OUTPUT);
     digitalWrite(WIZNET_RESET_PIN, LOW);    // begin reset the WIZ820io
     pinMode(WIZNET_CS_PIN, OUTPUT);
@@ -25,8 +18,9 @@ void Network::begin(){
     digitalWrite(SDCARD_CS_PIN, HIGH);   // de-select the SD Card
     digitalWrite(WIZNET_RESET_PIN, HIGH);
     digitalWrite(WIZNET_CS_PIN, LOW);
+
     if(useDHCP){
-        if(Ethernet.begin(mac)){
+        if(Ethernet.begin(mac)){//}, 30000, 4000)){
             for(int i = 0; i < 4; i++){
                 ip[i] = Ethernet.localIP()[i];
             }
@@ -35,6 +29,7 @@ void Network::begin(){
             useDHCP = false;
         }
     }
+
     if(!useDHCP){
         Ethernet.begin(mac, ip);
     }

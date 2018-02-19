@@ -25,8 +25,25 @@ Connects to a ledriver board rj45 output and distributes the 4 channels of ws281
 - LEDs after fuzes
 - second 8p8c connector if not breaking out all the data lines.
 
-### Firmware ###
+## Firmware ##
 Burrito supreme.
+
+#### Command System ####
+- Control via serial
+- network -> generate web interface?
+- websocket
+- osc
+- map to dmx?
+
+|action|   |   |   |
+|---|---|---|---|
+|setMode|   |   |   |
+|setConfigProperty|   |   |   |
+|setSpeed|   |   |   |
+|setBrightness|   |   |   |
+
+
+
 
 #### LED Packet ####
 Reserve 2-3 bytes for controller specific info, such as :
@@ -50,8 +67,11 @@ dhcp=true
 ip=10.0.0.42
 mac=42-E2-42-66-F3-21
 debug=oled
-debug=Serial(1,2,3)
+debug=Serial1/2/3
 ```
+
+#### Logging on SD ####
+
 
 #### Dependencies ####
 - Ethernet
@@ -60,6 +80,18 @@ debug=Serial(1,2,3)
 - SDconfigFile
 - TeensyDMX
 
+### Bonus Round ###
+- Its also a midi controller so you can control the software to control your controller.
+- OSC controller too
+- NTP time + rtc, scheduler, `schedule.scd`
+- Weather
+- OSC message printing on oled. Debug the network.
+- pinging tool (ping list of hosts.txt)
+- DMX controller,
+- ArtNet controller
+- DMX to usbMIDI, MIDI
+- MIDI to DMX
+Q
 ### Notes ###
 
 ##### DMX #####

@@ -2,11 +2,15 @@
 
 
 
+
 LEDriver::LEDriver(){
-    modePointers[0] = &demoMode;
-    modePointers[1] = &artnetMode;
-    modePointers[2] = &serialMode;
-    modePointers[3] = &testMode;
+    modePointers[DEMO_MODE] = &demoMode;
+    modePointers[ARTNET_MODE] = &artnetMode;
+    modePointers[SERIAL_MODE] = &serialMode;
+    modePointers[TEST_MODE] = &testMode;
+    modePointers[CUSTOM_MODE] = &customMode;
+
+
 }
 
 void LEDriver::begin(CRGB * _leds, uint16_t _count){
@@ -14,17 +18,60 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
     Mode::ledCount = _count;
     pinMode(STATUS_LED_PIN, OUTPUT);
     view.begin();
-    view.println(F("ledriver V0.0000001"));
-    view.println(F("init SDcard"));
+    view.printf("ledriver V%f\n", VERSION);
+
     enableSDcard();
     if(!SD.begin(SDCARD_CS_PIN)){
         view.println(F("no SDcard..."));
     }
-    if (SD.exists("config.ldr")) {
-          // The open configuration file.
+    else {
+        parseConfig("config.ldr");
+    }
+
+    view.println(F("init network"));
+    // init network, may take a moment
+    network.begin();
+    // print resulting network information
+    if(network.useDHCP){
+        view.printf("DHCP %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+    }
+    else {
+        view.printf("STATIC %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+    }
+
+    frameCount = 0;
+    setMode(CUSTOM_MODE);//MO_MODE);
+}
+
+
+// kind of the main loop
+void LEDriver::update(){
+    checkInput();
+    frameCount++;
+    Mode::frameCount = frameCount;
+    // check for serial connection
+    if(currentMode != SERIAL_MODE){
+        // auto detect Serial mode
+        // if(Serial.available()){
+        //     view.useSerial = false;
+        //     setMode(SERIAL_MODE);
+        // }
+    }
+    else {
+        if(frameCount%240 == 1){
+            // view.printf("errorCount %i\n", serialMode.errorCount);
+        }
+    }
+    // update Mode
+    modePointers[currentMode]->update();
+}
+
+void LEDriver::parseConfig(const char * _file){
+    enableSDcard();
+    if (SD.exists(_file)) {
         SDConfigFile cfg;
         if(cfg.begin("config.ldr", 64)){
-            view.println(F("parsing config.ldr"));
+            view.printf("Parsing %s \n", _file);
             while (cfg.readNextSetting()) {
                 if (cfg.nameIs("name")) {
                     view.printf("name %s\n", cfg.getValue());
@@ -49,28 +96,14 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
             }
         }
         else {
-            view.println(F("no file config.ldr"));
+            view.println(F("config.ldr NOT FOUND"));
         }
     }
-    view.println(F("init network"));
-    network.begin();
-    if(network.useDHCP){
-        view.printf("DHCP %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
-    }
-    else view.print(F("STATIC "));
-    frameCount = 0;
-    currentMode = 0;
-    view.println(modePointers[currentMode]->name);
-
 }
 
-
-void LEDriver::update(){
-    checkInput();
-    frameCount++;
-    Mode::frameCount = frameCount;
-    // currentMode = DEMO_MODE;
-    modePointers[currentMode]->update();
+void LEDriver::setMode(uint8_t _mode){
+    currentMode = _mode;
+    view.printf("set to %s \n", modePointers[currentMode]->name);
 }
 
 void LEDriver::enableSDcard(){
@@ -125,70 +158,8 @@ void LEDriver::checkInput(){
         view.printf("pressed %i\n", buttonPress);
     }
 }
-//
-//
-// void LEDriver::standbyMode(){
-//     digitalWrite(STATUS_LED_PIN, millis()%500 < 60);
-//     // modeSelector
-//     if(buttonPress != 0){
-//
-//     }
-//     if(network.checkArtnet()){
-//         // view.printf("got artnet packet\n");
-//         for(int i = 0; i < 8; i++){
-//             leds[i] = CRGB(network.artnetData[i*3], network.artnetData[i*3+1], network.artnetData[i*3]+2);
-//         }
-//         FastLED.show();
-//         view.printf("R %03u, G %03u, B %03u \n", network.artnetData[0], network.artnetData[1], network.artnetData[2]);
-//     }
-// }
-//
-// void LEDriver::sdCardPlaybackMode(){
-//     digitalWrite(STATUS_LED_PIN, millis()%500 < 60);
-// }
-//
-// void LEDriver::serialMode(){
-//     digitalWrite(STATUS_LED_PIN, millis()%500 < 60);
-// }
-//
-// void LEDriver::artnetMode(){
-//     digitalWrite(STATUS_LED_PIN, millis()%500 < 60);
-// }
-//
-// void LEDriver::demoMode(){
-//     digitalWrite(STATUS_LED_PIN, millis()%100 < 60);
-//     int ha = frameCount/10;
-//     for(int i = 0; i < NUM_LEDS; i++){
-//         leds[i] = CHSV(ha+int(ha+i*2+millis()/100.0)%255,255,255);
-//     }
-//     FastLED.show();
-// }
-//
-// void LEDriver::testMode(){
-//     digitalWrite(STATUS_LED_PIN, millis()%500 < 60);
-// }
 
-// void standby(){
 
-//
-// }
-
-// void serialMode(){
-//     if(Serial.available()){
-//         int startChar = Serial.read();
-//         if (startChar == '*') {
-//             int count = Serial.readBytes((char *)leds, BUFFER_SIZE);
-//             FastLED.show();
-//         }
-//         else if (startChar == '?') {
-//             Serial.print(NUM_LEDS);
-//             while(Serial.available()) Serial.read();
-//         } else if (startChar >= 0) {
-//             Serial.print("badheader ");
-//             Serial.println(errorCount++);
-//         }
-//     }
-// }
 
 
 

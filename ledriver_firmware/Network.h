@@ -4,6 +4,8 @@
 #include "SPI.h"
 #include "Ethernet.h"
 #include "PinMap.h"
+#include "Defaults.h"
+
 
 // UDP specific
 #define ART_NET_PORT 6454

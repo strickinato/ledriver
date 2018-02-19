@@ -20,6 +20,7 @@ class Mode {
         static uint16_t pot2;
         static uint8_t buttonPress;
 
+        uint16_t framesPerSecond;
 };
 
 
@@ -31,19 +32,27 @@ class DemoMode : public Mode {
 
 };
 
-
-
+//
 class ArtNetMode : public Mode {
     public:
         ArtNetMode();
         virtual void update();
+
+        struct OutputMapping
+        {
+            uint8_t output; // output a,b,c
+            uint16_t startUniverse; //
+            uint16_t startChannel; // 0 or offset within universe
+            uint16_t channelCount;
+            // reverse??
+        };
 };
 
 class SerialMode : public Mode {
     public:
         SerialMode();
         virtual void update();
-
+        uint16_t errorCount;
 };
 
 class TestMode : public Mode {
@@ -51,6 +60,15 @@ class TestMode : public Mode {
         TestMode();
         virtual void update();
 
+};
+
+class CustomMode : public Mode {
+    public:
+        CustomMode();
+        virtual void update();
+        void (*customUpdate)();
+        void setCallback(void (*callback)())
+        { customUpdate = callback; }
 };
 
 #endif
