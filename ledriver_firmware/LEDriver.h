@@ -16,20 +16,24 @@
 #define VERSION 0.00001
 
 #define SD_HEADER_SIZE 2
-#define MODE_COUNT 5
+#define MODE_COUNT 6
 
 enum Modes{
     DEMO_MODE,
     ARTNET_MODE,
     SERIAL_MODE,
     TEST_MODE,
-    CUSTOM_MODE
+    CUSTOM_MODE,
+    SDPLAY_MODE
 };
 
 enum Commands{
-    LED_DATA_CMD = 42,
-    SET_BRIGHTNESS_CMD = 1,
+    LED_DATA_CMD = 42,       // '*' means a fresh packet of data
+    SET_BRIGHTNESS_CMD = 1,  //
     BLACKOUT_CMD = 43,
+    SET_SDCONFIG_CMD = 44,
+    SET_MODE_CMD = 44,
+    REBOOT_CMD
 };
 
 
@@ -40,6 +44,7 @@ class LEDriver {
         void update();
         void parseConfig(const char * _file);
         CRGB * leds;
+        // CRGB * ledStrips[8];
         uint16_t NUM_LEDS;
         uint8_t currentMode = 0;
 
@@ -51,7 +56,7 @@ class LEDriver {
         SerialMode serialMode;
         TestMode testMode;
         CustomMode customMode;
-
+        SDCardPlaybackMode sdPlaybackMode;
         void setMode(uint8_t _mode);
 
         // sync and timming

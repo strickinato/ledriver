@@ -14,9 +14,11 @@
 #define ART_DMX 0x5000
 // Buffers
 #define MAX_BUFFER_ARTNET 530
+
 // Packet
 #define ART_NET_ID "Art-Net\0"
 #define ART_DMX_START 18
+
 
 class Network {
     public:
@@ -32,7 +34,6 @@ class Network {
         bool setIp(const char * _str);
         bool checkArtnet();
 
-        #define MAX_UNIVERSE_SUPPORTED 16
         bool universesReceived[16];
 
         EthernetUDP Udp;

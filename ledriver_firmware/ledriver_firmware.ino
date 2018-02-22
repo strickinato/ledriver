@@ -30,6 +30,7 @@ CRGB leds[NUM_LEDS];
 
 void setup(){
     Serial.begin(115200);
+
     // setup LEDs
     #if OCTOWSMODE
         LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
@@ -50,7 +51,7 @@ void loop(){
     ledriver.update();
 }
 
-// make a custom mode callback to here!
+// custom mode's update method callback, add your own animation without much digging.
 void custom(){
 
     for(int i = 0; i < NUM_LEDS; i++){

@@ -1,22 +1,21 @@
 #include "LEDriver.h"
 
-
-
-
 LEDriver::LEDriver(){
     modePointers[DEMO_MODE] = &demoMode;
     modePointers[ARTNET_MODE] = &artnetMode;
     modePointers[SERIAL_MODE] = &serialMode;
     modePointers[TEST_MODE] = &testMode;
     modePointers[CUSTOM_MODE] = &customMode;
-
-
+    modePointers[SDPLAY_MODE] = &sdPlaybackMode;
 }
 
 void LEDriver::begin(CRGB * _leds, uint16_t _count){
     Mode::leds = _leds;
     Mode::ledCount = _count;
     pinMode(STATUS_LED_PIN, OUTPUT);
+
+    artnetMode.setup();
+
     view.begin();
     view.printf("ledriver V%f\n", VERSION);
 
@@ -40,7 +39,7 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
     }
 
     frameCount = 0;
-    setMode(CUSTOM_MODE);//MO_MODE);
+    setMode(ARTNET_MODE);//MO_MODE);
 }
 
 
@@ -57,6 +56,15 @@ void LEDriver::update(){
         //     setMode(SERIAL_MODE);
         // }
     }
+
+    if(currentMode == ARTNET_MODE){
+        if(buttonPress == 1){
+        }
+        if(network.checkArtnet()){
+            // view.println(network.sequence);
+            artnetMode.receivePacket(network.artnetData, network.sequence, network.incomingUniverse, network.dmxDataLength);
+        }
+    }
     else {
         if(frameCount%240 == 1){
             // view.printf("errorCount %i\n", serialMode.errorCount);
@@ -70,7 +78,7 @@ void LEDriver::parseConfig(const char * _file){
     enableSDcard();
     if (SD.exists(_file)) {
         SDConfigFile cfg;
-        if(cfg.begin("config.ldr", 64)){
+        if(cfg.begin(_file, 64)){
             view.printf("Parsing %s \n", _file);
             while (cfg.readNextSetting()) {
                 if (cfg.nameIs("name")) {
@@ -78,6 +86,7 @@ void LEDriver::parseConfig(const char * _file){
                 }
                 else if(cfg.nameIs("dhcp")){
                     network.useDHCP = cfg.getIntValue();
+                    network.useDHCP = 0;
                     view.printf("dhcp %i \n", network.useDHCP);
                 }
                 else if(cfg.nameIs("mac")){
@@ -158,47 +167,3 @@ void LEDriver::checkInput(){
         view.printf("pressed %i\n", buttonPress);
     }
 }
-
-
-
-
-
-
-
-// // play animation from SD card
-// void playAnimationFromSD(){
-//     sprintf(fileName, "ani_%02d.bin", animationNumber);
-//     Serial.println(fileName);
-//     myFile = SD.open(fileName);
-//
-//     if (myFile) {
-//         byte _header[HEADER_SIZE];
-//         myFile.readBytes(_header, HEADER_SIZE);
-//         uint16_t _fileBufferSize = ((_header[0] << 8) | (_header[1] & 0xFF));
-//         if(_fileBufferSize > BUFFER_SIZE){
-//             Serial.println(F("Not enough LEDs to play animation"));
-//             updateOtherThings();
-//             delay(500);
-//         }
-//         else {
-//             // read from the file until there's nothing else in it:
-//             while (myFile.available()) {
-//                 myFile.readBytes((char*)leds, _fileBufferSize);
-//                 doShow();
-//                 #if SPEED_POT_PIN
-//                     delay(analogRead(SPEED_POT_PIN)/30);
-//                 #else
-//                     delay(20);
-//                 #endif
-//                 if(updateOtherThings()) break;
-//             }
-//         }
-//         myFile.close();
-//     }
-//     else {
-//         Serial.print(F("error opening "));
-//         Serial.println(fileName);
-//         animationNumber = 0;
-//         delay(20);
-//     }
-// }

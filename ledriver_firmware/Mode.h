@@ -3,6 +3,9 @@
 
 #include "PinMap.h"
 #include "FastLED.h"
+#include "SD.h"
+
+#define MAX_UNIVERSE_SUPPORTED 32
 
 
 class Mode {
@@ -23,7 +26,7 @@ class Mode {
         uint16_t framesPerSecond;
 };
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 class DemoMode : public Mode {
     public:
@@ -32,21 +35,34 @@ class DemoMode : public Mode {
 
 };
 
-//
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 class ArtNetMode : public Mode {
     public:
         ArtNetMode();
         virtual void update();
+        void setup();
+        //total universe count
+        uint8_t totalUniverseCount;
+        uint32_t receivedUniverses; // starts at lowest universe
+        uint32_t gotAllUniverses;
+        uint16_t currentSequence;
 
-        struct OutputMapping
-        {
-            uint8_t output; // output a,b,c
-            uint16_t startUniverse; //
-            uint16_t startChannel; // 0 or offset within universe
-            uint16_t channelCount;
-            // reverse??
-        };
+        uint16_t universeToIndex[MAX_UNIVERSE_SUPPORTED];
+        void receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _universe, uint16_t _dataLenght);
+        // 8X
+        // struct OutputMapping
+        // {
+        //     uint8_t output; // output a,b,c
+        //     uint16_t startUniverse; //
+        //     uint16_t startChannel; // 0 or offset within universe
+        //     uint16_t channelCount;
+        //     // reverse??
+        // };
+        // OutputMapping mappings[8];
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 class SerialMode : public Mode {
     public:
@@ -55,12 +71,16 @@ class SerialMode : public Mode {
         uint16_t errorCount;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 class TestMode : public Mode {
     public:
         TestMode();
         virtual void update();
 
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 class CustomMode : public Mode {
     public:
@@ -70,5 +90,16 @@ class CustomMode : public Mode {
         void setCallback(void (*callback)())
         { customUpdate = callback; }
 };
+
+class SDCardPlaybackMode : public Mode {
+    public:
+        SDCardPlaybackMode();
+        virtual void update();
+        // void setProperty();
+        void playAnimation(uint8_t _animation);
+        File currentFile;
+        uint8_t animationNumber;
+};
+
 
 #endif

@@ -3,10 +3,16 @@ startupTest=0
 dhcp=1
 ip=10.0.0.42
 mac=42-E2-42-66-F3-21
+#universe setup
 universe=1
+startIndex=0
+universe=2
+startIndex=170
+
 color_order=RGB
 dmxport=(1,2,3)
 dmxaddr=11
 star=0
 end=512
+output1=
 (artnet=1) | (dmxin=2 + dmxaddr=0)
