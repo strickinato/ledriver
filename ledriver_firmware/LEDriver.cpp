@@ -86,7 +86,6 @@ void LEDriver::parseConfig(const char * _file){
                 }
                 else if(cfg.nameIs("dhcp")){
                     network.useDHCP = cfg.getIntValue();
-                    network.useDHCP = 0;
                     view.printf("dhcp %i \n", network.useDHCP);
                 }
                 else if(cfg.nameIs("mac")){

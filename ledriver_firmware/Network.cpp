@@ -23,6 +23,7 @@ void Network::begin(){
         if(Ethernet.begin(mac)){//}, 30000, 4000)){
             for(int i = 0; i < 4; i++){
                 ip[i] = Ethernet.localIP()[i];
+                broadcast[i] = Ethernet.localIP()[i];
             }
         }
         else {
@@ -35,7 +36,10 @@ void Network::begin(){
     }
 
     Udp.begin(ART_NET_PORT);
-
+    for(int i = 0; i < 4; i++){
+        broadcast[i] = Ethernet.localIP()[i];
+    }
+    broadcast[3] = 255;
 }
 
 bool Network::setIp(const char * _str){
@@ -62,7 +66,73 @@ bool Network::checkArtnet(){
             return 1;
         }
         else if (opcode == ART_POLL){
+            replyArtnetPoll();
             return 0;//ART_POLL;
         }
     }
+}
+
+
+void Network::replyArtnetPoll(){
+
+    IPAddress local_ip = Ethernet.localIP();
+    ip[0] = local_ip[0];
+    ip[1] = local_ip[1];
+    ip[2] = local_ip[2];
+    ip[3] = local_ip[3];
+
+    // sprintf((char *)id, "Art-Net\0");
+    memcpy(ArtPollReply.id, ART_NET_ID, sizeof(ArtPollReply.id));
+    memcpy(ArtPollReply.ip, ip, sizeof(ArtPollReply.ip));
+
+    ArtPollReply.opCode = ART_POLL_REPLY;
+    ArtPollReply.port =  ART_NET_PORT;
+
+    memset(ArtPollReply.goodinput,  0x08, 4);
+    memset(ArtPollReply.goodoutput,  0x80, 4);
+    memset(ArtPollReply.porttypes,  0xc0, 4);
+
+    uint8_t shortname [18];
+    uint8_t longname [64];
+    sprintf((char *)shortname, "LEDRiver\0");
+    sprintf((char *)longname, "teensy based led controller\0");
+    memcpy(ArtPollReply.shortname, shortname, sizeof(shortname));
+    memcpy(ArtPollReply.longname, longname, sizeof(longname));
+
+    ArtPollReply.etsaman[0] = 0;
+    ArtPollReply.etsaman[1] = 0;
+    ArtPollReply.verH       = 1;
+    ArtPollReply.ver        = 0;
+    ArtPollReply.subH       = 0;
+    ArtPollReply.sub        = 0;
+    ArtPollReply.oemH       = 0;
+    ArtPollReply.oem        = 0xFF;
+    ArtPollReply.ubea       = 0;
+    ArtPollReply.status     = 0xd2;
+    ArtPollReply.swvideo    = 0;
+    ArtPollReply.swmacro    = 0;
+    ArtPollReply.swremote   = 0;
+    ArtPollReply.style      = 0;
+
+    ArtPollReply.numbportsH = 0;
+    ArtPollReply.numbports  = 4;
+    ArtPollReply.status2    = 0x08;
+
+    ArtPollReply.bindip[0] = ip[0];
+    ArtPollReply.bindip[1] = ip[1];
+    ArtPollReply.bindip[2] = ip[2];
+    ArtPollReply.bindip[3] = ip[3];
+
+    uint8_t swin[4]  = {0x01,0x02,0x03,0x04};
+    uint8_t swout[4] = {0x01,0x02,0x03,0x04};
+    for(uint8_t i = 0; i < 4; i++)
+    {
+        ArtPollReply.swout[i] = swout[i];
+        ArtPollReply.swin[i] = swin[i];
+    }
+    sprintf((char *)ArtPollReply.nodereport, "%i DMX output universes active.\0", ArtPollReply.numbports);
+    Udp.beginPacket(broadcast, ART_NET_PORT);//send the packet to the broadcast address
+    Udp.write((uint8_t *)&ArtPollReply, sizeof(ArtPollReply));
+    Udp.endPacket();
+
 }
