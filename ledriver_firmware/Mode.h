@@ -3,6 +3,8 @@
 
 #include "PinMap.h"
 #include "FastLED.h"
+#include "Commands.h"
+// #include "LEDriver.h"
 #include "SD.h"
 
 #define MAX_UNIVERSE_SUPPORTED 32
@@ -12,6 +14,7 @@ class Mode {
     public:
         Mode();
         virtual void update();
+        virtual void receiveCommand(uint8_t _cmd, uint8_t _val);
 
         // virtual void buttonPress(uint8_t _button);
         const char * name;// = "mode";
@@ -23,6 +26,7 @@ class Mode {
         static uint16_t pot2;
         static uint8_t buttonPress;
 
+        static uint8_t brightness;
         uint16_t framesPerSecond;
 };
 

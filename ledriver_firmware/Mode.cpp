@@ -1,6 +1,8 @@
 #include "Mode.h"
 
 // static variables!
+uint8_t Mode::brightness = 0;
+
 uint8_t Mode::buttonPress = 0;
 uint16_t Mode::pot1 = 0;
 uint16_t Mode::pot2 = 0;
@@ -14,6 +16,13 @@ Mode::Mode(){
 
 void Mode::update(){
     // all modes should call this?
+}
+
+void Mode::receiveCommand(uint8_t _cmd, uint8_t _val){
+    if(_cmd == SET_BRIGHTNESS_CMD){
+        brightness = _val;
+        Serial.printf("brightness %i", brightness);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

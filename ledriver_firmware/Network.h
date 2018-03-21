@@ -73,6 +73,8 @@ class Network {
         IPAddress ipAddress;
         IPAddress broadcast;
         bool setIp(const char * _str);
+        bool setMac(const char * _str);
+
         bool checkArtnet();
         void replyArtnetPoll();
         bool universesReceived[16];

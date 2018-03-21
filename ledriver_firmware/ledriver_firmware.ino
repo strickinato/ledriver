@@ -14,10 +14,8 @@
 #endif
 #include "FastLED.h"
 #include "LEDriver.h"
-#include "TeensyDmx.h"
 
 LEDriver ledriver;
-
 
 #define NUM_LEDS_PER_STRIP 410
 #define NUM_STRIPS 8
@@ -29,8 +27,6 @@ CRGB leds[NUM_LEDS];
 
 #define DATA_PIN 3
 #define CLOCK_PIN 2
-
-TeensyDmx dmxA(Serial1, 9);
 
 void setup(){
     Serial.begin(115200);
@@ -50,12 +46,10 @@ void setup(){
     // set the callback
     ledriver.customMode.setCallback(custom);
 
-    dmxA.setMode(TeensyDmx::DMX_OUT);
 }
 
 void loop(){
     ledriver.update();
-    doDMX();
 }
 
 // custom mode's update method callback, add your own animation without much digging.
@@ -64,23 +58,4 @@ void custom(){
         leds[i] = CHSV(pow(sin(i/4.5+millis()/5000.0), 3)*255, 100, 100);
     }
     FastLED.show();
-}
-
-void doDMX(){
-    for(int i = 0; i < 512; i++){
-        // dmxA.setChannel(i, (i+millis()/200)%255);
-
-        switch(i%3){
-            case 0:
-                dmxA.setChannel(i, leds[i/3].r);
-                break;
-            case 1:
-                dmxA.setChannel(i, leds[i/3].g);
-                break;
-            case 2:
-                dmxA.setChannel(i, leds[i/3].b);
-                break;
-        }
-    }
-    dmxA.loop();
 }

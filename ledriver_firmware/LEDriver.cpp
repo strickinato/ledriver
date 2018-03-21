@@ -29,6 +29,7 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
 
     view.println(F("init network"));
     // init network, may take a moment
+    // network.useDHCP = false;
     network.begin();
     // print resulting network information
     if(network.useDHCP){
@@ -39,7 +40,9 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
     }
 
     frameCount = 0;
-    setMode(ARTNET_MODE);//MO_MODE);
+    setMode(CUSTOM_MODE);//ARTNET_MODE);//MO_MODE);
+
+    receiveCommand(SET_BRIGHTNESS_CMD, 128);
 }
 
 
@@ -70,9 +73,28 @@ void LEDriver::update(){
             // view.printf("errorCount %i\n", serialMode.errorCount);
         }
     }
+    if(buttonPress != 0) Serial.printf("button %i", buttonPress);
+    if(buttonPress == 1) receiveCommand(SET_MODE_CMD, currentMode+1);
+    else if(buttonPress == 3) receiveCommand(SET_MODE_CMD, currentMode-1);
+
     // update Mode
     modePointers[currentMode]->update();
 }
+
+
+
+void LEDriver::receiveCommand(uint8_t _cmd, uint8_t _val){
+    // view.printf("received commend %i %i", _cmd, _val);
+    switch(_cmd){
+        case SET_MODE_CMD:
+            setMode(_val);
+            break;
+        default :
+            modePointers[currentMode]->receiveCommand(_cmd, _val);
+        // case
+    }
+}
+
 
 void LEDriver::parseConfig(const char * _file){
     enableSDcard();
@@ -89,8 +111,13 @@ void LEDriver::parseConfig(const char * _file){
                     view.printf("dhcp %i \n", network.useDHCP);
                 }
                 else if(cfg.nameIs("mac")){
-                    // memcpy(&network.mac, cfg.getMacAddressValue(), 7);
-                    // view.printf("mac %x-%x-%x-%x-%x-%x \n", network.mac[0], network.mac[1], network.mac[2], network.mac[3], network.mac[4], network.mac[5], network.mac[6] );
+                    const char *_mac = cfg.getValue();
+                    if(network.setMac(_mac)) {
+                        view.printf("mac %s \n", _mac);
+                    }
+                    else {
+                        view.printf("not valid mac %s \n", _mac);
+                    }
                 }
                 else if(cfg.nameIs("ip")){
                     const char *_ip = cfg.getValue();
@@ -110,6 +137,8 @@ void LEDriver::parseConfig(const char * _file){
 }
 
 void LEDriver::setMode(uint8_t _mode){
+    if(_mode > MODE_COUNT) _mode = MODE_COUNT-1;
+    else if(_mode < 0) _mode = 0;
     currentMode = _mode;
     view.printf("set to %s \n", modePointers[currentMode]->name);
 }
@@ -161,7 +190,7 @@ void LEDriver::checkInput(){
         //     view.oled.printf("%d, %d, %d  \n", pot1_value, pot2_value, button_value);
         // }
     }
-    Mode::buttonPress = buttonPress;
+    //Mode::buttonPress = buttonPress;
     if(buttonPress != 0){
         view.printf("pressed %i\n", buttonPress);
     }

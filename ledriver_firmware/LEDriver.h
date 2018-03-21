@@ -12,6 +12,8 @@
 #include "FastLED.h"
 #include "Mode.h"
 #include "Defaults.h"
+#include "Commands.h"
+
 
 #define VERSION 0.00001
 
@@ -27,14 +29,7 @@ enum Modes{
     SDPLAY_MODE
 };
 
-enum Commands{
-    LED_DATA_CMD = 42,       // '*' means a fresh packet of data
-    SET_BRIGHTNESS_CMD = 1,  //
-    BLACKOUT_CMD = 43,
-    SET_SDCONFIG_CMD = 44,
-    SET_MODE_CMD = 44,
-    REBOOT_CMD
-};
+
 
 
 class LEDriver {
@@ -43,6 +38,7 @@ class LEDriver {
         void begin(CRGB *_leds, uint16_t _count);
         void update();
         void parseConfig(const char * _file);
+        void receiveCommand(uint8_t _cmd, uint8_t _val);
         CRGB * leds;
         // CRGB * ledStrips[8];
         uint16_t NUM_LEDS;
