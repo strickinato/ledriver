@@ -15,12 +15,14 @@ Mode::Mode(){
 }
 
 void Mode::update(){
+    FastLED.setBrightness(map(pot1, 1023, 0, 0, 255));
     // all modes should call this?
 }
 
 void Mode::receiveCommand(uint8_t _cmd, uint8_t _val){
     if(_cmd == SET_BRIGHTNESS_CMD){
         brightness = _val;
+        FastLED.setBrightness(brightness);
         Serial.printf("brightness %i", brightness);
     }
 }
@@ -33,7 +35,6 @@ DemoMode::DemoMode(){
 
 void DemoMode::update(){
     Mode::update();
-    FastLED.setBrightness(map(pot1, 1023, 0, 0, 255));
     float _speed = map(pot2, 1023, 0, 0, 20);
     int ha = frameCount/_speed;
     for(int i = 0; i < ledCount; i++){
@@ -76,8 +77,20 @@ void ArtNetMode::update(){
 }
 
 void ArtNetMode::receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _universe, uint16_t _dataLenght){
-    bitSet(receivedUniverses, _universe);
+    // bitSet(receivedUniverses, _universe);
+    // bool _incomplete = false;
+    // for(int i = 0; i < 3; i++){
+    //     if(bitRead(receivedUniverses, i) == 0){
+    //         _incomplete = true;
+    //     }
+    // }
+    // if(!_incomplete){
+    //     FastLED.show();
+    //     receivedUniverses = 0;
+    // }
+
     // check if new sequence, if yes output previous sequence
+    if(_universe == 3) _universe = 7;
     if(_sequence != currentSequence){
         FastLED.show();
         currentSequence = _sequence;
@@ -123,8 +136,31 @@ TestMode::TestMode(){
 
 void TestMode::update(){
     Mode::update();
-
+    int _test = map(pot2, 1023, 0, 0, 7);
+    switch(_test){
+        case 0:
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::Black;
+            break;
+        case 1:
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::Red;
+            break;
+        case 2:
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::Green;
+            break;
+        case 3:
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::Blue;
+            break;
+        case 4:
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = (y == (frameCount/2)%20 ? CRGB::White : CRGB::Black);
+            break;
+        case 5:
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::White;
+            break;
+    }
+    FastLED.show();
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -133,7 +169,7 @@ CustomMode::CustomMode(){
 }
 
 void CustomMode::update(){
-    Mode::update();
+    // Mode::update();
     customUpdate();
 }
 

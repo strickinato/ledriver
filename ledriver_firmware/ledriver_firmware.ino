@@ -14,10 +14,14 @@
 #endif
 #include "FastLED.h"
 #include "LEDriver.h"
+//
+// #include "WebSocketsServer.h"
+// WebSocketsServer webSocket = WebSocketsServer(81);
+
 
 LEDriver ledriver;
 
-#define NUM_LEDS_PER_STRIP 410
+#define NUM_LEDS_PER_STRIP 170
 #define NUM_STRIPS 8
 #define NUM_LEDS  NUM_STRIPS * NUM_LEDS_PER_STRIP
 // led CRGB setup
@@ -45,6 +49,9 @@ void setup(){
     ledriver.begin(leds, NUM_LEDS);
     // set the callback
     ledriver.customMode.setCallback(custom);
+    //
+    // webSocket.begin();
+    // webSocket.onEvent(receivePacket);
 
 }
 
@@ -55,7 +62,64 @@ void loop(){
 // custom mode's update method callback, add your own animation without much digging.
 void custom(){
     for(int i = 0; i < NUM_LEDS; i++){
-        leds[i] = CHSV(pow(sin(i/4.5+millis()/5000.0), 3)*255, 100, 100);
+        // leds[i] = CHSV(pow((millis()%2000)/2000.0, 3)*255, 255, 255);
+        leds[i] = CRGB(millis()/10 % 255,0,0);
+
     }
     FastLED.show();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//
+// void sendPacket() {
+//     webSocket.broadcastTXT("hahahahi", 8);
+// }
+//
+// void receivePacket(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
+//     Serial.printf("ws packet %i \n", length);
+//     // Serial.println(payload);
+//     switch (type) {
+//     case WStype_DISCONNECTED: // DISCONNECTION MESSAGE.
+//         Serial.printf("[%u] Disconnected!\n", num);
+//         break;
+//     case WStype_CONNECTED: // CONNECTION MESSAGE.
+//     {
+//         IPAddress ip = webSocket.remoteIP(num);
+//         Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+//     }
+//     break;
+//     case WStype_TEXT: // TEXT TO BE PARSED BY AsciiMassageParser.
+//         Serial.printf("[%u] got Text: %s\n", num, payload);
+//
+//         // for ( int i = 0 ; i < length; i++ ) {
+//         //     if ( inbound.parse( payload[i] ) ) {
+//         //         if ( inbound.fullMatch("d") ) {
+//         //             digitalWrite(debugLedPin, inbound.nextInt() );
+//         //         } else if ( inbound.fullMatch("ms") ) {
+//         //             sendMs = inbound.nextInt();
+//         //         } else if ( inbound.fullMatch("a0") ) {
+//         //             sendAnalog = inbound.nextInt();
+//         //         } else {
+//         //             outbound.packEmpty("what?");
+//         //             sendPacket();
+//         //         }
+//         //     }
+//         // }
+//
+//         break;
+//     }
+// }

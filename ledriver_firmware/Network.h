@@ -6,6 +6,9 @@
 #include "PinMap.h"
 #include "Defaults.h"
 
+// Ethernet library options
+#define W5500_4K_BUFFERS
+// #define W5200_4K_BUFFERS
 
 // UDP specific
 #define ART_NET_PORT 6454
@@ -19,7 +22,6 @@
 // Packet
 #define ART_NET_ID "Art-Net\0"
 #define ART_DMX_START 18
-
 
 struct artnet_reply_s {
   uint8_t  id[8];
@@ -88,6 +90,10 @@ class Network {
         uint16_t incomingUniverse;
         uint16_t dmxDataLength;
         uint8_t * artnetData;
+
+        // WebSocketsServer
+        // void sendPacket();
+        // void receivePacket(uint8_t _num, WStype_t _type, uint8_t * _payload, size_t _len);
     private:
 };
 

@@ -19,6 +19,7 @@
 
 #define SD_HEADER_SIZE 2
 #define MODE_COUNT 6
+#define INPUT_POLL_RATE 100
 
 enum Modes{
     DEMO_MODE,
@@ -69,7 +70,7 @@ class LEDriver {
         uint16_t button_value;
         uint8_t buttonState;
         uint8_t buttonPress;
-
+        uint16_t lastInputCheck;
         bool button1;
         bool button2;
         bool button3;

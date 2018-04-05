@@ -1,5 +1,5 @@
 #include "LEDriver.h"
-
+#define NO_POTS
 LEDriver::LEDriver(){
     modePointers[DEMO_MODE] = &demoMode;
     modePointers[ARTNET_MODE] = &artnetMode;
@@ -27,7 +27,8 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
         parseConfig("config.ldr");
     }
 
-    view.println(F("init network"));
+    view.println(F("init network\n"));
+
     // init network, may take a moment
     // network.useDHCP = false;
     network.begin();
@@ -40,14 +41,19 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
     }
 
     frameCount = 0;
-    setMode(CUSTOM_MODE);//ARTNET_MODE);//MO_MODE);
+    setMode(ARTNET_MODE);//ARTNET_MODE);//MO_MODE);
+    // setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
 
-    receiveCommand(SET_BRIGHTNESS_CMD, 128);
+    // receiveCommand(SET_BRIGHTNESS_CMD, 128);
 }
 
-
+bool flasher = false;
 // kind of the main loop
 void LEDriver::update(){
+    if(frameCount % 4 == 1){
+        digitalWrite(STATUS_LED_PIN, flasher);
+        flasher = !flasher;
+    }
     checkInput();
     frameCount++;
     Mode::frameCount = frameCount;
@@ -64,16 +70,12 @@ void LEDriver::update(){
         if(buttonPress == 1){
         }
         if(network.checkArtnet()){
-            // view.println(network.sequence);
+            // Serial.printf("u = %i s = %i \n",network.incomingUniverse, network.sequence);
             artnetMode.receivePacket(network.artnetData, network.sequence, network.incomingUniverse, network.dmxDataLength);
         }
     }
-    else {
-        if(frameCount%240 == 1){
-            // view.printf("errorCount %i\n", serialMode.errorCount);
-        }
-    }
-    if(buttonPress != 0) Serial.printf("button %i", buttonPress);
+
+    // interpret input
     if(buttonPress == 1) receiveCommand(SET_MODE_CMD, currentMode+1);
     else if(buttonPress == 3) receiveCommand(SET_MODE_CMD, currentMode-1);
 
@@ -137,9 +139,9 @@ void LEDriver::parseConfig(const char * _file){
 }
 
 void LEDriver::setMode(uint8_t _mode){
-    if(_mode > MODE_COUNT) _mode = MODE_COUNT-1;
-    else if(_mode < 0) _mode = 0;
-    currentMode = _mode;
+    if(_mode >= MODE_COUNT) currentMode = MODE_COUNT-1;
+    else if(_mode < 0) currentMode = 0;
+    else currentMode = _mode;
     view.printf("set to %s \n", modePointers[currentMode]->name);
 }
 
@@ -157,12 +159,17 @@ void LEDriver::enableWiznet(){
 void LEDriver::checkInput(){
     // make a value changed system to then enable event based actions?
     buttonPress = 0;// reset the input state
-    if(frameCount % 10 == 0){
+    if(lastInputCheck < millis() - INPUT_POLL_RATE){
+        lastInputCheck = millis();
         pot1_value = analogRead(POT1_PIN);
         pot2_value = analogRead(POT2_PIN);
         Mode::pot1 = pot1_value;
         Mode::pot2 = pot2_value;
-        button_value = analogRead(BUTTON_PIN);
+        #ifndef NO_POTS
+        Mode::pot1 = 200;
+        Mode::pot2 = 10;
+        #endif
+        analogRead(BUTTON_PIN);
         button_value = analogRead(BUTTON_PIN);
         button1 = false;
         button2 = false;
@@ -186,12 +193,13 @@ void LEDriver::checkInput(){
                 buttonPress = buttonState;
             }
         }
+
         // if(frameCount%1000 == 0){
         //     view.oled.printf("%d, %d, %d  \n", pot1_value, pot2_value, button_value);
         // }
     }
     //Mode::buttonPress = buttonPress;
-    if(buttonPress != 0){
-        view.printf("pressed %i\n", buttonPress);
-    }
+    // if(buttonPress != 0){
+    //     view.printf("pressed %i\n", buttonPress);
+    // }
 }
