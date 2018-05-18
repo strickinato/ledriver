@@ -1,5 +1,5 @@
-#ifndef LEDriverView_h
-#define LEDriverView_h
+#ifndef View_h
+#define View_h
 
 #include "Wire.h"
 #include "SSD1306Ascii.h"
@@ -8,9 +8,9 @@
 
 #define I2C_ADDRESS 0x3C
 
-class LEDriverView : public Print {
+class View : public Print {
     public:
-        LEDriverView();
+        View();
         void begin();
         size_t write(uint8_t c);
         SSD1306AsciiWire oled;

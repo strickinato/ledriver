@@ -3,16 +3,17 @@
 #define LEDriver_h
 
 #include "Arduino.h"
-#include "LEDriverView.h"
+#include "View.h"
 #include "Network.h"
 #include "PinMap.h"
+#include "Mode.h"
+#include "Defaults.h"
+#include "Commands.h"
+
 #include "SD.h"
 #include "SPI.h"
 #include "SDConfigFile.h"
 #include "FastLED.h"
-#include "Mode.h"
-#include "Defaults.h"
-#include "Commands.h"
 
 
 #define VERSION 0.00001
@@ -61,7 +62,7 @@ class LEDriver {
 
     private:
         Network network;
-        LEDriverView view;
+        View view;
 
         // input
         void checkInput();

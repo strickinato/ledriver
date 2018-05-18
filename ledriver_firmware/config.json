@@ -1,0 +1,23 @@
+
+{
+    "config": {
+        "name" : "stjean",
+        "startupTest" : false,
+        "DHCP" : false,
+        "ip" : "10.0.0.42"
+    },
+    "led" : {
+        "startUniverse" : 1,
+        "led_per_stripe" : 170,
+        "color_order" : "RGB",
+        /*  */
+    },
+    "dmx" : {
+        "port" : 1,
+        "channel" : 32, /* input channel */
+        "count" : 16, /* channels used */
+    }
+}
+
+
+(artnet=1) | (dmxin=2 + dmxaddr=0)

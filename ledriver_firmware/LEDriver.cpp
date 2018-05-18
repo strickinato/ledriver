@@ -112,15 +112,15 @@ void LEDriver::parseConfig(const char * _file){
                     network.useDHCP = cfg.getIntValue();
                     view.printf("dhcp %i \n", network.useDHCP);
                 }
-                else if(cfg.nameIs("mac")){
-                    const char *_mac = cfg.getValue();
-                    if(network.setMac(_mac)) {
-                        view.printf("mac %s \n", _mac);
-                    }
-                    else {
-                        view.printf("not valid mac %s \n", _mac);
-                    }
-                }
+                // else if(cfg.nameIs("mac")){
+                //     const char *_mac = cfg.getValue();
+                //     if(network.setMac(_mac)) {
+                //         view.printf("mac %s \n", _mac);
+                //     }
+                //     else {
+                //         view.printf("not valid mac %s \n", _mac);
+                //     }
+                // }
                 else if(cfg.nameIs("ip")){
                     const char *_ip = cfg.getValue();
                     if(network.setIp(_ip)){

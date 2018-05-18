@@ -1,8 +1,11 @@
 #include "Network.h"
+#include "TeensyID.h"
+
 Network::Network() {
     useDHCP = true;
     memcpy(ip, DEFAULT_STATIC_IP, 4);
-    memcpy(mac, DEFAULT_MAC, 6);
+    teensyMAC(mac);
+    // memcpy(mac, DEFAULT_MAC, 6);
 
 }
 
@@ -48,21 +51,21 @@ bool Network::setIp(const char * _str) {
     return (ipAddress.fromString(_str));
 }
 
-bool Network::setMac(const char * _str) {
-    bool _valid = true;
-    // check for dashes in the right place
-    for(int i = 0; i < 5; i++) {
-        if(_str[i*3+2] != '-') _valid = false;
-    }
-    if(_valid) {
-        char _buf[2];
-        for(int i = 0; i < 6; i++) {
-            memcpy(_buf, _str+i*3, 2);
-            mac[i] = strtol(_buf, 0, 16);
-        }
-    }
-    return _valid;
-}
+// bool Network::setMac(const char * _str) {
+//     bool _valid = true;
+//     // check for dashes in the right place
+//     for(int i = 0; i < 5; i++) {
+//         if(_str[i*3+2] != '-') _valid = false;
+//     }
+//     if(_valid) {
+//         char _buf[2];
+//         for(int i = 0; i < 6; i++) {
+//             memcpy(_buf, _str+i*3, 2);
+//             mac[i] = strtol(_buf, 0, 16);
+//         }
+//     }
+//     return _valid;
+// }
 
 bool Network::checkArtnet() {
     packetSize = Udp.parsePacket();
