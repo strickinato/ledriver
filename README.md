@@ -15,6 +15,9 @@ A teensy 3.2 versatile addressable lighting controller based on the OctoWS811 sh
 - one status led
 - (piezo?? vibration detection tap tempo)
 
+#### UI Board ####
+Move pots, butons, OLED to a second poard with dedicated controller?
+
 #### Todo ####
 - Make sure teensy 3.5 fits...
 
@@ -26,7 +29,11 @@ Connects to a ledriver board rj45 output and distributes the 4 channels of ws281
 - second 8p8c connector if not breaking out all the data lines.
 
 ## Firmware ##
-Burrito supreme.
+
+https://forum.pjrc.com/threads/91-teensy-3-MAC-address
+
+Sketch uses 70248 bytes (26%) of program storage space. Maximum is 262144 bytes.
+
 
 #### Command System ####
 - Control via serial
@@ -42,7 +49,9 @@ Burrito supreme.
 |setSpeed|   |   |   |
 |setBrightness|   |   |   |
 
-
+#### LED lookup ####
+- Lower Res feature? control 2 3 or 4 pixels as 1? or do in computer software...
+- Add support for freeliner LED files!!
 
 
 #### LED Packet ####
@@ -69,9 +78,12 @@ mac=42-E2-42-66-F3-21
 debug=oled
 debug=Serial1/2/3
 ```
-
+#### Mapping Assist ####
+- Use up down button to select led,
+- Set this led as the first of universe X
+- Set the end?
 #### Logging on SD ####
-
+Save information as running time, errors, input frequency
 
 #### Dependencies ####
 - Ethernet
@@ -91,7 +103,7 @@ debug=Serial1/2/3
 - ArtNet controller
 - DMX to usbMIDI, MIDI
 - MIDI to DMX
-Q
+
 ### Notes ###
 
 ##### DMX #####

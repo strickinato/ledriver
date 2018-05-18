@@ -14,10 +14,6 @@
 #endif
 #include "FastLED.h"
 #include "LEDriver.h"
-//
-// #include "WebSocketsServer.h"
-// WebSocketsServer webSocket = WebSocketsServer(81);
-
 
 LEDriver ledriver;
 
@@ -50,9 +46,6 @@ void setup(){
     // set the callback
     ledriver.customMode.setCallback(custom);
     //
-    // webSocket.begin();
-    // webSocket.onEvent(receivePacket);
-
 }
 
 void loop(){
@@ -68,58 +61,3 @@ void custom(){
     }
     FastLED.show();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-// void sendPacket() {
-//     webSocket.broadcastTXT("hahahahi", 8);
-// }
-//
-// void receivePacket(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
-//     Serial.printf("ws packet %i \n", length);
-//     // Serial.println(payload);
-//     switch (type) {
-//     case WStype_DISCONNECTED: // DISCONNECTION MESSAGE.
-//         Serial.printf("[%u] Disconnected!\n", num);
-//         break;
-//     case WStype_CONNECTED: // CONNECTION MESSAGE.
-//     {
-//         IPAddress ip = webSocket.remoteIP(num);
-//         Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
-//     }
-//     break;
-//     case WStype_TEXT: // TEXT TO BE PARSED BY AsciiMassageParser.
-//         Serial.printf("[%u] got Text: %s\n", num, payload);
-//
-//         // for ( int i = 0 ; i < length; i++ ) {
-//         //     if ( inbound.parse( payload[i] ) ) {
-//         //         if ( inbound.fullMatch("d") ) {
-//         //             digitalWrite(debugLedPin, inbound.nextInt() );
-//         //         } else if ( inbound.fullMatch("ms") ) {
-//         //             sendMs = inbound.nextInt();
-//         //         } else if ( inbound.fullMatch("a0") ) {
-//         //             sendAnalog = inbound.nextInt();
-//         //         } else {
-//         //             outbound.packEmpty("what?");
-//         //             sendPacket();
-//         //         }
-//         //     }
-//         // }
-//
-//         break;
-//     }
-// }

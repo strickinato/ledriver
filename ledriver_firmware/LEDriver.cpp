@@ -30,7 +30,7 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
     view.println(F("init network\n"));
 
     // init network, may take a moment
-    // network.useDHCP = false;
+    network.useDHCP = false;
     network.begin();
     // print resulting network information
     if(network.useDHCP){

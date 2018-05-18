@@ -90,7 +90,7 @@ void ArtNetMode::receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _uni
     // }
 
     // check if new sequence, if yes output previous sequence
-    if(_universe == 3) _universe = 7;
+    // if(_universe == 3) _universe = 7;
     if(_sequence != currentSequence){
         FastLED.show();
         currentSequence = _sequence;
