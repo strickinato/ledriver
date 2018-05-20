@@ -137,7 +137,7 @@ void Network::replyArtnetPoll() {
     ArtPollReply.style      = 0;
 
     ArtPollReply.numbportsH = 0;
-    ArtPollReply.numbports  = 4;
+    ArtPollReply.numbports  = 4; // can be set by LED_count.
     ArtPollReply.status2    = 0x08;
 
     ArtPollReply.bindip[0] = ip[0];

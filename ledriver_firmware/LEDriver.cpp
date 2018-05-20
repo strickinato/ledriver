@@ -27,17 +27,19 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
         parseConfig("config.ldr");
     }
 
-    view.println(F("init network\n"));
+    if(debug_level > 0) view.println(F("init network\n"));
 
     // init network, may take a moment
     network.useDHCP = false;
     network.begin();
     // print resulting network information
-    if(network.useDHCP){
-        view.printf("DHCP %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
-    }
-    else {
-        view.printf("STATIC %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+    if(debug_level > 0){
+        if(network.useDHCP){
+            view.printf("DHCP %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+        }
+        else {
+            view.printf("STATIC %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+        }
     }
 
     frameCount = 0;
@@ -50,6 +52,8 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
 bool flasher = false;
 // kind of the main loop
 void LEDriver::update(){
+
+     
     if(frameCount % 4 == 1){
         digitalWrite(STATUS_LED_PIN, flasher);
         flasher = !flasher;

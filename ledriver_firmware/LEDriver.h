@@ -15,7 +15,6 @@
 #include "SDConfigFile.h"
 #include "FastLED.h"
 
-
 #define VERSION 0.00001
 
 #define SD_HEADER_SIZE 2

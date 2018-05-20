@@ -17,12 +17,13 @@
 
 LEDriver ledriver;
 
-#define NUM_LEDS_PER_STRIP 170
+// things that cant be changed
+#define NUM_LEDS_PER_STRIP 240
 #define NUM_STRIPS 8
 #define NUM_LEDS  NUM_STRIPS * NUM_LEDS_PER_STRIP
-// led CRGB setup
 CRGB leds[NUM_LEDS];
 #define LED_TYPE    WS2812B
+// could change? do ledriver_setup
 #define COLOR_ORDER RGB//GRB
 
 #define DATA_PIN 3
