@@ -58,10 +58,14 @@ class LEDriver {
 
         // sync and timming
         uint16_t frameCount;
+        uint16_t fpsCount;
+        uint16_t fps;
+        uint32_t timeStamp;
+
+        View view;
 
     private:
         Network network;
-        View view;
 
         // input
         void checkInput();

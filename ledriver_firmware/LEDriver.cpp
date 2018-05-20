@@ -43,7 +43,9 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
     }
 
     frameCount = 0;
-    setMode(ARTNET_MODE);//ARTNET_MODE);//MO_MODE);
+    fpsCount     = 0;
+    timeStamp = millis();
+    setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
     // setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
 
     // receiveCommand(SET_BRIGHTNESS_CMD, 128);
@@ -53,13 +55,20 @@ bool flasher = false;
 // kind of the main loop
 void LEDriver::update(){
 
-     
+
     if(frameCount % 4 == 1){
         digitalWrite(STATUS_LED_PIN, flasher);
         flasher = !flasher;
     }
     checkInput();
     frameCount++;
+    fpsCount++;
+    if(millis() - timeStamp > 1000){
+        timeStamp = millis();
+        fps = fpsCount;
+        // view.printf("fps %i \n", fpsCount);
+        fpsCount = 0;
+    }
     Mode::frameCount = frameCount;
     // check for serial connection
     if(currentMode != SERIAL_MODE){

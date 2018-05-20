@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8">
+ <title> ~webriver~ LEDRIVER interface </title>
+ <!-- css -->
+ <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+ <div class="wrapper pagewrapper">
+   <p id="infoline" title="standard freeliner info"> start freeliner and refresh to connect </p>
+   <button id="reload" title="reload this page" onclick="window.location.reload(true)">R</button>
+   <div class="widget" id='alphabetWidget' title="select template to edit">
+     <table id="templateSelector"> </table>
+   </div>
+   <div>
+       <input type="radio" title="modeSelect"> selectMode </input>
+   </div>
+   <div class="widget" title="type a command to send to the copntroller">
+     cmd:
+     <input type="text" name="cmd" id="prompt">
+   </div>
+ <div class="footer"> <p id="logline">of course!</p> </div>
+ <!-- javascripts -->
+ <script language="javascript" type="text/javascript" src="webriver.js"></script>
+
+</body>
+
+</html>
