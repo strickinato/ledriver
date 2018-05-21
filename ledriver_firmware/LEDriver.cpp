@@ -1,5 +1,8 @@
+
 #include "LEDriver.h"
 #define NO_POTS
+
+
 LEDriver::LEDriver(){
     modePointers[DEMO_MODE] = &demoMode;
     modePointers[ARTNET_MODE] = &artnetMode;
@@ -7,9 +10,33 @@ LEDriver::LEDriver(){
     modePointers[TEST_MODE] = &testMode;
     modePointers[CUSTOM_MODE] = &customMode;
     modePointers[SDPLAY_MODE] = &sdPlaybackMode;
+    // serverForSocket = EthernetServer(80);
+}
+
+void LEDriver::runWithWebsocket(){
+    EthernetClient client = serverForSocket.available();
+    if(client.connected() && webSocketServer.handshake(client)){
+        while(client.connected()){
+            String data;
+            data = webSocketServer.getData();
+            if(data.length() > 0){
+                // ledriver.view.println(data);
+                String haha = fps;
+                webSocketServer.sendData(haha);
+            }
+            // call the regular update
+            update();
+        }
+        client.stop();
+    }
+    else {
+        update();
+    }
 }
 
 void LEDriver::begin(CRGB * _leds, uint16_t _count){
+    serverForSocket.begin();
+
     Mode::leds = _leds;
     Mode::ledCount = _count;
     pinMode(STATUS_LED_PIN, OUTPUT);

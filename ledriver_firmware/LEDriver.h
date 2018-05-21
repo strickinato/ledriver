@@ -15,6 +15,9 @@
 #include "SDConfigFile.h"
 #include "FastLED.h"
 
+#include <WebSocketServer.h>
+#include <Ethernet.h>
+
 #define VERSION 0.00001
 
 #define SD_HEADER_SIZE 2
@@ -30,6 +33,7 @@ enum Modes{
     SDPLAY_MODE
 };
 
+EthernetServer serverForSocket(80);
 
 
 
@@ -38,6 +42,7 @@ class LEDriver {
         LEDriver();
         void begin(CRGB *_leds, uint16_t _count);
         void update();
+        void runWithWebsocket();
         void parseConfig(const char * _file);
         void receiveCommand(uint8_t _cmd, uint8_t _val);
         CRGB * leds;
@@ -45,6 +50,9 @@ class LEDriver {
         uint16_t NUM_LEDS;
         uint8_t currentMode = 0;
 
+        // websocket
+        WebSocketServer webSocketServer;
+        EthernetClient client;
 
         // modes
         Mode * modePointers[MODE_COUNT];
