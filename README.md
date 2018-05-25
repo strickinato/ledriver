@@ -34,20 +34,37 @@ https://forum.pjrc.com/threads/91-teensy-3-MAC-address
 
 Sketch uses 70248 bytes (26%) of program storage space. Maximum is 262144 bytes.
 
+### LED setup ###
+Strategy : use a fixed number of LED per strips, config defines exacte number of LED per strip output. Then incomming buffers are spread to the correct slots.
 
 #### Command System ####
+- OSC based ?
 - Control via serial
 - network -> generate web interface?
 - websocket
 - osc
-- map to dmx?
+- map commands to dmx? brightness etc.
 
-|action|   |   |   |
-|---|---|---|---|
-|setMode|   |   |   |
-|setConfigProperty|   |   |   |
-|setSpeed|   |   |   |
-|setBrightness|   |   |   |
+`/lr/brightness/ 255` -> BRIGHTNESS_CMD_BYTE + value
+
+```
+"dmx_map": {
+        "0" : "/lr/brightness",
+        "1" : "/lr/speed",
+        "2" : "/lr/animation"
+    }
+```
+
+##### Command List #####
+- mode 2
+- speed 255
+- brightness 255
+-
+
+### webriver interface ###
+Perhaps the controller should change the interface as needed. In example if set to SD card playback, populate a drop menu with names of saved animations.
+- Make phone / desktop friendly.
+
 
 #### LED lookup ####
 - Lower Res feature? control 2 3 or 4 pixels as 1? or do in computer software...
@@ -68,13 +85,15 @@ Reserve 2-3 bytes for controller specific info, such as :
 #### Test Patterns ####
 Dank test patterns for production tests.
 
-#### config.ldr ####
-SD card config file.
+#### config.json ####
+SD card config file. Uses JSON now.
 ```
+{
+
+}
 name=stjean
 dhcp=true
 ip=10.0.0.42
-mac=42-E2-42-66-F3-21
 debug=oled
 debug=Serial1/2/3
 ```
@@ -104,6 +123,10 @@ Save information as running time, errors, input frequency
 - DMX to usbMIDI, MIDI
 - MIDI to DMX
 
+### Glossary ###
+ - `template` set of parameters for animations, such as color and easing, templates are applied to `groups`
+- `group` group of segments with a center point.
+-
 ### Notes ###
 
 ##### DMX #####

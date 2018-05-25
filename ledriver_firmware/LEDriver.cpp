@@ -1,7 +1,11 @@
 
 #include "LEDriver.h"
-#define NO_POTS
 
+#include <OSCMessage.h>
+#include <OSCBundle.h>
+#include <OSCBoards.h>
+
+#define NO_POTS 0
 
 LEDriver::LEDriver(){
     modePointers[DEMO_MODE] = &demoMode;
@@ -10,23 +14,34 @@ LEDriver::LEDriver(){
     modePointers[TEST_MODE] = &testMode;
     modePointers[CUSTOM_MODE] = &customMode;
     modePointers[SDPLAY_MODE] = &sdPlaybackMode;
-    // serverForSocket = EthernetServer(80);
 }
 
-void LEDriver::runWithWebsocket(){
-    EthernetClient client = serverForSocket.available();
+
+void LEDriver::runWithWebsocket(EthernetServer * serverForSocket){
+    EthernetClient client = serverForSocket->available();
     if(client.connected() && webSocketServer.handshake(client)){
+        if(debug_level > 0) view.println(F("- ws cnnctn"));
         while(client.connected()){
             String data;
             data = webSocketServer.getData();
+
+            int _len = data.length() + 1;
+            char _array[_len];
+            data.toCharArray(_array, _len);
+            // todo? implement websocket as a Stream?? support printf and such
             if(data.length() > 0){
-                // ledriver.view.println(data);
-                String haha = fps;
-                webSocketServer.sendData(haha);
+                receiveOSC((uint8_t *)_array, _len);
+                // if(debug_level > 1) view.println(data);
+
+                // String haha = "fps ";
+                // haha += fps;
+                // webSocketServer.sendData(haha);
             }
             // call the regular update
             update();
         }
+        if(debug_level > 0) view.println(F("! ws dscnct"));
+        delay(100);
         client.stop();
     }
     else {
@@ -34,8 +49,26 @@ void LEDriver::runWithWebsocket(){
     }
 }
 
+
+void LEDriver::receiveOSC(uint8_t * _mess, uint8_t _sz){
+    OSCMessage messageIn;
+    messageIn.fill(_mess, _sz);
+
+    if(!messageIn.hasError()){
+        // view.printf("not match %i \n", messageIn.getInt(0));
+        if(messageIn.match("/a/")){
+            view.printf("set bright %i \n", messageIn.getInt(0));
+        }
+    }
+    else {
+        if(debug_level > 0) view.printf("osc error : %i \n",messageIn.getError());
+    }
+
+}
+
+
 void LEDriver::begin(CRGB * _leds, uint16_t _count){
-    serverForSocket.begin();
+    // serverForSocket.begin();
 
     Mode::leds = _leds;
     Mode::ledCount = _count;
@@ -54,7 +87,7 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
         parseConfig("config.ldr");
     }
 
-    if(debug_level > 0) view.println(F("init network\n"));
+    if(debug_level > 0) view.println(F("- init network"));
 
     // init network, may take a moment
     network.useDHCP = false;
@@ -74,7 +107,6 @@ void LEDriver::begin(CRGB * _leds, uint16_t _count){
     timeStamp = millis();
     setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
     // setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
-
     // receiveCommand(SET_BRIGHTNESS_CMD, 128);
 }
 
@@ -82,7 +114,7 @@ bool flasher = false;
 // kind of the main loop
 void LEDriver::update(){
 
-
+    updateCallback();
     if(frameCount % 4 == 1){
         digitalWrite(STATUS_LED_PIN, flasher);
         flasher = !flasher;
@@ -106,10 +138,12 @@ void LEDriver::update(){
         // }
     }
 
+    gotNewData = false;
     if(currentMode == ARTNET_MODE){
         if(buttonPress == 1){
         }
         if(network.checkArtnet()){
+            gotNewData = true;
             // Serial.printf("u = %i s = %i \n",network.incomingUniverse, network.sequence);
             artnetMode.receivePacket(network.artnetData, network.sequence, network.incomingUniverse, network.dmxDataLength);
         }
@@ -121,7 +155,10 @@ void LEDriver::update(){
 
     // update Mode
     modePointers[currentMode]->update();
+
 }
+
+
 
 
 
@@ -152,15 +189,6 @@ void LEDriver::parseConfig(const char * _file){
                     network.useDHCP = cfg.getIntValue();
                     view.printf("dhcp %i \n", network.useDHCP);
                 }
-                // else if(cfg.nameIs("mac")){
-                //     const char *_mac = cfg.getValue();
-                //     if(network.setMac(_mac)) {
-                //         view.printf("mac %s \n", _mac);
-                //     }
-                //     else {
-                //         view.printf("not valid mac %s \n", _mac);
-                //     }
-                // }
                 else if(cfg.nameIs("ip")){
                     const char *_ip = cfg.getValue();
                     if(network.setIp(_ip)){
@@ -205,7 +233,7 @@ void LEDriver::checkInput(){
         pot2_value = analogRead(POT2_PIN);
         Mode::pot1 = pot1_value;
         Mode::pot2 = pot2_value;
-        #ifndef NO_POTS
+        #if NO_POTS
         Mode::pot1 = 200;
         Mode::pot2 = 10;
         #endif
@@ -234,9 +262,6 @@ void LEDriver::checkInput(){
             }
         }
 
-        // if(frameCount%1000 == 0){
-        //     view.oled.printf("%d, %d, %d  \n", pot1_value, pot2_value, button_value);
-        // }
     }
     //Mode::buttonPress = buttonPress;
     // if(buttonPress != 0){

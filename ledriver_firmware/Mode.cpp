@@ -23,7 +23,7 @@ void Mode::receiveCommand(uint8_t _cmd, uint8_t _val){
     if(_cmd == SET_BRIGHTNESS_CMD){
         brightness = _val;
         FastLED.setBrightness(brightness);
-        Serial.printf("brightness %i", brightness);
+        // Serial.printf("brightness %i", brightness);
     }
 }
 
@@ -58,7 +58,7 @@ void ArtNetMode::setup(){
     memset(universeToIndex, 0, sizeof(universeToIndex));
     // make map of univereses
     for(int i = 0; i < totalUniverseCount; i++){
-        universeToIndex[i] = i*170;
+        universeToIndex[i] = i * 170;
     }
     // calculate value of all universe received
     for(int i = 0; i < totalUniverseCount; i++){
@@ -73,6 +73,8 @@ void ArtNetMode::update(){
         // do output
         FastLED.show();
         receivedUniverses = 0;
+    }
+    else {
     }
 }
 
@@ -94,6 +96,8 @@ void ArtNetMode::receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _uni
     if(_sequence != currentSequence){
         FastLED.show();
         currentSequence = _sequence;
+    }
+    else {
     }
     for(int i = 0; i < _dataLenght/3; i++){
         leds[universeToIndex[_universe]+i] = CRGB(_data[i*3], _data[i*3+1], _data[i*3+2]);

@@ -17,7 +17,7 @@ var DEFAULT_WEBSOCKET_ADDR = "ws://10.0.0.42/";//':8026/control';
 
 // ping websocket every 10 secs to prevent timeout
 setInterval(function() {
-    actualySendCMD('ping');
+    // actualySendCMD('ping');
 }, 1000);
 
 
@@ -48,17 +48,50 @@ actualySendCMD = (function () {
 function makeSocket(_adr) {
     var socket = new WebSocket(_adr);
     socket.onopen = function() {
-    // populateGUI();
+        populateGUI();
     }
     socket.onmessage = function (evt) {
         // parseInfo(evt.data);
-        var _messageJSON = JSON.parse(evt.data);
+        // var _messageJSON = JSON.parse(evt.data);
         document.getElementById("logline").innerHTML = evt.data;
     }
-    socket.onclose = function () {};
+    // socket.onclose = function () {};
+    socket.onclose = function () {socket.close(); console.log("closing socket??")}; // disable onclose handler first
+    // window.onbeforeunload = function() {
+    //     socket.close();
+    // };
+    // document.getElementById("reload").onclick = function() {
+    //     socket.close();
+    //     console.log("closed socket");
+    //     window.location.reload(true);
+    // }
     return socket;
 }
 
+function receiveWebsocketMessage (mess) {
+    var _splt = mess.split(" ",1);
+    if(_splt[0] == "info") setInfo(mess);
+    else if(_splt[0] == "fps") console.log("haha "+mess);
+    // else if(_splt[0] == "template") setTemplateStat(mess);
+    // else if(_splt[0] == "layers") parseLayerInfo(mess);
+    // else if(_splt[0] == "files") parseAvailableFiles(mess);
+    else console.log("Received ? :" + mess);
+}
+
+// generate gui for controller. retrieve name and such.
+function populateGUI () {
+    var maindiv = document.getElementById("maindiv");
+    var _input = document.createElement("input");
+    _input.setAttribute("type", "range");
+    _input.setAttribute("min", 0);
+    _input.setAttribute("max", 255);
+    _input.setAttribute("id", "brightness");
+    _input.oninput = function (){
+        // needs downSampling
+        sendCMD("/a/ "+Math.round(_input.value));
+    }
+    maindiv.appendChild(_input);
+}
 
 // fetch json data
 // function loadJSON(callback) {
@@ -103,3 +136,5 @@ cmdPrompt = (function () {
 document.addEventListener("keydown", function(e) {
     if (document.activeElement == document.getElementById("prompt")) cmdPrompt(e);
 }, false);
+
+// }

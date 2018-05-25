@@ -33,18 +33,15 @@ enum Modes{
     SDPLAY_MODE
 };
 
-EthernetServer serverForSocket(80);
-
-
-
 class LEDriver {
     public:
         LEDriver();
         void begin(CRGB *_leds, uint16_t _count);
         void update();
-        void runWithWebsocket();
+        void runWithWebsocket(EthernetServer * serverForSocket);
         void parseConfig(const char * _file);
         void receiveCommand(uint8_t _cmd, uint8_t _val);
+        void receiveOSC(uint8_t * _mess, uint8_t _sz);
         CRGB * leds;
         // CRGB * ledStrips[8];
         uint16_t NUM_LEDS;
@@ -53,6 +50,7 @@ class LEDriver {
         // websocket
         WebSocketServer webSocketServer;
         EthernetClient client;
+        // EthernetServer * serverForSocket;
 
         // modes
         Mode * modePointers[MODE_COUNT];
@@ -72,6 +70,13 @@ class LEDriver {
 
         View view;
 
+        bool gotNewData;
+        bool gotFullArtnet;
+
+        void (*updateCallback)();
+        void setCallback(void (*callback)())
+        { updateCallback = callback; }
+
     private:
         Network network;
 
@@ -90,11 +95,7 @@ class LEDriver {
         // SPI switching
         void enableSDcard();
         void enableWiznet();
-
 };
-
-
-
 
 
 #endif

@@ -14,6 +14,10 @@
 #endif
 #include "FastLED.h"
 #include "LEDriver.h"
+#include "Ethernet.h"
+
+#include "TeensyDmx.h"
+TeensyDmx dmx_output_1(Serial1, 21);
 
 LEDriver ledriver;
 
@@ -21,18 +25,26 @@ LEDriver ledriver;
 #define NUM_LEDS_PER_STRIP 240
 #define NUM_STRIPS 8
 #define NUM_LEDS  NUM_STRIPS * NUM_LEDS_PER_STRIP
-CRGB leds[NUM_LEDS];
+uint8_t generalBuffer[(NUM_LEDS*3) + (512*3)];
+CRGB * leds;
+// CRGB leds;
+// CRGB leds[NUM_LEDS];
 #define LED_TYPE    WS2812B
 // could change? do ledriver_setup
 #define COLOR_ORDER RGB//GRB
 
+// data 1 pin for non octows user
 #define DATA_PIN 3
 #define CLOCK_PIN 2
-
+EthernetServer serverForSocket(80);
 
 void setup(){
     Serial.begin(115200);
+    // step one retrieve config.
+    // check for DMX modes,
+    // strip mode, using octows or other, which should be specified.
 
+    leds = (CRGB *)generalBuffer;
     // setup LEDs
     #if OCTOWSMODE
         LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
@@ -47,13 +59,21 @@ void setup(){
     ledriver.begin(leds, NUM_LEDS);
     // set the callback
     ledriver.customMode.setCallback(custom);
+    ledriver.setCallback(updateCallback);
+    dmx_output_1.setMode(TeensyDmx::DMX_OUT);
 }
 
 void loop(){
     // runs once
-    ledriver.runWithWebsocket();
+    ledriver.runWithWebsocket(&serverForSocket);
     // otherwise :
     // ledriver.update();
+}
+
+void updateCallback(){
+    if(ledriver.gotNewData){
+        dmx_output_1.setChannels(0, (const uint8_t *)leds, 512);
+    }
 }
 
 
