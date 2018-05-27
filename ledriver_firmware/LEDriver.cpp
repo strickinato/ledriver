@@ -63,7 +63,6 @@ void LEDriver::receiveOSC(uint8_t * _mess, uint8_t _sz){
     else {
         if(debug_level > 0) view.printf("osc error : %i \n",messageIn.getError());
     }
-
 }
 
 

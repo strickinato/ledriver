@@ -27,8 +27,8 @@ LEDriver ledriver;
 #define NUM_LEDS  NUM_STRIPS * NUM_LEDS_PER_STRIP
 uint8_t generalBuffer[(NUM_LEDS*3) + (512*3)];
 CRGB * leds;
+
 // CRGB leds;
-// CRGB leds[NUM_LEDS];
 #define LED_TYPE    WS2812B
 // could change? do ledriver_setup
 #define COLOR_ORDER RGB//GRB
@@ -43,7 +43,7 @@ void setup(){
     // step one retrieve config.
     // check for DMX modes,
     // strip mode, using octows or other, which should be specified.
-
+    // Serial.printf("%i   %i \n", sizeof(generalBuffer), sizeof(leds));
     leds = (CRGB *)generalBuffer;
     // setup LEDs
     #if OCTOWSMODE
@@ -79,9 +79,9 @@ void updateCallback(){
 
 // custom mode's update method callback, add your own animation without much digging.
 void custom(){
-    for(int i = 0; i < NUM_LEDS; i++){
-        // leds[i] = CHSV(pow((millis()%2000)/2000.0, 3)*255, 255, 255);
-        leds[i] = CRGB(millis()/10 % 255,0,0);
+    for(int i = 0; i < 16; i++){
+        leds[i] = CHSV(pow((millis()%2000)/2000.0, 3)*255, 255, 255);
+        // leds[i] = CRGB(millis()/10 % 255,0,0);
 
     }
     FastLED.show();
