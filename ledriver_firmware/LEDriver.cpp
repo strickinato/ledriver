@@ -14,6 +14,50 @@ LEDriver::LEDriver(){
     modePointers[TEST_MODE] = &testMode;
     modePointers[CUSTOM_MODE] = &customMode;
     modePointers[SDPLAY_MODE] = &sdPlaybackMode;
+    dataBuffer.begin();
+}
+
+void LEDriver::begin(){
+    // serverForSocket.begin();
+
+    Mode::leds = dataBuffer.getLEDs();
+    Mode::ledCount = dataBuffer.ledCount;
+    pinMode(STATUS_LED_PIN, OUTPUT);
+
+    artnetMode.setup();
+
+    view.begin();
+    view.printf("ledriver V%f\n", VERSION);
+
+    enableSDcard();
+    if(!SD.begin(SDCARD_CS_PIN)){
+        view.println(F("no SDcard..."));
+    }
+    else {
+        parseConfig("config.ldr");
+    }
+
+    if(debug_level > 0) view.println(F("- init network"));
+
+    // init network, may take a moment
+    network.useDHCP = false;
+    network.begin();
+    // print resulting network information
+    if(debug_level > 0){
+        if(network.useDHCP){
+            view.printf("DHCP %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+        }
+        else {
+            view.printf("STATIC %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+        }
+    }
+
+    frameCount = 0;
+    fpsCount     = 0;
+    timeStamp = millis();
+    setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
+    // setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
+    // receiveCommand(SET_BRIGHTNESS_CMD, 128);
 }
 
 
@@ -66,48 +110,6 @@ void LEDriver::receiveOSC(uint8_t * _mess, uint8_t _sz){
 }
 
 
-void LEDriver::begin(CRGB * _leds, uint16_t _count){
-    // serverForSocket.begin();
-
-    Mode::leds = _leds;
-    Mode::ledCount = _count;
-    pinMode(STATUS_LED_PIN, OUTPUT);
-
-    artnetMode.setup();
-
-    view.begin();
-    view.printf("ledriver V%f\n", VERSION);
-
-    enableSDcard();
-    if(!SD.begin(SDCARD_CS_PIN)){
-        view.println(F("no SDcard..."));
-    }
-    else {
-        parseConfig("config.ldr");
-    }
-
-    if(debug_level > 0) view.println(F("- init network"));
-
-    // init network, may take a moment
-    network.useDHCP = false;
-    network.begin();
-    // print resulting network information
-    if(debug_level > 0){
-        if(network.useDHCP){
-            view.printf("DHCP %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
-        }
-        else {
-            view.printf("STATIC %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
-        }
-    }
-
-    frameCount = 0;
-    fpsCount     = 0;
-    timeStamp = millis();
-    setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
-    // setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
-    // receiveCommand(SET_BRIGHTNESS_CMD, 128);
-}
 
 bool flasher = false;
 // kind of the main loop

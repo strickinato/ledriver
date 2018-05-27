@@ -9,6 +9,7 @@
 #include "Mode.h"
 #include "Defaults.h"
 #include "Commands.h"
+#include "LrBuffer.h"
 
 #include "SD.h"
 #include "SPI.h"
@@ -36,12 +37,15 @@ enum Modes{
 class LEDriver {
     public:
         LEDriver();
-        void begin(CRGB *_leds, uint16_t _count);
+        void begin();
         void update();
         void runWithWebsocket(EthernetServer * serverForSocket);
         void parseConfig(const char * _file);
         void receiveCommand(uint8_t _cmd, uint8_t _val);
         void receiveOSC(uint8_t * _mess, uint8_t _sz);
+
+
+        LrBuffer dataBuffer;
         CRGB * leds;
         // CRGB * ledStrips[8];
         uint16_t NUM_LEDS;
