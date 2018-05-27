@@ -21,7 +21,7 @@ void LEDriver::begin(){
     view.begin();
     view.printf("ledriver V%f\n", VERSION);
     // serverForSocket.begin();
-    // dataBuffer.begin();
+    //
     leds = dataBuffer.getLEDs();
     Mode::leds = dataBuffer.getLEDs();
     Mode::ledCount = dataBuffer.ledCount;
@@ -100,7 +100,7 @@ void LEDriver::receiveOSC(uint8_t * _mess, uint8_t _sz){
     messageIn.fill(_mess, _sz);
 
     if(!messageIn.hasError()){
-        // view.printf("not match %i \n", messageIn.getInt(0));
+        view.printf("not match %i \n", messageIn.getInt(0));
         if(messageIn.match("/a/")){
             view.printf("set bright %i \n", messageIn.getInt(0));
         }
