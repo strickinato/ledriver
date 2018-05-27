@@ -155,7 +155,7 @@ void TestMode::update(){
             for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::Blue;
             break;
         case 4:
-            for(int y = 0 ; y < ledCount ; y++) leds[y] = (y == (frameCount/2)%20 ? CRGB::White : CRGB::Black);
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = (y%20 == (frameCount/2)%20 ? CRGB::White : CRGB::Black);
             break;
         case 5:
             for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::White;

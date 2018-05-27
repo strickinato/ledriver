@@ -14,20 +14,21 @@ LEDriver::LEDriver(){
     modePointers[TEST_MODE] = &testMode;
     modePointers[CUSTOM_MODE] = &customMode;
     modePointers[SDPLAY_MODE] = &sdPlaybackMode;
-    dataBuffer.begin();
 }
 
 void LEDriver::begin(){
+    dataBuffer.begin();
+    view.begin();
+    view.printf("ledriver V%f\n", VERSION);
     // serverForSocket.begin();
     // dataBuffer.begin();
+    leds = dataBuffer.getLEDs();
     Mode::leds = dataBuffer.getLEDs();
     Mode::ledCount = dataBuffer.ledCount;
     pinMode(STATUS_LED_PIN, OUTPUT);
 
     artnetMode.setup();
 
-    view.begin();
-    view.printf("ledriver V%f\n", VERSION);
 
     enableSDcard();
     if(!SD.begin(SDCARD_CS_PIN)){
@@ -55,7 +56,7 @@ void LEDriver::begin(){
     frameCount = 0;
     fpsCount     = 0;
     timeStamp = millis();
-    setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
+    setMode(ARTNET_MODE);//ARTNET_MODE);//MO_MODE);
     // setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
     // receiveCommand(SET_BRIGHTNESS_CMD, 128);
 }

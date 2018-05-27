@@ -12,23 +12,18 @@
 
 
 #include "LEDriver.h"
-// #include "Ethernet.h"
-
-// #include "TeensyDmx.h"
-// TeensyDmx dmx_output_1(Serial1, 21);
+#include "Ethernet.h"
 
 LEDriver ledriver;
-
 EthernetServer serverForSocket(80);
 
 void setup(){
     Serial.begin(115200);
-    ledriver.begin();
     // initialise the system
+    ledriver.begin();
     // set the callback
     ledriver.customMode.setCallback(custom);
     ledriver.setCallback(updateCallback);
-    // dmx_output_1.setMode(TeensyDmx::DMX_OUT);
 }
 
 void loop(){
@@ -48,7 +43,7 @@ void updateCallback(){
 // custom mode's update method callback, add your own animation without much digging.
 void custom(){
     for(int i = 0; i < 16; i++){
-        // leds[i] = CHSV(pow((millis()%2000)/2000.0, 3)*255, 255, 255);
+        ledriver.leds[i] = CHSV(pow((millis()%2000)/2000.0, 3)*255, 255, 255);
         // leds[i] = CRGB(millis()/10 % 255,0,0);
     }
     FastLED.show();
