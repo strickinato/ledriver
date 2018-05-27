@@ -2,7 +2,7 @@
 #define Mode_h
 
 #include "PinMap.h"
-#include "FastLED.h"
+#include "Defaults.h"
 #include "Commands.h"
 // #include "LEDriver.h"
 #include "SD.h"

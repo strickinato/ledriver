@@ -7,13 +7,13 @@ LrBuffer::LrBuffer(){
 
 void LrBuffer::begin(){
     leds = (CRGB *)drawBuffer;
+
     #if OCTOWSMODE
-        LEDS.addLeds<OCTOWS2811>((CRGB*)leds, LR_LED_PER_STRIP);
+        LEDS.addLeds<OCTOWS2811>(leds, LR_LED_PER_STRIP);
     #else
-        FastLED.addLeds<LED_TYPE, DATA_PIN, GRB>((CRGB*)leds, LR_NUM_LEDS);
+        FastLED.addLeds<LED_TYPE, DATA_PIN, GRB>(leds, LR_NUM_LEDS);
     #endif
     FastLED.setDither( 0 );
-    for(int y = 0 ; y < LR_NUM_LEDS ; y++) leds[y] = CRGB::Black;
     FastLED.show();
 }
 

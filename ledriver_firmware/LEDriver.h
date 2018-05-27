@@ -14,7 +14,7 @@
 #include "SD.h"
 #include "SPI.h"
 #include "SDConfigFile.h"
-#include "FastLED.h"
+// #include "FastLED.h"
 
 #include <WebSocketServer.h>
 #include <Ethernet.h>

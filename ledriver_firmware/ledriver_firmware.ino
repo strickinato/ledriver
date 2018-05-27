@@ -8,9 +8,9 @@
  */
  // FastLED
 
-#define USE_OCTOWS2811 1
-#include <OctoWS2811.h>
-#include "FastLED.h"
+
+
+
 #include "LEDriver.h"
 // #include "Ethernet.h"
 
@@ -19,14 +19,6 @@
 
 LEDriver ledriver;
 
-// CRGB leds;
-#define LED_TYPE    WS2812B
-// could change? do ledriver_setup
-#define COLOR_ORDER RGB//GRB
-
-// data 1 pin for non octows user
-#define DATA_PIN 3
-#define CLOCK_PIN 2
 EthernetServer serverForSocket(80);
 
 void setup(){

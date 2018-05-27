@@ -2,13 +2,8 @@
 #define LrBuffer_h
 
 #include "Arduino.h"
-#include "FastLED.h"
+#include "Defaults.h"
 
-#define OCTOWSMODE 1
-#if OCTOWSMODE
-    #define USE_OCTOWS2811
-    #include "OctoWS2811.h"
-#endif
 
 #define LR_LED_PER_STRIP 240
 #define LR_NUM_STRIPS 8
@@ -29,6 +24,7 @@ class LrBuffer {
         uint16_t ledCount;
         CRGB * leds;
         CRGB * getLEDs();
+        // CRGB leds[23];
         // getDMX output a or b
         uint8_t * getDMX(uint8_t _u);
 

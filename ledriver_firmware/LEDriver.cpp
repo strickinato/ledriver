@@ -19,7 +19,7 @@ LEDriver::LEDriver(){
 
 void LEDriver::begin(){
     // serverForSocket.begin();
-
+    // dataBuffer.begin();
     Mode::leds = dataBuffer.getLEDs();
     Mode::ledCount = dataBuffer.ledCount;
     pinMode(STATUS_LED_PIN, OUTPUT);
