@@ -40,7 +40,9 @@ void Network::begin() {
         Ethernet.begin(mac, ip);
     }
 
-    Udp.begin(ART_NET_PORT);
+    artnetUDP.begin(ART_NET_PORT);
+    oscUDP.begin(LR_OSC_PORTIN);
+
     for(int i = 0; i < 4; i++) {
         broadcast[i] = Ethernet.localIP()[i];
     }
@@ -68,9 +70,9 @@ bool Network::setIp(const char * _str) {
 // }
 
 bool Network::checkArtnet() {
-    packetSize = Udp.parsePacket();
+    packetSize = artnetUDP.parsePacket();
     if (packetSize <= MAX_BUFFER_ARTNET && packetSize > 0) {
-        Udp.read(artnetPacket, MAX_BUFFER_ARTNET);
+        artnetUDP.read(artnetPacket, MAX_BUFFER_ARTNET);
         for (byte i = 0 ; i < 8 ; i++) {
             if (artnetPacket[i] != ART_NET_ID[i]) {
                 return 0;
@@ -153,8 +155,8 @@ void Network::replyArtnetPoll() {
         ArtPollReply.swin[i] = swin[i];
     }
     sprintf((char *)ArtPollReply.nodereport, "%i DMX output universes active.\0", ArtPollReply.numbports);
-    Udp.beginPacket(broadcast, ART_NET_PORT);//send the packet to the broadcast address
-    Udp.write((uint8_t *)&ArtPollReply, sizeof(ArtPollReply));
-    Udp.endPacket();
+    artnetUDP.beginPacket(broadcast, ART_NET_PORT);//send the packet to the broadcast address
+    artnetUDP.write((uint8_t *)&ArtPollReply, sizeof(ArtPollReply));
+    artnetUDP.endPacket();
 
 }

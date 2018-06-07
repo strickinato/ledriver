@@ -1,0 +1,31 @@
+body {
+  background-color: #5D5D5D;
+  font-family: monospace;
+  cursor:default;
+}
+
+.widget {
+  margin: 4px;
+  min-height: 24px;
+  background-color: #1D1D1D;
+  color: #FFFFFF;
+  font-size: 10pt;
+  padding: 2px;
+  padding-left: 4px;
+  display: flex;
+  align-items: center;
+  overflow: auto;
+}
+
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 0px;
+  margin: 0px;
+  color: #FFFFFF;
+  /*height: 20px;*/
+  background-color: #000000;
+  text-align: left;
+}

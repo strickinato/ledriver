@@ -3,6 +3,8 @@
 - webserver
     - client.println("Access-Control-Allow-Origin: \*");
 
+- Arduino-Websocket with Stream / print capabilities?
+
 
 #### debug ####
 - `view.println("- statement");` with debug_level > 0

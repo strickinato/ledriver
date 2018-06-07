@@ -17,6 +17,7 @@
 // #include "FastLED.h"
 
 #include <WebSocketServer.h>
+// #include <WebSocket.h>
 #include <Ethernet.h>
 
 #define VERSION 0.00001
@@ -44,7 +45,9 @@ class LEDriver {
         void receiveCommand(uint8_t _cmd, uint8_t _val);
         void receiveOSC(uint8_t * _mess, uint8_t _sz);
 
-
+        void checkUdpForOSC();
+        void checkWebsocket();
+        // void onData(WebSocket &socket, char* dataString, byte frameLength);
         LrBuffer dataBuffer;
         CRGB * leds;
         // CRGB * ledStrips[8];

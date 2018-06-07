@@ -81,7 +81,9 @@ class Network {
         void replyArtnetPoll();
         bool universesReceived[16];
 
-        EthernetUDP Udp;
+        EthernetUDP artnetUDP;
+        EthernetUDP oscUDP;
+
         uint8_t artnetPacket[MAX_BUFFER_ARTNET];
         struct artnet_reply_s ArtPollReply;
         uint16_t packetSize;

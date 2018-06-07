@@ -59,29 +59,25 @@ void LEDriver::begin(){
     setMode(ARTNET_MODE);//ARTNET_MODE);//MO_MODE);
     // setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
     // receiveCommand(SET_BRIGHTNESS_CMD, 128);
+
+
+    // void * _func = &LEDriver::onData;
+    // webSocketServer.registerDataCallback(_func);
 }
 
+void sendFPS(){
+    OSCMessage msg("/fps");
+    msg.add((int32_t) fps);
+
+}
 
 void LEDriver::runWithWebsocket(EthernetServer * serverForSocket){
     EthernetClient client = serverForSocket->available();
     if(client.connected() && webSocketServer.handshake(client)){
         if(debug_level > 0) view.println(F("- ws cnnctn"));
         while(client.connected()){
-            String data;
-            data = webSocketServer.getData();
-
-            int _len = data.length() + 1;
-            char _array[_len];
-            data.toCharArray(_array, _len);
-            // todo? implement websocket as a Stream?? support printf and such
-            if(data.length() > 0){
-                receiveOSC((uint8_t *)_array, _len);
-                // if(debug_level > 1) view.println(data);
-
-                // String haha = "fps ";
-                // haha += fps;
-                // webSocketServer.sendData(haha);
-            }
+            checkUdpForOSC();
+            checkWebsocket();
             // call the regular update
             update();
         }
@@ -95,14 +91,34 @@ void LEDriver::runWithWebsocket(EthernetServer * serverForSocket){
 }
 
 
+void LEDriver::checkUdpForOSC(){
+    int _sz = network.oscUDP.parsePacket();
+    if(_sz > 0){
+        char _array[_sz];
+        network.oscUDP.read(_array, _sz);
+        receiveOSC((uint8_t *)_array, _sz);
+    }
+}
+
+void LEDriver::checkWebsocket(){
+    int _len = webSocketServer.parsePacket();
+    if(_len > 0){
+        uint8_t _array[_len];
+        webSocketServer.readBytes(_array, _len);
+        receiveOSC((uint8_t *)_array, _len);
+    }
+}
+
 void LEDriver::receiveOSC(uint8_t * _mess, uint8_t _sz){
     OSCMessage messageIn;
     messageIn.fill(_mess, _sz);
 
     if(!messageIn.hasError()){
-        view.printf("not match %i \n", messageIn.getInt(0));
-        if(messageIn.match("/a/")){
-            view.printf("set bright %i \n", messageIn.getInt(0));
+        if(messageIn.match("/record")){
+            view.printf("set bright %i \n", messageIn.getString(0));
+        }
+        else {
+            view.printf("not match %i \n", messageIn.getInt(0));
         }
     }
     else {
@@ -159,8 +175,6 @@ void LEDriver::update(){
     modePointers[currentMode]->update();
 
 }
-
-
 
 
 
