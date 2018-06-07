@@ -2,11 +2,10 @@
 
 // window.onload = function() {
 // globals
-var sendCMD, cmdPrompt, socket, oscPort, osc = osc;// || require("osc");
+var sendCMD, cmdPrompt, socket;
 
 var messageIncrement = 0;
-// var chatDiv = document.getElementById("messages");
-// var jumpButton = document.getElementById("jump");
+
 var autoScroll = true;
 var DEFAULT_WEBSOCKET_ADDR = "ws://10.0.0.42/";//':8026/control';
 
@@ -70,31 +69,30 @@ actualySendCMD = (function () {
 
 // make a websocket
 function makeSocket(_adr) {
-    oscPort = new osc.WebSocketPort({
-        url: _adr, // URL to your Web Socket server.
-        metadata: true
-    });
-    oscPort.open();
-    oscPort.on("message", function (oscMsg) {
-        console.log("An OSC message just arrived!", oscMsg);
-    });
+    // oscPort = new osc.WebSocketPort({
+    //     url: _adr, // URL to your Web Socket server.
+    //     metadata: true
+    // });
+    // oscPort.open();
+    // oscPort.on("message", function (oscMsg) {
+    //     console.log("An OSC message just arrived!", oscMsg);
+    // });
     populateGUI();
-}
 
-    // var socket = new WebSocket(_adr);
-    // socket.onopen = function() {
-    //     populateGUI();
-    // }
-    // socket.onmessage = function (evt) {
-    //     // parseInfo(evt.data);
-    //     // var _messageJSON = JSON.parse(evt.data);
-    //     document.getElementById("logline").innerHTML = evt.data;
-    // }
-    // // socket.onclose = function () {};
+    var socket = new WebSocket(_adr);
+    socket.onopen = function() {
+        populateGUI();
+    }
+    socket.onmessage = function (evt) {
+        // parseInfo(evt.data);
+        // var _messageJSON = JSON.parse(evt.data);
+        receiveWebsocketMessage(evt.data);
+        document.getElementById("logline").innerHTML = evt.data;
+    }
+    // socket.onclose = function () {};
     // socket.onclose = function () {socket.close(); console.log("closing socket??")}; // disable onclose handler first
 
-
-
+    //
     // window.onbeforeunload = function() {
     //     socket.close();
     // };
@@ -104,9 +102,8 @@ function makeSocket(_adr) {
     //     window.location.reload(true);
     // }
 
-
-
-    // return socket;
+    return socket;
+}
 
 function receiveWebsocketMessage (mess) {
     var _splt = mess.split(" ",1);

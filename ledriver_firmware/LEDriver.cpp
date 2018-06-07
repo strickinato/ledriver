@@ -4,7 +4,6 @@
 #include <OSCMessage.h>
 #include <OSCBundle.h>
 #include <OSCBoards.h>
-
 #define NO_POTS 0
 
 LEDriver::LEDriver(){
@@ -66,9 +65,8 @@ void LEDriver::begin(){
 }
 
 void sendFPS(){
-    OSCMessage msg("/fps");
-    msg.add((int32_t) fps);
-
+    // OSCMessage msg("/fps");
+    // msg.add((int32_t) fps);
 }
 
 void LEDriver::runWithWebsocket(EthernetServer * serverForSocket){
@@ -101,12 +99,16 @@ void LEDriver::checkUdpForOSC(){
 }
 
 void LEDriver::checkWebsocket(){
-    int _len = webSocketServer.parsePacket();
-    if(_len > 0){
-        uint8_t _array[_len];
-        webSocketServer.readBytes(_array, _len);
-        receiveOSC((uint8_t *)_array, _len);
+    String _data = webSocketServer.getData();
+    if(_data.length()> 0){
+        view.println(_data);
     }
+    // int _len = webSocketServer.parsePacket();
+    // if(_len > 0){
+    //     uint8_t _array[_len];
+    //     webSocketServer.readBytes(_array, _len);
+    //     receiveOSC((uint8_t *)_array, _len);
+    // }
 }
 
 void LEDriver::receiveOSC(uint8_t * _mess, uint8_t _sz){
