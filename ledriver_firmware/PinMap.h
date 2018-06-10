@@ -5,8 +5,10 @@
 #define RX1_PIN 0
 #define TX1_PIN 1
 #define DATA_1_PIN  2
+// #define SDCARD_CS_PIN 3
+// #define WIZNET_CS_PIN 4
 #define SDCARD_CS_PIN 3
-#define WIZNET_CS_PIN 4
+#define WIZNET_CS_PIN 10
 #define DATA_8_PIN  5
 #define DATA_5_PIN  6
 #define DATA_3_PIN  7

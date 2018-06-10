@@ -81,6 +81,21 @@ Reserve 2-3 bytes for controller specific info, such as :
 - Record animation
 - play animation
 - run test patterns
+###### inbound
+- `/record 1 (fileName)` make a filename if none provided
+- `/record 0` stop recording
+- `/bright 255`
+- `/mode 2`
+- `/speed 255`
+- `/getinfo`
+###### outbound
+
+#### SD Card Saved animations
+Somehow freeliner needs to to send its sync through Artnet, perhaps with sequence value?
+SMPTE?
+Or ArtTimeCode
+Paire sequence number with lerp value?
+
 
 #### Test Patterns ####
 Dank test patterns for production tests.
@@ -111,6 +126,10 @@ Save information as running time, errors, input frequency
 - SDconfigFile
 - TeensyDMX
 
+#### Optimisation ####
+- between each frame pick one task from a list and increment.
+    - (check websocket, check udp for OSC, ???)
+
 ### Bonus Round ###
 - Its also a midi controller so you can control the software to control your controller.
 - OSC controller too
@@ -123,10 +142,10 @@ Save information as running time, errors, input frequency
 - DMX to usbMIDI, MIDI
 - MIDI to DMX
 
-### Glossary ###
+<!-- ### Glossary ###
  - `template` set of parameters for animations, such as color and easing, templates are applied to `groups`
 - `group` group of segments with a center point.
--
+- -->
 ### Notes ###
 
 ##### DMX #####

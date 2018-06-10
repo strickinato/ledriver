@@ -67,11 +67,11 @@ class Network {
     public:
         Network();
         void begin();
-
+        void reset();
         bool useDHCP;
         bool isConnected;
         uint8_t mac[6];
-        uint8_t ip[4];
+        // uint8_t ip[4];
         IPAddress ipAddress;
         IPAddress broadcast;
         bool setIp(const char * _str);

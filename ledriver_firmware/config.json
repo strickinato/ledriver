@@ -12,12 +12,13 @@
         "color_order" : "RGB",
         /*  */
     },
-    "dmx" : {
+    "dmxin" : {
         "port" : 1,
-        "channel" : 32, /* input channel */
-        "count" : 16, /* channels used */
+        "channel" : 32,
+        "count" : 16,
+    },
+    "dmxout" : {
+        "port" : 2,
+        "count" : 512
     }
 }
-
-
-/* (artnet=1) | (dmxin=2 + dmxaddr=0)    ??? */

@@ -15,7 +15,7 @@ Mode::Mode(){
 }
 
 void Mode::update(){
-    FastLED.setBrightness(map(pot1, 1023, 0, 0, 255));
+    FastLED.setBrightness(map(pot1, 0, 1023, 0, 255));
     // all modes should call this?
 }
 
@@ -35,7 +35,7 @@ DemoMode::DemoMode(){
 
 void DemoMode::update(){
     Mode::update();
-    float _speed = map(pot2, 1023, 0, 0, 20);
+    float _speed = map(pot2, 0, 1023, 0, 20);
     int ha = frameCount/_speed;
     for(int i = 0; i < ledCount; i++){
         leds[i] = CHSV(ha+int(ha+i*2+millis()/10.0)%255,255,255);
@@ -140,7 +140,7 @@ TestMode::TestMode(){
 
 void TestMode::update(){
     Mode::update();
-    int _test = map(pot2, 1023, 0, 0, 7);
+    int _test = map(pot2, 0, 1023, 0, 7);
     switch(_test){
         case 0:
             for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::Black;

@@ -1,9 +1,8 @@
 
+// #define BOARD_REV 002
+#define BOARD_REV 003
 #include "LEDriver.h"
 
-#include <OSCMessage.h>
-#include <OSCBundle.h>
-#include <OSCBoards.h>
 #define NO_POTS 0
 
 LEDriver::LEDriver(){
@@ -20,42 +19,54 @@ void LEDriver::begin(){
     view.begin();
     view.printf("ledriver V%f\n", VERSION);
     // serverForSocket.begin();
-    //
+
+    // setup buffer
     leds = dataBuffer.getLEDs();
     Mode::leds = dataBuffer.getLEDs();
     Mode::ledCount = dataBuffer.ledCount;
+
+    // setup some pins
     pinMode(STATUS_LED_PIN, OUTPUT);
 
+    // setup modes
     artnetMode.setup();
 
-
-    enableSDcard();
+    // fetch config
+    // enableSDcard();
     if(!SD.begin(SDCARD_CS_PIN)){
         view.println(F("no SDcard..."));
     }
     else {
-        parseConfig("config.ldr");
+        loadConfigFile(CONFIG_FILE);
     }
 
+    network.reset();
+    view.println("reset");
     if(debug_level > 0) view.println(F("- init network"));
-
+    view.println(network.useDHCP);
     // init network, may take a moment
-    network.useDHCP = false;
+    // network.useDHCP = false;
     network.begin();
     // print resulting network information
     if(debug_level > 0){
         if(network.useDHCP){
-            view.printf("DHCP %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+            // view.printf("DHCP %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+            view.print("DHCP ");
+            view.println(network.ipAddress);
         }
         else {
-            view.printf("STATIC %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+            // view.printf("STATIC %i.%i.%i.%i \n", network.ip[0], network.ip[1], network.ip[2], network.ip[3]);
+            view.print("STATIC ");
+            view.println(network.ipAddress);
         }
     }
 
+    // SD.exists("config.jso");
+
     frameCount = 0;
     fpsCount     = 0;
-    timeStamp = millis();
-    setMode(ARTNET_MODE);//ARTNET_MODE);//MO_MODE);
+    timeStamp = millis();\
+    setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
     // setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
     // receiveCommand(SET_BRIGHTNESS_CMD, 128);
 
@@ -64,15 +75,17 @@ void LEDriver::begin(){
     // webSocketServer.registerDataCallback(_func);
 }
 
-void sendFPS(){
-    // OSCMessage msg("/fps");
-    // msg.add((int32_t) fps);
-}
+///////////////////////////////////////////////////////////////////////////////
+// Messaging
+///////////////////////////////////////////////////////////////////////////////
+
 
 void LEDriver::runWithWebsocket(EthernetServer * serverForSocket){
     EthernetClient client = serverForSocket->available();
     if(client.connected() && webSocketServer.handshake(client)){
         if(debug_level > 0) view.println(F("- ws cnnctn"));
+        // push config :
+        pushConfig();
         while(client.connected()){
             checkUdpForOSC();
             checkWebsocket();
@@ -88,7 +101,6 @@ void LEDriver::runWithWebsocket(EthernetServer * serverForSocket){
     }
 }
 
-
 void LEDriver::checkUdpForOSC(){
     int _sz = network.oscUDP.parsePacket();
     if(_sz > 0){
@@ -101,14 +113,24 @@ void LEDriver::checkUdpForOSC(){
 void LEDriver::checkWebsocket(){
     String _data = webSocketServer.getData();
     if(_data.length()> 0){
-        view.println(_data);
+        if(debug_level > 1) view.println(_data);
+        receiveJson(_data.c_str());
+        webSocketServer.sendData("ahhaha");
     }
-    // int _len = webSocketServer.parsePacket();
-    // if(_len > 0){
-    //     uint8_t _array[_len];
-    //     webSocketServer.readBytes(_array, _len);
-    //     receiveOSC((uint8_t *)_array, _len);
-    // }
+}
+
+void LEDriver::receiveJson(const char * _received){
+    StaticJsonBuffer<512> jsonBuffer;
+    JsonObject &root = jsonBuffer.parseObject(_received);
+    if(root.success()){
+        if(debug_level > 1){
+            view.println("- receivedJson");
+            root.printTo(view);
+            if(root.containsKey("config")){
+                saveConfigFile(root, CONFIG_FILE);
+            }
+        }
+    }
 }
 
 void LEDriver::receiveOSC(uint8_t * _mess, uint8_t _sz){
@@ -117,7 +139,7 @@ void LEDriver::receiveOSC(uint8_t * _mess, uint8_t _sz){
 
     if(!messageIn.hasError()){
         if(messageIn.match("/record")){
-            view.printf("set bright %i \n", messageIn.getString(0));
+            // view.printf("set bright %i \n", messageIn.getString(0));
         }
         else {
             view.printf("not match %i \n", messageIn.getInt(0));
@@ -128,9 +150,31 @@ void LEDriver::receiveOSC(uint8_t * _mess, uint8_t _sz){
     }
 }
 
+void sendFPS(){
+    // OSCMessage msg("/fps");
+    // msg.add((int32_t) fps);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// command parsing
+///////////////////////////////////////////////////////////////////////////////
+
+void LEDriver::receiveCommand(uint8_t _cmd, uint8_t _val){
+    // view.printf("received commend %i %i", _cmd, _val);
+    switch(_cmd){
+        case SET_MODE_CMD:
+            setMode(_val);
+            break;
+        default :
+            modePointers[currentMode]->receiveCommand(_cmd, _val);
+        // case
+    }
+}
 
 
-bool flasher = false;
+///////////////////////////////////////////////////////////////////////////////
+// Update
+///////////////////////////////////////////////////////////////////////////////
 // kind of the main loop
 void LEDriver::update(){
 
@@ -179,50 +223,105 @@ void LEDriver::update(){
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// CONFIG
+///////////////////////////////////////////////////////////////////////////////
 
-void LEDriver::receiveCommand(uint8_t _cmd, uint8_t _val){
-    // view.printf("received commend %i %i", _cmd, _val);
-    switch(_cmd){
-        case SET_MODE_CMD:
-            setMode(_val);
-            break;
-        default :
-            modePointers[currentMode]->receiveCommand(_cmd, _val);
-        // case
-    }
+void LEDriver::makeConfig(){
+    // remove file or config will be appended
+    // enableSDcard();
+    SD.remove(CONFIG_FILE);
+    StaticJsonBuffer<512> jsonBuffer;
+    JsonObject& root = jsonBuffer.createObject();
+    JsonObject& config = root.createNestedObject("config");
+    config["DHCP"] = 0;
+    config["ip"] = "10.0.0.42";
+    config["name"] = "majestic";
+    config["startupTest"] = 0;
+
 }
 
+void LEDriver::saveConfigFile(JsonObject &root, const char * _fileName){
+    if(SD.exists(_fileName)){
+        SD.remove(_fileName);
+    }
+    File _file = SD.open(_fileName, FILE_WRITE);
+    if(_file){
+        if(root.printTo(_file) == 0){
+            view.println(F("failed to write file"));
+        }
+    }
+    else {
+        view.println(F("failed to make file"));
+    }
+    _file.close();
+}
 
-void LEDriver::parseConfig(const char * _file){
-    enableSDcard();
-    if (SD.exists(_file)) {
-        SDConfigFile cfg;
-        if(cfg.begin(_file, 64)){
-            view.printf("Parsing %s \n", _file);
-            while (cfg.readNextSetting()) {
-                if (cfg.nameIs("name")) {
-                    view.printf("name %s\n", cfg.getValue());
-                }
-                else if(cfg.nameIs("dhcp")){
-                    network.useDHCP = cfg.getIntValue();
-                    view.printf("dhcp %i \n", network.useDHCP);
-                }
-                else if(cfg.nameIs("ip")){
-                    const char *_ip = cfg.getValue();
-                    if(network.setIp(_ip)){
-                        view.printf("static ip %s \n", _ip);
-                    }
-                    else {
-                        view.printf("not valid ip %s \n", _ip);
-                    }
-                }
+void LEDriver::loadConfigFile(const char * _fileName){
+    if (SD.exists(_fileName)) {
+        File _file = SD.open(_fileName);
+        StaticJsonBuffer<512> jsonBuffer;
+        JsonObject &root = jsonBuffer.parseObject(_file);
+        if(root.success()){
+            if(root.containsKey("config")){
+                parseJsonConfig(root["config"]);
             }
         }
         else {
-            view.println(F("config.ldr NOT FOUND"));
+            if(debug_level > 0) view.println("! problem w config");
+            // retry
+            // delay(200);
+            // parseConfig(_fileName);
         }
     }
+    else {
+        if(debug_level > 0) view.printf("%s NOT FOUND \n", _fileName);
+        // perhaps make prompt for making a new file?
+        view.println(F("making a config file"));
+        makeConfig();
+    }
 }
+
+void LEDriver::parseJsonConfig(JsonObject &config){
+    view.printf("name %s\n", config["name"] | "NO_NAME");
+    // if(debug_level > 0) root.printTo(view);
+    network.useDHCP = config["DHCP"] | 0;
+    const char * _ip = config["ip"] | DEFAULT_STATIC_IP;
+    network.setIp(_ip);
+}
+// in cpp code
+// push the local configuration
+void LEDriver::pushConfig(){
+    // String _send = "ahah nope this is a string";
+    // webSocketServer.sendData(_send);
+
+    if (SD.exists("config.jso")) {
+        view.println("haha");
+        File _file = SD.open("config.jso");
+        StaticJsonBuffer<512> jsonBuffer;
+        JsonObject &root = jsonBuffer.parseObject(_file);
+        if(root.success()){
+            String _send;
+            root.printTo(_send);
+            // root.printTo(view);
+
+            // view.println(_send);
+            webSocketServer.sendData(_send);
+        }
+        else {
+            view.println("nope");
+        }
+    }
+    else {
+        view.println(F("no config file"));
+        // makeConfig();
+    }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Set
+///////////////////////////////////////////////////////////////////////////////
 
 void LEDriver::setMode(uint8_t _mode){
     if(_mode >= MODE_COUNT) currentMode = MODE_COUNT-1;
@@ -231,24 +330,19 @@ void LEDriver::setMode(uint8_t _mode){
     view.printf("set to %s \n", modePointers[currentMode]->name);
 }
 
-void LEDriver::enableSDcard(){
-    digitalWrite(WIZNET_CS_PIN, HIGH);
-    digitalWrite(SDCARD_CS_PIN, LOW);
-}
-
-void LEDriver::enableWiznet(){
-    digitalWrite(SDCARD_CS_PIN, HIGH);
-    digitalWrite(WIZNET_CS_PIN, LOW);
-}
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Input
+///////////////////////////////////////////////////////////////////////////////
+#if BOARD_REV == 002
 void LEDriver::checkInput(){
     // make a value changed system to then enable event based actions?
     buttonPress = 0;// reset the input state
     if(lastInputCheck < millis() - INPUT_POLL_RATE){
         lastInputCheck = millis();
-        pot1_value = analogRead(POT1_PIN);
-        pot2_value = analogRead(POT2_PIN);
+        pot1_value = analogRead(POT1_PIN)-1023;
+        pot2_value = analogRead(POT2_PIN)-1023;
         Mode::pot1 = pot1_value;
         Mode::pot2 = pot2_value;
         #if NO_POTS
@@ -286,3 +380,59 @@ void LEDriver::checkInput(){
     //     view.printf("pressed %i\n", buttonPress);
     // }
 }
+#endif
+
+#if BOARD_REV == 003
+void LEDriver::checkInput(){
+    // make a value changed system to then enable event based actions?
+    buttonPress = 0;// reset the input state
+    if(lastInputCheck < millis() - INPUT_POLL_RATE){
+        lastInputCheck = millis();
+        pot1_value = analogRead(POT1_PIN);
+        pot2_value = analogRead(POT2_PIN);
+        Mode::pot1 = pot1_value;
+        Mode::pot2 = pot2_value;
+        #if NO_POTS
+        Mode::pot1 = 200;
+        Mode::pot2 = 10;
+        #endif
+        analogRead(BUTTON_PIN);
+        button_value = analogRead(BUTTON_PIN);
+        button1 = false;
+        button2 = false;
+        button3 = false;
+        button4 = false;
+        // view.println(button_value);
+
+        uint8_t _prev = buttonState;
+        buttonState = 0;
+        if(button_value > 900) {
+            button1 = true;
+            buttonState = 1;
+        }
+        else if(button_value > 800) {
+            button2 = true;
+            buttonState = 2;
+        }
+        else if(button_value > 700) {
+            button3 = true;
+            buttonState = 3;
+        }
+        else if(button_value > 600) {
+            button4 = true;
+            buttonState = 4;
+        }
+        if(buttonState != 0){
+            if(_prev != buttonState){
+                buttonPress = buttonState;
+                if(debug_level > 1) view.printf("- btn press %i\n", buttonPress);
+            }
+        }
+
+    }
+    //Mode::buttonPress = buttonPress;
+    // if(buttonPress != 0){
+    //     view.printf("pressed %i\n", buttonPress);
+    // }
+}
+#endif

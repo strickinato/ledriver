@@ -3,15 +3,13 @@
 
 Network::Network() {
     useDHCP = true;
-    memcpy(ip, DEFAULT_STATIC_IP, 4);
+    setIp(DEFAULT_STATIC_IP);
+    // memcpy(ip, DEFAULT_STATIC_IP, 4);
     teensyMAC(mac);
     // memcpy(mac, DEFAULT_MAC, 6);
-
 }
 
-
-void Network::begin() {
-    // do the pin toggling to reset the wiznet
+void Network::reset(){
     pinMode(WIZNET_RESET_PIN, OUTPUT);
     digitalWrite(WIZNET_RESET_PIN, LOW);    // begin reset the WIZ820io
 
@@ -22,12 +20,15 @@ void Network::begin() {
     digitalWrite(SDCARD_CS_PIN, HIGH);   // de-select the SD Card
     digitalWrite(WIZNET_RESET_PIN, HIGH);
     digitalWrite(WIZNET_CS_PIN, LOW);
+}
 
+void Network::begin() {
+    // do the pin toggling to reset the wiznet
     Ethernet.init(WIZNET_CS_PIN);
     if(useDHCP) {
         if(Ethernet.begin(mac)) { //}, 30000, 4000)){
             for(int i = 0; i < 4; i++) {
-                ip[i] = Ethernet.localIP()[i];
+                ipAddress[i] = Ethernet.localIP()[i];
                 broadcast[i] = Ethernet.localIP()[i];
             }
         }
@@ -37,7 +38,7 @@ void Network::begin() {
     }
 
     if(!useDHCP) {
-        Ethernet.begin(mac, ip);
+        Ethernet.begin(mac, ipAddress);
     }
 
     artnetUDP.begin(ART_NET_PORT);
@@ -100,14 +101,14 @@ bool Network::checkArtnet() {
 void Network::replyArtnetPoll() {
 
     IPAddress local_ip = Ethernet.localIP();
-    ip[0] = local_ip[0];
-    ip[1] = local_ip[1];
-    ip[2] = local_ip[2];
-    ip[3] = local_ip[3];
+    ArtPollReply.ip[0] = local_ip[0];
+    ArtPollReply.ip[1] = local_ip[1];
+    ArtPollReply.ip[2] = local_ip[2];
+    ArtPollReply.ip[3] = local_ip[3];
 
     // sprintf((char *)id, "Art-Net\0");
     memcpy(ArtPollReply.id, ART_NET_ID, sizeof(ArtPollReply.id));
-    memcpy(ArtPollReply.ip, ip, sizeof(ArtPollReply.ip));
+    // memcpy(ArtPollReply.ip, local_ip, sizeof(ArtPollReply.ip));
 
     ArtPollReply.opCode = ART_POLL_REPLY;
     ArtPollReply.port =  ART_NET_PORT;
@@ -142,10 +143,10 @@ void Network::replyArtnetPoll() {
     ArtPollReply.numbports  = 4; // can be set by LED_count.
     ArtPollReply.status2    = 0x08;
 
-    ArtPollReply.bindip[0] = ip[0];
-    ArtPollReply.bindip[1] = ip[1];
-    ArtPollReply.bindip[2] = ip[2];
-    ArtPollReply.bindip[3] = ip[3];
+    ArtPollReply.bindip[0] = local_ip[0];
+    ArtPollReply.bindip[1] = local_ip[1];
+    ArtPollReply.bindip[2] = local_ip[2];
+    ArtPollReply.bindip[3] = local_ip[3];
 
     uint8_t swin[4]  = {0x01,0x02,0x03,0x04};
     uint8_t swout[4] = {0x01,0x02,0x03,0x04};

@@ -13,12 +13,16 @@
 
 #include "SD.h"
 #include "SPI.h"
-#include "SDConfigFile.h"
+// #include "SDConfigFile.h"
 // #include "FastLED.h"
 
 #include <WebSocketServer.h>
 // #include <WebSocket.h>
 #include <Ethernet.h>
+#include <ArduinoJson.h>
+#include <OSCMessage.h>
+#include <OSCBundle.h>
+#include <OSCBoards.h>
 
 #define VERSION 0.00001
 
@@ -41,7 +45,13 @@ class LEDriver {
         void begin();
         void update();
         void runWithWebsocket(EthernetServer * serverForSocket);
-        void parseConfig(const char * _file);
+        void loadConfigFile(const char * _file);
+        void saveConfigFile(JsonObject &root, const char * _fileName);
+        void parseJsonConfig(JsonObject &config);
+        void receiveJson(const char * _received);
+
+        void pushConfig();
+        void makeConfig();
         void receiveCommand(uint8_t _cmd, uint8_t _val);
         void receiveOSC(uint8_t * _mess, uint8_t _sz);
 
@@ -86,6 +96,7 @@ class LEDriver {
 
     private:
         Network network;
+        bool flasher;
 
         // input
         void checkInput();
@@ -98,10 +109,9 @@ class LEDriver {
         bool button1;
         bool button2;
         bool button3;
+        bool button4;
 
-        // SPI switching
-        void enableSDcard();
-        void enableWiznet();
+
 };
 
 
