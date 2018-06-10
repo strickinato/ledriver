@@ -96,6 +96,8 @@ class CustomMode : public Mode {
         { customUpdate = callback; }
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 class SDCardPlaybackMode : public Mode {
     public:
         SDCardPlaybackMode();
@@ -105,6 +107,22 @@ class SDCardPlaybackMode : public Mode {
         File currentFile;
         uint8_t animationNumber;
 };
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+class FunMode : public Mode {
+    public:
+        FunMode();
+        virtual void update();
+        // reflected in json for webinterface
+        uint8_t speed;
+        bool super;
+        CRGB colorA;
+        uint8_t flash;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 #endif

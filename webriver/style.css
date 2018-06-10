@@ -3,6 +3,7 @@ body {
   font-family: monospace;
   cursor:default;
 }
+
 input {
     width:128px;
     margin-left: auto;
@@ -13,11 +14,13 @@ input {
 #maindiv {
     display: flex;
     flex-direction: row;
+    margin: 4px;
 }
+
 .controlBlock{
-border:3px double #000000;
-padding: 2px;
-color: #FFFFFF;
+    border:3px double #000000;
+    padding: 2px;
+    color: #FFFFFF;
 
 }
 

@@ -27,7 +27,7 @@
 #define VERSION 0.00001
 
 #define SD_HEADER_SIZE 2
-#define MODE_COUNT 6
+#define MODE_COUNT 7
 #define INPUT_POLL_RATE 100
 
 enum Modes{
@@ -36,7 +36,8 @@ enum Modes{
     SERIAL_MODE,
     TEST_MODE,
     CUSTOM_MODE,
-    SDPLAY_MODE
+    SDPLAY_MODE,
+    FUN_MODE
 };
 
 class LEDriver {
@@ -77,6 +78,7 @@ class LEDriver {
         TestMode testMode;
         CustomMode customMode;
         SDCardPlaybackMode sdPlaybackMode;
+        FunMode funMode;
         void setMode(uint8_t _mode);
 
         // sync and timming

@@ -2,7 +2,7 @@
     "interface" : [
         {
             "name":"config",
-            "send":"update",
+            "update":"button",
             "args":[
                 {"name":"name", "type":"text", "default":"controllerName"},
                 {"name":"DHCP", "type":"toggle", "default":0},
@@ -11,6 +11,7 @@
         },
         {
             "name" : "funmode",
+            "update":"live",
             "args" : [
                 {"name":"speed", "type":"slider", "min":0, "max":255},
                 {"name":"super", "type":"toggle", "default":0},
@@ -20,11 +21,13 @@
         },
         {
             "name" : "otherMode",
+            "update":"live",
             "args" : [
                 {"name":"speed", "type":"slider", "min":0, "max":255},
                 {"name":"super", "type":"toggle", "default":0},
                 {"name":"colorA", "type":"color", "default":"#ffffff"},
-                {"name":"flash", "type":"bang", "default":"#ffffff"}
+                {"name":"colorB", "type":"color", "default":"#ffffff"},
+                {"name":"flash", "type":"bang"}
             ]
         }
     ]

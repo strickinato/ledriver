@@ -34,6 +34,9 @@ function populateGUI() {
 
 function loadJsonUI(json){
     var maindiv = document.getElementById("maindiv");
+    while (maindiv.hasChildNodes()) {
+        maindiv.removeChild(maindiv.lastChild);
+    }
     for(x in json.interface){
         maindiv.appendChild( makeControlBlock(json.interface[x]) )
     }
@@ -45,7 +48,7 @@ function makeControlBlock(block){
     div.className = "controlBlock";
     // make Callback here and pass it to the thing creation?
     for(x in block.args){
-        var input = makeControlElement(block.args[x])
+        var input = makeControlElement(block.args[x], block)
         div.appendChild(input)
         // add input to an array
     }
@@ -54,26 +57,27 @@ function makeControlBlock(block){
     return div
 }
 
-function makeControlElement(property){
+function makeControlElement(property, parent){
+
     var div = document.createElement("div")
     div.innerHTML = property.name
     div.className = "widget"
     var input;
     switch (property.type) {
         case "toggle":
-            div.appendChild(makeToggle(property));
+            div.appendChild(makeToggle(property, parent));
             break;
         case "color":
-            div.appendChild(makeColor(property));
+            div.appendChild(makeColor(property, parent));
             break;
         case "text":
-            div.appendChild(makeText(property));
+            div.appendChild(makeText(property, parent));
             break;
         case "slider":
-            div.appendChild(makeSlider(property));
+            div.appendChild(makeSlider(property, parent));
             break;
         case "bang":
-            div.appendChild(makeBang(property));
+            div.appendChild(makeBang(property, parent));
             break;
         default:
             console.log("unknown control type "+property.type)
@@ -81,40 +85,64 @@ function makeControlElement(property){
     return div;
 }
 
-function makeToggle(property){
-    console.log(property.root)
+function makeToggle(property, parent){
     var input = document.createElement("input")
     input.setAttribute("type", "checkbox")
     input.value = property.default
+    input.onclick = function(){
+        var mess = {};
+        mess[parent.name] = {};
+        mess[parent.name][property.name] = input.value
+        sendCMD(JSON.stringify(mess));
+    }
     return input;
 }
 
-function makeText(property){
+function makeText(property, parent){
     var input = document.createElement("input")
     input.setAttribute("type", "text")
     input.value = property.default
     return input;
 }
 
-function makeColor(property){
+function makeColor(property, parent){
     var input = document.createElement("input")
     input.setAttribute("type", "color")
     // input.value = property.default
+    input.oninput = function(){
+        var str = input.value;
+        var mess = {};
+        mess[parent.name] = {};
+        mess[parent.name][property.name] = parseInt(str.replace('#',''), 16);
+        sendCMD(JSON.stringify(mess));
+    }
     return input;
 }
 
-function makeSlider(property){
+function makeSlider(property, parent){
     var input = document.createElement("input")
     input.setAttribute("type", "range")
     input.setAttribute("min", property.min)
     input.setAttribute("max", property.max)
+    input.onchange = function(){
+        var mess = {};
+        mess[parent.name] = {};
+        mess[parent.name][property.name] = input.value
+        sendCMD(JSON.stringify(mess));
+    }
     // input.value = property.default
     return input;
 }
 
-function makeBang(property){
+function makeBang(property, parent){
     var input = document.createElement("input")
     input.setAttribute("type", "button")
+    input.onclick = function(){
+        var mess = {};
+        mess[parent.name] = {};
+        mess[parent.name][property.name] = input.value
+        sendCMD(JSON.stringify(mess));
+    }
     return input;
 }
 

@@ -223,3 +223,35 @@ void SDCardPlaybackMode::update(){
     //     delay(20);
     // }
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+FunMode::FunMode(){
+    name = "funMode";
+    speed = 127;
+    super = false;
+    colorA = CRGB(255,0,0);
+    flash = 0;
+}
+
+void FunMode::update(){
+    Mode::update();
+    int ha = frameCount/speed;
+
+    for(int i = 0; i < ledCount; i++){
+        leds[i] = blend(colorA,CRGB(10,10,10), ha+int(ha+i*2+millis()/10.0)%255);
+    }
+    if(super){
+        for(int i = 0; i < 20; i++){
+            leds[(int)random(ledCount) % 20] = colorA;
+        }
+    }
+    if(flash){
+        --flash;
+        for(int i = 0; i < ledCount; i++){
+            leds[i] = CRGB::White;
+        }
+    }
+    FastLED.show();
+}

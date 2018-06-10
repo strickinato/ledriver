@@ -12,6 +12,7 @@ LEDriver::LEDriver(){
     modePointers[TEST_MODE] = &testMode;
     modePointers[CUSTOM_MODE] = &customMode;
     modePointers[SDPLAY_MODE] = &sdPlaybackMode;
+    modePointers[FUN_MODE] = &funMode;
 }
 
 void LEDriver::begin(){
@@ -66,7 +67,7 @@ void LEDriver::begin(){
     frameCount = 0;
     fpsCount     = 0;
     timeStamp = millis();\
-    setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
+    setMode(FUN_MODE);//ARTNET_MODE);//MO_MODE);
     // setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
     // receiveCommand(SET_BRIGHTNESS_CMD, 128);
 
@@ -113,9 +114,9 @@ void LEDriver::checkUdpForOSC(){
 void LEDriver::checkWebsocket(){
     String _data = webSocketServer.getData();
     if(_data.length()> 0){
-        if(debug_level > 1) view.println(_data);
+        // if(debug_level > 1) view.println(_data);
         receiveJson(_data.c_str());
-        webSocketServer.sendData("ahhaha");
+        // webSocketServer.sendData("ahhaha");
     }
 }
 
@@ -124,14 +125,31 @@ void LEDriver::receiveJson(const char * _received){
     JsonObject &root = jsonBuffer.parseObject(_received);
     if(root.success()){
         if(debug_level > 1){
-            view.println("- receivedJson");
-            root.printTo(view);
-            if(root.containsKey("config")){
-                saveConfigFile(root, CONFIG_FILE);
+            // view.println("- receivedJson");
+            // root.printTo(view);
+        }
+        if(root.containsKey("config")){
+            saveConfigFile(root, CONFIG_FILE);
+        }
+        else if(root.containsKey("funmode")){
+            JsonObject & mode = root["funmode"];
+            if(mode.containsKey("colorA")){
+                long c = mode["colorA"];
+                funMode.colorA = (CRGB)c;
+            }
+            if(mode.containsKey("speed")){
+                funMode.speed = mode["speed"];
+            }
+            if(mode.containsKey("super")){
+                funMode.super = mode["super"];
+            }
+            if(mode.containsKey("flash")){
+                funMode.flash = mode["flash"];
             }
         }
     }
 }
+
 
 void LEDriver::receiveOSC(uint8_t * _mess, uint8_t _sz){
     OSCMessage messageIn;
@@ -425,7 +443,7 @@ void LEDriver::checkInput(){
         if(buttonState != 0){
             if(_prev != buttonState){
                 buttonPress = buttonState;
-                if(debug_level > 1) view.printf("- btn press %i\n", buttonPress);
+                if(debug_level > 4) view.printf("- btn press %i\n", buttonPress);
             }
         }
 
