@@ -1,0 +1,31 @@
+{
+    "interface" : [
+        {
+            "name":"config",
+            "send":"update",
+            "args":[
+                {"name":"name", "type":"text", "default":"controllerName"},
+                {"name":"DHCP", "type":"toggle", "default":0},
+                {"name":"ip", "type":"text", "default":"10.0.0.42"}
+            ]
+        },
+        {
+            "name" : "funmode",
+            "args" : [
+                {"name":"speed", "type":"slider", "min":0, "max":255},
+                {"name":"super", "type":"toggle", "default":0},
+                {"name":"colorA", "type":"color", "default":"#ffffff"},
+                {"name":"flash", "type":"bang", "default":"#ffffff"}
+            ]
+        },
+        {
+            "name" : "otherMode",
+            "args" : [
+                {"name":"speed", "type":"slider", "min":0, "max":255},
+                {"name":"super", "type":"toggle", "default":0},
+                {"name":"colorA", "type":"color", "default":"#ffffff"},
+                {"name":"flash", "type":"bang", "default":"#ffffff"}
+            ]
+        }
+    ]
+}

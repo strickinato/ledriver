@@ -9,28 +9,127 @@ var messageIncrement = 0;
 var autoScroll = true;
 var DEFAULT_WEBSOCKET_ADDR = "ws://10.0.0.42/";//':8026/control';
 
+populateGUI();
 // fetch json data
-// function loadJSON(callback) {
-//     var xobj = new XMLHttpRequest();
-//     xobj.overrideMimeType("application/json");
-//     xobj.open('GET', 'freelinerData.json', true); // Replace 'my_data' with the path to your file
-//     xobj.onreadystatechange = function () {
-//         if (xobj.readyState == 4 && xobj.status == "200") {
-//             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-//             callback(xobj.responseText);
+function loadJSON(callback) {
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('GET', 'river_setup.json', true); // Replace 'my_data' with the path to your file
+    xobj.onreadystatechange = function () {
+        if (xobj.readyState == 4 && xobj.status == "200") {
+            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            callback(xobj.responseText);
+        }
+    };
+    xobj.send(null);
+}
+
+// called when the socket opens, this way we get fresh info from freeliner
+function populateGUI() {
+
+    loadJSON(function(response) {
+        loadJsonUI(JSON.parse(response));
+    });
+}
+
+function loadJsonUI(json){
+    var maindiv = document.getElementById("maindiv");
+    for(x in json.interface){
+        maindiv.appendChild( makeControlBlock(json.interface[x]) )
+    }
+}
+
+function makeControlBlock(block){
+    var div = document.createElement("div")
+    div.innerHTML = block.name;
+    div.className = "controlBlock";
+    // make Callback here and pass it to the thing creation?
+    for(x in block.args){
+        var input = makeControlElement(block.args[x])
+        div.appendChild(input)
+        // add input to an array
+    }
+    // take the array of input and create the Callback
+    // pass the callback to all input.
+    return div
+}
+
+function makeControlElement(property){
+    var div = document.createElement("div")
+    div.innerHTML = property.name
+    div.className = "widget"
+    var input;
+    switch (property.type) {
+        case "toggle":
+            div.appendChild(makeToggle(property));
+            break;
+        case "color":
+            div.appendChild(makeColor(property));
+            break;
+        case "text":
+            div.appendChild(makeText(property));
+            break;
+        case "slider":
+            div.appendChild(makeSlider(property));
+            break;
+        case "bang":
+            div.appendChild(makeBang(property));
+            break;
+        default:
+            console.log("unknown control type "+property.type)
+    }
+    return div;
+}
+
+function makeToggle(property){
+    console.log(property.root)
+    var input = document.createElement("input")
+    input.setAttribute("type", "checkbox")
+    input.value = property.default
+    return input;
+}
+
+function makeText(property){
+    var input = document.createElement("input")
+    input.setAttribute("type", "text")
+    input.value = property.default
+    return input;
+}
+
+function makeColor(property){
+    var input = document.createElement("input")
+    input.setAttribute("type", "color")
+    // input.value = property.default
+    return input;
+}
+
+function makeSlider(property){
+    var input = document.createElement("input")
+    input.setAttribute("type", "range")
+    input.setAttribute("min", property.min)
+    input.setAttribute("max", property.max)
+    // input.value = property.default
+    return input;
+}
+
+function makeBang(property){
+    var input = document.createElement("input")
+    input.setAttribute("type", "button")
+    return input;
+}
+
+
+
+// _input.oninput = function (){
+//     // needs downSampling
+//     var message = { config : {
+//             ip : "10.0.0.45",
+//             name : "riverFromSpace",
+//             DHCP : 0
 //         }
-//     };
-//     xobj.send(null);
-// }
-
-// // called when the socket opens, this way we get fresh info from freeliner
-// function populateGUI() {
-//     loadJSON(function(response) {
-//         populateDiv(JSON.parse(response));
-//     });
-// }
-
-
+//     }
+//     console.log(message);
+//     sendCMD(JSON.stringify(message));
 /*
 * /////////////////////////////////////////////////////////////
 * main or whatever
@@ -77,11 +176,12 @@ function makeSocket(_adr) {
     // oscPort.on("message", function (oscMsg) {
     //     console.log("An OSC message just arrived!", oscMsg);
     // });
-    populateGUI();
+    // populateGUI();
 
     var socket = new WebSocket(_adr);
     socket.onopen = function() {
         populateGUI();
+        populateGUItwo();
     }
     socket.onmessage = function (evt) {
         // parseInfo(evt.data);
@@ -96,151 +196,32 @@ function makeSocket(_adr) {
     // window.onbeforeunload = function() {
     //     socket.close();
     // };
-    // document.getElementById("reload").onclick = function() {
-    //     socket.close();
-    //     console.log("closed socket");
-    //     window.location.reload(true);
-    // }
+    document.getElementById("reload").onclick = function() {
+        socket.onclose = function () {}; // disable onclose handler first
+        socket.close();
+        console.log("closed socket");
+        // window.location.reload(true);
+    }
 
     return socket;
 }
 
 function receiveWebsocketMessage (mess) {
-    var _splt = mess.split(" ",1);
-    if(_splt[0] == "info") setInfo(mess);
-    else if(_splt[0] == "fps") console.log("haha "+mess);
-    // else if(_splt[0] == "template") setTemplateStat(mess);
-    // else if(_splt[0] == "layers") parseLayerInfo(mess);
-    // else if(_splt[0] == "files") parseAvailableFiles(mess);
-    else console.log("Received ? :" + mess);
+    var json = 0;
+    try{
+        json = JSON.parse(mess);
+        if(json === null){
+            console.log(mess)
+        }
+        else {
+            console.log(json.config.ip)
+            document.getElementById("infoline").innerHTML = json.config.name;
+        }
+    }
+    catch(e){}
+
 }
 
-// generate gui for controller. retrieve name and such.
-function populateGUI () {
-    makeInterface();
-    var maindiv = document.getElementById("maindiv");
-    var _input = document.createElement("input");
-    _input.setAttribute("type", "range");
-    _input.setAttribute("min", 0);
-    _input.setAttribute("max", 255);
-    _input.setAttribute("id", "brightness");
-    maindiv.appendChild(_input);
-    _input.oninput = function (){
-        // needs downSampling
-        // sendCMD("/a/ "+Math.round(_input.value));
-        // oscPort.on("ready", function () {
-            var _val = Math.round(_input.value)
-            // console.log(_val);
-            sendOSC({
-                address: "/a/",
-                args: [
-                    {
-                        type: "i",
-                        value: _val
-                    },
-                    {
-                        type: "i", value: 42
-                    }
-                ]
-            });
-        // });
-    }
-}
-
-
-function makeInterface(){
-    var _haha = makeOSCDiv({
-        address: "/foo/",
-        args: [
-            {
-                type: "i",
-                input: "range",
-                min: 0,
-                max: 127,
-                name: "speed",
-                description: "adjust playback speed"
-            }
-
-        ]
-    })
-
-    document.getElementById("maindiv").appendChild(_haha)
-}
-
-// only supports single arguments
-function makeOSCDiv(json){
-    var _div = document.createElement("div");
-    _div.setAttribute("class", "widget");
-    var _args = json.args[0];
-    var _input = document.createElement("input");
-
-    var _cb = function(){
-        var _val = _input.value;
-        sendOSC({
-            address: json.address,
-            args: [
-                {
-                    type: _args.type,
-                    value : _val
-                }
-            ]
-        })
-    }
-    if(_args.input == "range"){
-        _input.setAttribute("type", "range");
-        _input.oninput = _cb;
-    }
-    else if(args.input == "number"){
-        _input.setAttribute("type", "number");
-        _input.onclick = _cb;
-    }
-    _div.innerHTML = _args.name
-    _div.title = _args.description
-    _div.appendChild(_input);
-    return _div;
-}
-
-
-
-
-// {
-//     address: "/foo/",
-//     args: [
-//         {
-//             type: "i",
-//             input: "range",
-//             min: 0,
-//             max: 127,
-//             name: "speed",
-//             description: "adjust playback speed"
-//         }
-//
-//     ]
-// }
-
-
-function sendOSC(message){
-    oscPort.send(message);
-    var _output = message.address+" ";
-    for(x in message.args){
-        _output += message.args[x].value+" ";
-    }
-    document.getElementById("logline").innerHTML = _output;
-}
-
-// fetch json data
-// function loadJSON(callback) {
-//     var xobj = new XMLHttpRequest();
-//     xobj.overrideMimeType("application/json");
-//     xobj.open('GET', 'freelinerData.json', true); // Replace 'my_data' with the path to your file
-//     xobj.onreadystatechange = function () {
-//         if (xobj.readyState == 4 && xobj.status == "200") {
-//             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-//             callback(xobj.responseText);
-//         }
-//     };
-//     xobj.send(null);
-// }
 
 
 cmdPrompt = (function () {

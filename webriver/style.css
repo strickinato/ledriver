@@ -3,6 +3,23 @@ body {
   font-family: monospace;
   cursor:default;
 }
+input {
+    width:128px;
+    margin-left: auto;
+    background-color:#0E0E0E;
+    color: #98A7FF;
+}
+
+#maindiv {
+    display: flex;
+    flex-direction: row;
+}
+.controlBlock{
+border:3px double #000000;
+padding: 2px;
+color: #FFFFFF;
+
+}
 
 .widget {
   margin: 4px;
