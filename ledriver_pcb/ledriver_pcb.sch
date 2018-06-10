@@ -148,13 +148,13 @@ Text Label 12200 2600 2    60   ~ 0
 SPI_DOUT
 Text Label 12200 2700 2    60   ~ 0
 SPI_DIN
-Text Label 12200 1900 2    60   ~ 0
+Text Label 12200 3500 2    60   ~ 0
 SPI_CS_WIZ
 Text Label 12200 3300 2    60   ~ 0
 SPI_SCK
 Text Label 14200 3800 0    60   ~ 0
 WIZ_RESET
-Text Label 12200 1800 2    60   ~ 0
+Text Label 12200 1900 2    60   ~ 0
 SPI_CS_SDCARD
 Text Label 11450 2400 2    60   ~ 0
 RX2
@@ -436,11 +436,11 @@ Text Label 8850 6550 2    60   ~ 0
 I2C_SCL
 Text Label 8850 6650 2    60   ~ 0
 I2C_SDA
-Text Label 11450 3500 2    60   ~ 0
-POT1
 Text Label 11450 3600 2    60   ~ 0
-POT2
+POT1
 Text Label 11450 3700 2    60   ~ 0
+POT2
+Text Label 14200 3900 0    60   ~ 0
 BUTTONS
 Text Label 9500 5600 2    60   ~ 0
 BUTTONS
@@ -488,7 +488,7 @@ F 3 "" H 10150 5600 50  0001 C CNN
 	1    10150 5600
 	0    1    1    0   
 $EndComp
-Text Label 14200 3900 0    60   ~ 0
+Text Label 12200 1800 2    60   ~ 0
 STATUS
 $Comp
 L VCC #PWR012
@@ -1357,8 +1357,6 @@ Wire Wire Line
 Wire Wire Line
 	9600 4200 9600 5600
 Wire Wire Line
-	12200 3500 11450 3500
-Wire Wire Line
 	12200 3600 11450 3600
 Wire Wire Line
 	12200 3700 11450 3700
@@ -1574,4 +1572,6 @@ Connection ~ 4950 10650
 Wire Wire Line
 	5400 10350 4550 10350
 Connection ~ 4550 10350
+Text Notes 9750 3150 0    60   ~ 0
+status went from pin 22 to pin 3\nbuttons to pin 22\nwiz CS to 15
 $EndSCHEMATC
