@@ -46,18 +46,56 @@ function makeControlBlock(block){
     var div = document.createElement("div")
     div.innerHTML = block.name;
     div.className = "controlBlock";
-    // make Callback here and pass it to the thing creation?
-    for(x in block.args){
-        var input = makeControlElement(block.args[x], block)
-        div.appendChild(input)
-        // add input to an array
+    // manualy update of inputs
+    if(block.update === "button"){
+        var inputDivArray = new Array();
+        for(x in block.args){
+            var input = makeControlElement(block.args[x], block, false)
+            // input.name = block.args[x].name
+            inputDivArray.push(input);
+            div.appendChild(input)
+        }
+        var updateDiv = document.createElement("div");
+        updateDiv.className = "widget"
+        updateDiv.innerHTML = "push"
+        var button = document.createElement("input");
+        button.innerHTML = "update";
+        button.setAttribute("type", "button")
+        button.onclick = function(){
+            var mess = {};
+            mess[block.name] = {};
+            var _i
+            for(x in inputDivArray){
+                _i = inputDivArray[x].children[0];
+                if(_i.type === "checkbox"){
+                    mess[block.name][inputDivArray[x].innerText] = _i.checked ? 1 : 0;
+                }
+                else {
+                    mess[block.name][inputDivArray[x].innerText] = _i.value;
+                }
+            }
+            console.log(JSON.stringify(mess));
+            sendCMD(JSON.stringify(mess));
+        }
+
+        updateDiv.appendChild(button);
+        div.appendChild(updateDiv);
+    }
+    // live update of inputs
+    else {
+        // make Callback here and pass it to the thing creation?
+        for(x in block.args){
+            var input = makeControlElement(block.args[x], block, true)
+            div.appendChild(input)
+            // add input to an array
+        }
     }
     // take the array of input and create the Callback
     // pass the callback to all input.
     return div
 }
 
-function makeControlElement(property, parent){
+function makeControlElement(property, parent, makeCallback){
 
     var div = document.createElement("div")
     div.innerHTML = property.name
@@ -65,19 +103,19 @@ function makeControlElement(property, parent){
     var input;
     switch (property.type) {
         case "toggle":
-            div.appendChild(makeToggle(property, parent));
+            div.appendChild(makeToggle(property, parent, makeCallback));
             break;
         case "color":
-            div.appendChild(makeColor(property, parent));
+            div.appendChild(makeColor(property, parent, makeCallback));
             break;
         case "text":
-            div.appendChild(makeText(property, parent));
+            div.appendChild(makeText(property, parent, makeCallback));
             break;
         case "slider":
-            div.appendChild(makeSlider(property, parent));
+            div.appendChild(makeSlider(property, parent, makeCallback));
             break;
         case "bang":
-            div.appendChild(makeBang(property, parent));
+            div.appendChild(makeBang(property, parent, makeCallback));
             break;
         default:
             console.log("unknown control type "+property.type)
@@ -85,63 +123,79 @@ function makeControlElement(property, parent){
     return div;
 }
 
-function makeToggle(property, parent){
+function makeToggle(property, parent, makeCallback){
     var input = document.createElement("input")
     input.setAttribute("type", "checkbox")
     input.value = property.default
-    input.onclick = function(){
-        var mess = {};
-        mess[parent.name] = {};
-        mess[parent.name][property.name] = input.value
-        sendCMD(JSON.stringify(mess));
+    if(makeCallback){
+        input.onchange = function(){
+            var mess = {};
+            mess[parent.name] = {};
+            mess[parent.name][property.name] = input.checked ? 1 : 0;
+            sendCMD(JSON.stringify(mess));
+        }
     }
     return input;
 }
 
-function makeText(property, parent){
+function makeText(property, parent, makeCallback){
     var input = document.createElement("input")
     input.setAttribute("type", "text")
     input.value = property.default
-    return input;
-}
-
-function makeColor(property, parent){
-    var input = document.createElement("input")
-    input.setAttribute("type", "color")
-    // input.value = property.default
-    input.oninput = function(){
-        var str = input.value;
-        var mess = {};
-        mess[parent.name] = {};
-        mess[parent.name][property.name] = parseInt(str.replace('#',''), 16);
-        sendCMD(JSON.stringify(mess));
+    if(makeCallback){
+        input.oninput = function(){
+            var mess = {};
+            mess[parent.name] = {};
+            mess[parent.name][property.name] = input.value;
+            sendCMD(JSON.stringify(mess));
+        }
     }
     return input;
 }
 
-function makeSlider(property, parent){
+function makeColor(property, parent, makeCallback){
+    var input = document.createElement("input")
+    input.setAttribute("type", "color")
+    // input.value = property.default
+    if(makeCallback){
+        input.oninput = function(){
+            var str = input.value;
+            var mess = {};
+            mess[parent.name] = {};
+            mess[parent.name][property.name] = parseInt(str.replace('#',''), 16);
+            sendCMD(JSON.stringify(mess));
+        }
+    }
+    return input;
+}
+
+function makeSlider(property, parent, makeCallback){
     var input = document.createElement("input")
     input.setAttribute("type", "range")
     input.setAttribute("min", property.min)
     input.setAttribute("max", property.max)
-    input.onchange = function(){
-        var mess = {};
-        mess[parent.name] = {};
-        mess[parent.name][property.name] = input.value
-        sendCMD(JSON.stringify(mess));
+    if(makeCallback){
+        input.onchange = function(){
+            var mess = {};
+            mess[parent.name] = {};
+            mess[parent.name][property.name] = input.value
+            sendCMD(JSON.stringify(mess));
+        }
     }
     // input.value = property.default
     return input;
 }
 
-function makeBang(property, parent){
+function makeBang(property, parent, makeCallback){
     var input = document.createElement("input")
     input.setAttribute("type", "button")
-    input.onclick = function(){
-        var mess = {};
-        mess[parent.name] = {};
-        mess[parent.name][property.name] = input.value
-        sendCMD(JSON.stringify(mess));
+    if(makeCallback){
+        input.onclick = function(){
+            var mess = {};
+            mess[parent.name] = {};
+            mess[parent.name][property.name] = input.value
+            sendCMD(JSON.stringify(mess));
+        }
     }
     return input;
 }

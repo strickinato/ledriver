@@ -143,16 +143,16 @@ void TestMode::update(){
     int _test = map(pot2, 0, 1023, 0, 7);
     switch(_test){
         case 0:
-            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::Black;
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB(0,0,0);
             break;
         case 1:
-            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::Red;
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB(255,0,0);
             break;
         case 2:
-            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::Green;
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB(0,255,0);
             break;
         case 3:
-            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::Blue;
+            for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB(0,0,255);
             break;
         case 4:
             for(int y = 0 ; y < ledCount ; y++) leds[y] = (y%20 == (frameCount/2)%20 ? CRGB::White : CRGB::Black);

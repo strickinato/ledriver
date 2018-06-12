@@ -120,6 +120,7 @@ void LEDriver::checkWebsocket(){
     }
 }
 
+// parse river_setup.json file in order to make menus for buttons and oled??
 void LEDriver::receiveJson(const char * _received){
     StaticJsonBuffer<512> jsonBuffer;
     JsonObject &root = jsonBuffer.parseObject(_received);
@@ -256,10 +257,11 @@ void LEDriver::makeConfig(){
     config["ip"] = "10.0.0.42";
     config["name"] = "majestic";
     config["startupTest"] = 0;
-
+    saveConfigFile(root, CONFIG_FILE);
 }
 
 void LEDriver::saveConfigFile(JsonObject &root, const char * _fileName){
+    if(debug_level > 0) view.println(" - saving new config");
     if(SD.exists(_fileName)){
         SD.remove(_fileName);
     }
