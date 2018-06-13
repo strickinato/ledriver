@@ -6,7 +6,11 @@
             "args":[
                 {"name":"name", "type":"text", "default":"controllerName"},
                 {"name":"DHCP", "type":"toggle", "default":0},
-                {"name":"ip", "type":"text", "default":"10.0.0.42"}
+                {"name":"ip", "type":"text", "default":"10.0.0.42"},
+                {"name":"leds", "type":"select", "options" : ["fastOcto", "none", "APA102"]},
+                {"name":"dmx_one", "type":"select", "options" : ["none", "input", "output"]},
+                {"name":"dmx_three", "type":"select", "options" : ["none", "input", "output"]}
+
             ]
         },
         {

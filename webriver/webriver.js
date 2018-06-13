@@ -3,7 +3,7 @@
 // window.onload = function() {
 // globals
 var sendCMD, cmdPrompt, socket;
-
+var configOptions = {};
 var messageIncrement = 0;
 
 var autoScroll = true;
@@ -32,6 +32,35 @@ function populateGUI() {
     });
 }
 
+
+
+function receiveWebsocketMessage (mess) {
+    var json = 0;
+    var config = 0;
+    try{
+        json = JSON.parse(mess);
+        if(json === null){
+            console.log(mess)
+        }
+        else if('config' in json){
+            // console.log(json.config.ip)
+            config = json.config
+        }
+    }
+    catch(e){}
+    if(config != 0){
+        receiveConfig(config);
+    }
+}
+
+function receiveConfig (config) {
+    document.getElementById("infoline").innerHTML = config.name;
+
+    console.log(configOptions);
+}
+
+
+
 function loadJsonUI(json){
     var maindiv = document.getElementById("maindiv");
     while (maindiv.hasChildNodes()) {
@@ -52,6 +81,8 @@ function makeControlBlock(block){
         for(x in block.args){
             var input = makeControlElement(block.args[x], block, false)
             // input.name = block.args[x].name
+            configOptions[block.args[x].name] = input.children[1];
+            // console.log(input.children[1])
             inputDivArray.push(input);
             div.appendChild(input)
         }
@@ -66,12 +97,19 @@ function makeControlBlock(block){
             mess[block.name] = {};
             var _i
             for(x in inputDivArray){
-                _i = inputDivArray[x].children[0];
+                _p = inputDivArray[x].children[0];
+                _i = inputDivArray[x].children[1];
+                // console.log(_i);
                 if(_i.type === "checkbox"){
-                    mess[block.name][inputDivArray[x].innerText] = _i.checked ? 1 : 0;
+                    mess[block.name][_p.innerText] = _i.checked ? 1 : 0;
+                }
+                else if(_i.tagName === "SELECT"){
+                    // _i = inputDivArray[x].children[0];
+                    console.log(inputDivArray[x])//.innerText)
+                    mess[block.name][_p.innerText] = _i.options[_i.selectedIndex].value;
                 }
                 else {
-                    mess[block.name][inputDivArray[x].innerText] = _i.value;
+                    mess[block.name][_p.innerText] = _i.value;
                 }
             }
             console.log(JSON.stringify(mess));
@@ -98,7 +136,9 @@ function makeControlBlock(block){
 function makeControlElement(property, parent, makeCallback){
 
     var div = document.createElement("div")
-    div.innerHTML = property.name
+    var _p = document.createElement("p");
+    _p.innerText = property.name;
+    div.appendChild(_p)
     div.className = "widget"
     var input;
     switch (property.type) {
@@ -116,6 +156,9 @@ function makeControlElement(property, parent, makeCallback){
             break;
         case "bang":
             div.appendChild(makeBang(property, parent, makeCallback));
+            break;
+        case "select":
+            div.appendChild(makeSelect(property, parent, makeCallback));
             break;
         default:
             console.log("unknown control type "+property.type)
@@ -200,6 +243,27 @@ function makeBang(property, parent, makeCallback){
     return input;
 }
 
+function makeSelect(property, parent, makeCallback){
+    var input = document.createElement("select")
+
+    for(x in property.options){
+        var _option = document.createElement("option");
+        _option.text = property.options[x];
+        input.add(_option)
+        // _option.value = _modeArray[i]["index"];
+        // _option.title = _modeArray[i]["description"];
+    }
+    // input.setAttribute("type", "button")
+    if(makeCallback){
+        input.onchange = function(){
+            var mess = {};
+            mess[parent.name] = {};
+            mess[parent.name][property.name] = input.options[input.selectedIndex].value;
+            sendCMD(JSON.stringify(mess));
+        }
+    }
+    return input;
+}
 
 
 // _input.oninput = function (){
@@ -263,7 +327,7 @@ function makeSocket(_adr) {
     var socket = new WebSocket(_adr);
     socket.onopen = function() {
         populateGUI();
-        populateGUItwo();
+        // populateGUItwo();
     }
     socket.onmessage = function (evt) {
         // parseInfo(evt.data);
@@ -287,23 +351,6 @@ function makeSocket(_adr) {
 
     return socket;
 }
-
-function receiveWebsocketMessage (mess) {
-    var json = 0;
-    try{
-        json = JSON.parse(mess);
-        if(json === null){
-            console.log(mess)
-        }
-        else {
-            console.log(json.config.ip)
-            document.getElementById("infoline").innerHTML = json.config.name;
-        }
-    }
-    catch(e){}
-
-}
-
 
 
 cmdPrompt = (function () {
