@@ -3,7 +3,8 @@
 // window.onload = function() {
 // globals
 var sendCMD, cmdPrompt, socket;
-var configOptions = {};
+// var configOptions = {};
+var mainJSON;
 var messageIncrement = 0;
 
 var autoScroll = true;
@@ -56,18 +57,31 @@ function receiveWebsocketMessage (mess) {
 function receiveConfig (config) {
     document.getElementById("infoline").innerHTML = config.name;
 
-    console.log(configOptions);
+    // console.log(configOptions
 }
 
 
 
 function loadJsonUI(json){
+    mainJSON = Object.assign({},json)
     var maindiv = document.getElementById("maindiv");
     while (maindiv.hasChildNodes()) {
         maindiv.removeChild(maindiv.lastChild);
     }
-    for(x in json.interface){
-        maindiv.appendChild( makeControlBlock(json.interface[x]) )
+    for(x in mainJSON.interface){
+        maindiv.appendChild( makeControlBlock(mainJSON.interface[x]) )
+    }
+}
+
+function getInputValue(input){
+    if(input.type === "checkbox"){
+        return input.checked ? 1 : 0;
+    }
+    else if(input.tagName === "SELECT"){
+        return input.options[input.selectedIndex].value;
+    }
+    else {
+        return input.value;
     }
 }
 
@@ -77,14 +91,15 @@ function makeControlBlock(block){
     div.className = "controlBlock";
     // manualy update of inputs
     if(block.update === "button"){
-        var inputDivArray = new Array();
         for(x in block.args){
             var input = makeControlElement(block.args[x], block, false)
-            // input.name = block.args[x].name
-            configOptions[block.args[x].name] = input.children[1];
-            // console.log(input.children[1])
-            inputDivArray.push(input);
+            block.args[x]["input"] = input.children[0]
+            console.log(block.args[x].input)
             div.appendChild(input)
+            // input.name = block.args[x].name
+            // configOptions[block.args[x].name] = input.children[1];
+            // console.log(input.children[1])
+            // inputDivArray.push(input);
         }
         var updateDiv = document.createElement("div");
         updateDiv.className = "widget"
@@ -92,25 +107,14 @@ function makeControlBlock(block){
         var button = document.createElement("input");
         button.innerHTML = "update";
         button.setAttribute("type", "button")
+        console.log(block.args[3].input)
         button.onclick = function(){
             var mess = {};
             mess[block.name] = {};
             var _i
-            for(x in inputDivArray){
-                _p = inputDivArray[x].children[0];
-                _i = inputDivArray[x].children[1];
-                // console.log(_i);
-                if(_i.type === "checkbox"){
-                    mess[block.name][_p.innerText] = _i.checked ? 1 : 0;
-                }
-                else if(_i.tagName === "SELECT"){
-                    // _i = inputDivArray[x].children[0];
-                    console.log(inputDivArray[x])//.innerText)
-                    mess[block.name][_p.innerText] = _i.options[_i.selectedIndex].value;
-                }
-                else {
-                    mess[block.name][_p.innerText] = _i.value;
-                }
+            for(x in block.args){
+                console.log(block.args[x].input+" >>> "+getInputValue(block.args[x].input));
+                mess[block.name][block.args[x].name] = getInputValue(block.args[x].input);
             }
             console.log(JSON.stringify(mess));
             sendCMD(JSON.stringify(mess));
@@ -124,6 +128,7 @@ function makeControlBlock(block){
         // make Callback here and pass it to the thing creation?
         for(x in block.args){
             var input = makeControlElement(block.args[x], block, true)
+            block.args[x].input = input.children[0]
             div.appendChild(input)
             // add input to an array
         }
@@ -136,9 +141,7 @@ function makeControlBlock(block){
 function makeControlElement(property, parent, makeCallback){
 
     var div = document.createElement("div")
-    var _p = document.createElement("p");
-    _p.innerText = property.name;
-    div.appendChild(_p)
+    div.innerText = property.name;
     div.className = "widget"
     var input;
     switch (property.type) {
