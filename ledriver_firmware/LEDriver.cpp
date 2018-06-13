@@ -21,6 +21,15 @@ void LEDriver::begin(){
     view.printf("ledriver V%f\n", VERSION);
     // serverForSocket.begin();
 
+    // fetch config
+    // enableSDcard();
+    if(!SD.begin(SDCARD_CS_PIN)){
+        view.println(F("no SDcard..."));
+    }
+    else {
+        loadConfigFile(CONFIG_FILE);
+    }
+
     // setup buffer
     leds = dataBuffer.getLEDs();
     Mode::leds = dataBuffer.getLEDs();
@@ -32,21 +41,16 @@ void LEDriver::begin(){
     // setup modes
     artnetMode.setup();
 
-    // fetch config
-    // enableSDcard();
-    if(!SD.begin(SDCARD_CS_PIN)){
-        view.println(F("no SDcard..."));
-    }
-    else {
-        loadConfigFile(CONFIG_FILE);
+    // enable FastLED
+    if(ledOutputMode == FAST_OCTO){
+        dataBuffer.enableFastLED();
+        if(debug_level > 0) view.println("- fastocto go");
     }
 
     network.reset();
-    view.println("reset");
-    if(debug_level > 0) view.println(F("- init network"));
-    view.println(network.useDHCP);
+
     // init network, may take a moment
-    // network.useDHCP = false;
+    if(debug_level > 0) view.println(F("- init network"));
     network.begin();
     // print resulting network information
     if(debug_level > 0){
@@ -88,6 +92,7 @@ void LEDriver::runWithWebsocket(EthernetServer * serverForSocket){
         // push config :
         pushConfig();
         while(client.connected()){
+
             checkUdpForOSC();
             checkWebsocket();
             // call the regular update
@@ -114,15 +119,20 @@ void LEDriver::checkUdpForOSC(){
 void LEDriver::checkWebsocket(){
     String _data = webSocketServer.getData();
     if(_data.length()> 0){
-        // if(debug_level > 1) view.println(_data);
-        receiveJson(_data.c_str());
+        if(debug_level > 1) view.println(_data);
+        receiveJson(_data.c_str(), _data.length());
         // webSocketServer.sendData("ahhaha");
     }
 }
 
 // parse river_setup.json file in order to make menus for buttons and oled??
-void LEDriver::receiveJson(const char * _received){
-    StaticJsonBuffer<512> jsonBuffer;
+void LEDriver::receiveJson(const char * _received, size_t _size){
+    if(_size > JSON_BUFFER_SIZE) {
+        view.println("! JSON buffer size to small");
+        return;
+    }
+
+    StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
     JsonObject &root = jsonBuffer.parseObject(_received);
     if(root.success()){
         if(debug_level > 1){
@@ -250,7 +260,7 @@ void LEDriver::makeConfig(){
     // remove file or config will be appended
     // enableSDcard();
     SD.remove(CONFIG_FILE);
-    StaticJsonBuffer<512> jsonBuffer;
+    StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
     JsonObject& root = jsonBuffer.createObject();
     JsonObject& config = root.createNestedObject("config");
     config["DHCP"] = 0;
@@ -280,7 +290,7 @@ void LEDriver::saveConfigFile(JsonObject &root, const char * _fileName){
 void LEDriver::loadConfigFile(const char * _fileName){
     if (SD.exists(_fileName)) {
         File _file = SD.open(_fileName);
-        StaticJsonBuffer<512> jsonBuffer;
+        StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
         JsonObject &root = jsonBuffer.parseObject(_file);
         if(root.success()){
             if(root.containsKey("config")){
@@ -307,7 +317,39 @@ void LEDriver::parseJsonConfig(JsonObject &config){
     // if(debug_level > 0) root.printTo(view);
     network.useDHCP = config["DHCP"] | 0;
     const char * _ip = config["ip"] | DEFAULT_STATIC_IP;
+    // get LED output mode
+    ledOutputMode = getOutputMode(config["leds"]);
+    dmxOneMode = getOutputMode(config["dmx_one"]);
+    dmxTwoMode = getOutputMode(config["dmx_two"]);
+    dmxThreeMode = getOutputMode(config["dmx_three"]);
+
     network.setIp(_ip);
+}
+
+uint8_t LEDriver::getOutputMode(const char * _str){
+    if(strcmp(_str, "none") == 0){
+        return NONE_OUTPUT;
+    }
+    else if(strcmp(_str, "fastOcto") == 0){
+        // view.print("noenoenoen :");
+        // view.println(_str);
+
+        return  FAST_OCTO;
+    }
+    else if(strcmp(_str, "APA102") == 0){
+        view.printf("! APA102 not implemented");
+        return  NONE_OUTPUT;
+    }
+    else if(strcmp(_str, "input") == 0){
+        return DMX_IN;
+    }
+    else if(strcmp(_str, "output") == 0){
+        return DMX_OUT;
+    }
+    else {
+        return NONE_OUTPUT;
+    }
+
 }
 // in cpp code
 // push the local configuration
@@ -316,16 +358,17 @@ void LEDriver::pushConfig(){
     // webSocketServer.sendData(_send);
 
     if (SD.exists("config.jso")) {
-        view.println("haha");
         File _file = SD.open("config.jso");
-        StaticJsonBuffer<512> jsonBuffer;
+        StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
         JsonObject &root = jsonBuffer.parseObject(_file);
         if(root.success()){
-            String _send;
+            String _send;// = "derpd";
             root.printTo(_send);
+
             // root.printTo(view);
 
-            // view.println(_send);
+            // view.printf("json size %i \n",_send.length());
+            if(debug_level > 1) view.println(F("- pushing config"));
             webSocketServer.sendData(_send);
         }
         else {

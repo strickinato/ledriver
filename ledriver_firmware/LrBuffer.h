@@ -5,7 +5,7 @@
 #include "Defaults.h"
 
 
-#define LR_LED_PER_STRIP 240
+#define LR_LED_PER_STRIP 510
 #define LR_NUM_STRIPS 8
 #define LR_NUM_LEDS LR_NUM_STRIPS * LR_LED_PER_STRIP
 
@@ -18,6 +18,8 @@ class LrBuffer {
     public:
         LrBuffer();
         void begin();
+        void enableFastLED();
+        bool ledsEnabled;
         // this is the main buffer that gets output.
         uint8_t drawBuffer[LR_MAX_BUFFER_SIZE];
         // this can get set by configuration
