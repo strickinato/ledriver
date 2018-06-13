@@ -23,6 +23,9 @@
 // static const uint8_t DEFAULT_STATIC_IP[4] = {10,0,0,42};
 const char DEFAULT_STATIC_IP[] = "10.0.0.41";
 const char CONFIG_FILE[] = "config.jso";
+const char LED_CONFIG_FILE[] = "ledcfg.jso";
+const char DMX_CONFIG_FILE[] = "dmxcfg.jso";
+
 
 #define LR_OSC_PORTIN 4200
 #define STARTUP_TEST_DEFAULT 1

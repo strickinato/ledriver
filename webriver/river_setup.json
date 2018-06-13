@@ -7,10 +7,26 @@
                 {"name":"name", "type":"text", "default":"controllerName"},
                 {"name":"DHCP", "type":"toggle", "default":0},
                 {"name":"ip", "type":"text", "default":"10.0.0.42"},
+                {"name":"mode", "type":"select", "options":["demo","artnet","serial","test","custom","sdplay","fun"]}
+            ]
+        },
+        {
+            "name":"leds",
+            "update":"button",
+            "args":[
+                {"name":"start_uni", "type":"number", "min":1, "max":255, "default":1},
                 {"name":"leds", "type":"select", "options" : ["fastOcto", "none", "APA102"]},
+                {"name":"color_order", "type":"select", "options" : ["RGB", "GRB", "BGR", "GBR"]}
+            ]
+        },
+        {
+            "name":"DMX",
+            "update":"button",
+            "args":[
                 {"name":"dmx_one", "type":"select", "options" : ["none", "input", "output"]},
-                {"name":"dmx_three", "type":"select", "options" : ["none", "input", "output"]}
-
+                {"name":"dmx_one_uni", "type":"number", "min":1, "max":255, "default":1},
+                {"name":"dmx_three", "type":"select", "options" : ["none", "input", "output"]},
+                {"name":"dmx_three_uni", "type":"number", "min":1, "max":255, "default":2}
             ]
         },
         {

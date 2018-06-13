@@ -19,10 +19,8 @@ void LEDriver::begin(){
     dataBuffer.begin();
     view.begin();
     view.printf("ledriver V%f\n", VERSION);
-    // serverForSocket.begin();
 
     // fetch config
-    // enableSDcard();
     if(!SD.begin(SDCARD_CS_PIN)){
         view.println(F("no SDcard..."));
     }
@@ -71,13 +69,7 @@ void LEDriver::begin(){
     frameCount = 0;
     fpsCount     = 0;
     timeStamp = millis();\
-    setMode(FUN_MODE);//ARTNET_MODE);//MO_MODE);
-    // setMode(DEMO_MODE);//ARTNET_MODE);//MO_MODE);
-    // receiveCommand(SET_BRIGHTNESS_CMD, 128);
-
-
-    // void * _func = &LEDriver::onData;
-    // webSocketServer.registerDataCallback(_func);
+    // setMode(FUN_MODE);//ARTNET_MODE);//MO_MODE);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -141,6 +133,12 @@ void LEDriver::receiveJson(const char * _received, size_t _size){
         }
         if(root.containsKey("config")){
             saveConfigFile(root, CONFIG_FILE);
+        }
+        else if(root.containsKey("leds")){
+            saveConfigFile(root, LED_CONFIG_FILE);
+        }
+        else if(root.containsKey("DMX")){
+            saveConfigFile(root, DMX_CONFIG_FILE);
         }
         else if(root.containsKey("funmode")){
             JsonObject & mode = root["funmode"];
@@ -257,21 +255,21 @@ void LEDriver::update(){
 ///////////////////////////////////////////////////////////////////////////////
 
 void LEDriver::makeConfig(){
-    // remove file or config will be appended
-    // enableSDcard();
-    SD.remove(CONFIG_FILE);
-    StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
-    JsonObject& root = jsonBuffer.createObject();
-    JsonObject& config = root.createNestedObject("config");
-    config["DHCP"] = 0;
-    config["ip"] = "10.0.0.42";
-    config["name"] = "majestic";
-    config["startupTest"] = 0;
-    saveConfigFile(root, CONFIG_FILE);
+    // // remove file or config will be appended
+    // // enableSDcard();
+    // SD.remove(CONFIG_FILE);
+    // StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
+    // JsonObject& root = jsonBuffer.createObject();
+    // JsonObject& config = root.createNestedObject("config");
+    // config["DHCP"] = 0;
+    // config["ip"] = "10.0.0.42";
+    // config["name"] = "majestic";
+    // config["startupTest"] = 0;
+    // saveConfigFile(root, CONFIG_FILE);
 }
 
 void LEDriver::saveConfigFile(JsonObject &root, const char * _fileName){
-    if(debug_level > 0) view.println(" - saving new config");
+    view.printf("saving %s\n", _fileName);
     if(SD.exists(_fileName)){
         SD.remove(_fileName);
     }
@@ -294,14 +292,36 @@ void LEDriver::loadConfigFile(const char * _fileName){
         JsonObject &root = jsonBuffer.parseObject(_file);
         if(root.success()){
             if(root.containsKey("config")){
-                parseJsonConfig(root["config"]);
+                JsonObject & config = root["config"];
+                // parseConfig(root["config"]);
+                view.printf("name %s\n", config["name"] | "NO_NAME");
+                // if(debug_level > 0) root.printTo(view);
+                network.useDHCP = config["DHCP"] | 0;
+                const char * _ip = config["ip"] | DEFAULT_STATIC_IP;
+                setMode(stringMatcher(config["mode"]));
+                // get LED output mode
+                network.setIp(_ip);
+            }
+            else if(root.containsKey("leds")){
+                JsonObject & ledcfg = root["leds"];
+
+                ledStartUniverse = ledcfg["start_uni"] | 1;
+                ledOutputMode = stringMatcher(ledcfg["leds"]);
+                ledColorOrder = stringMatcher(ledcfg["color_order"]);
+            }
+            else if(root.containsKey("dmx")){
+                JsonObject & dmxcfg = root["DMX"];
+                dmxOneMode = stringMatcher(dmxcfg["dmx_one"]);
+                if(dmxOneMode == DMX_OUT) dmxOneUniverse = dmxcfg["dmx_one_uni"] | 1;
+                dmxTwoMode = stringMatcher(dmxcfg["dmx_two"]);
+                if(dmxTwoMode == DMX_OUT) dmxTwoUniverse = dmxcfg["dmx_two_uni"] | 1;
+                dmxThreeMode = stringMatcher(dmxcfg["dmx_three"]);
+                if(dmxThreeMode == DMX_OUT) dmxThreeUniverse = dmxcfg["dmx_three_uni"] | 1;
             }
         }
         else {
-            if(debug_level > 0) view.println("! problem w config");
-            // retry
-            // delay(200);
-            // parseConfig(_fileName);
+            view.println("! problem w config");
+            if(debug_level > 0) root.printTo(view);
         }
     }
     else {
@@ -310,30 +330,19 @@ void LEDriver::loadConfigFile(const char * _fileName){
         view.println(F("making a config file"));
         makeConfig();
     }
+    // printConfig();
 }
 
-void LEDriver::parseJsonConfig(JsonObject &config){
-    view.printf("name %s\n", config["name"] | "NO_NAME");
-    // if(debug_level > 0) root.printTo(view);
-    network.useDHCP = config["DHCP"] | 0;
-    const char * _ip = config["ip"] | DEFAULT_STATIC_IP;
-    // get LED output mode
-    ledOutputMode = getOutputMode(config["leds"]);
-    dmxOneMode = getOutputMode(config["dmx_one"]);
-    dmxTwoMode = getOutputMode(config["dmx_two"]);
-    dmxThreeMode = getOutputMode(config["dmx_three"]);
+// void LEDriver::printConfig(){
+//
+// }
 
-    network.setIp(_ip);
-}
-
-uint8_t LEDriver::getOutputMode(const char * _str){
+// all the string option of webriver "select" thingy
+uint8_t LEDriver::stringMatcher(const char * _str){
     if(strcmp(_str, "none") == 0){
         return NONE_OUTPUT;
     }
     else if(strcmp(_str, "fastOcto") == 0){
-        // view.print("noenoenoen :");
-        // view.println(_str);
-
         return  FAST_OCTO;
     }
     else if(strcmp(_str, "APA102") == 0){
@@ -346,19 +355,62 @@ uint8_t LEDriver::getOutputMode(const char * _str){
     else if(strcmp(_str, "output") == 0){
         return DMX_OUT;
     }
+
+    else if(strcmp(_str, "RGB") == 0){
+        return RGB;
+    }
+    else if(strcmp(_str, "GRB") == 0){
+        return GRB;
+    }
+    else if(strcmp(_str, "BGR") == 0){
+        return BGR;
+    }
+    else if(strcmp(_str, "GBR") == 0){
+        return GBR;
+    }
+
+    else if(strcmp(_str, "demo") == 0){
+        return DEMO_MODE;
+    }
+    else if(strcmp(_str, "artnet") == 0){
+        return ARTNET_MODE;
+    }
+    else if(strcmp(_str, "serial") == 0){
+        return SERIAL_MODE;
+    }
+    else if(strcmp(_str, "test") == 0){
+        return TEST_MODE;
+    }
+    else if(strcmp(_str, "custom") == 0){
+        return CUSTOM_MODE;
+    }
+    else if(strcmp(_str, "sdplay") == 0){
+        return SDPLAY_MODE;
+    }
+    else if(strcmp(_str, "fun") == 0){
+        return FUN_MODE;
+    }
+
     else {
         return NONE_OUTPUT;
     }
 
 }
+
+
 // in cpp code
 // push the local configuration
 void LEDriver::pushConfig(){
     // String _send = "ahah nope this is a string";
     // webSocketServer.sendData(_send);
+    pushConfigFile(CONFIG_FILE);
+    pushConfigFile(LED_CONFIG_FILE);
+    pushConfigFile(DMX_CONFIG_FILE);
+}
 
-    if (SD.exists("config.jso")) {
-        File _file = SD.open("config.jso");
+void LEDriver::pushConfigFile(const char * _fileName){
+    if (SD.exists(_fileName)) {
+        File _file = SD.open(_fileName);
         StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
         JsonObject &root = jsonBuffer.parseObject(_file);
         if(root.success()){
@@ -369,7 +421,12 @@ void LEDriver::pushConfig(){
 
             // view.printf("json size %i \n",_send.length());
             if(debug_level > 1) view.println(F("- pushing config"));
-            webSocketServer.sendData(_send);
+            if(_send.length() > 128){
+                view.printf("! to big to send %i\n", _send.length());
+            }
+            else {
+                webSocketServer.sendData(_send);
+            }
         }
         else {
             view.println("nope");
@@ -379,7 +436,6 @@ void LEDriver::pushConfig(){
         view.println(F("no config file"));
         // makeConfig();
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////

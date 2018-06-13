@@ -11,7 +11,7 @@ input {
     color: #98A7FF;
 }
 select {
-    float: right;
+    margin-left: auto;
     background-color:#0E0E0E;
     color: #98A7FF;";
 }

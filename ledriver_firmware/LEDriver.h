@@ -64,24 +64,27 @@ class LEDriver {
         void parseJsonConfig(JsonObject &config);
         void receiveJson(const char * _received, size_t _size);
 
-        void pushConfig();
         void makeConfig();
         void receiveCommand(uint8_t _cmd, uint8_t _val);
         void receiveOSC(uint8_t * _mess, uint8_t _sz);
-
-        void checkUdpForOSC();
-        void checkWebsocket();
         // void onData(WebSocket &socket, char* dataString, byte frameLength);
         LrBuffer dataBuffer;
         CRGB * leds;
         // CRGB * ledStrips[8];
         uint16_t NUM_LEDS;
         uint8_t currentMode = 0;
+        // configured option
+        uint8_t ledType;
+        uint8_t ledColorOrder;
+        uint8_t ledOutputMode = FAST_OCTO;
+        uint8_t ledStartUniverse;
 
         uint8_t dmxOneMode = NONE_OUTPUT;
+        uint8_t dmxOneUniverse = 0;
         uint8_t dmxTwoMode = NONE_OUTPUT;
+        uint8_t dmxTwoUniverse = 0;
         uint8_t dmxThreeMode = NONE_OUTPUT;
-        uint8_t ledOutputMode = FAST_OCTO;
+        uint8_t dmxThreeUniverse = 0;
 
         // websocket
         WebSocketServer webSocketServer;
@@ -116,8 +119,14 @@ class LEDriver {
 
     private:
         Network network;
+        void checkUdpForOSC();
+        void checkWebsocket();
+
         bool flasher;
-        uint8_t getOutputMode(const char * _str);
+        void pushConfig();
+        void pushConfigFile(const char * _file);
+
+        uint8_t stringMatcher(const char * _str);
         // input
         void checkInput();
         uint16_t pot1_value;

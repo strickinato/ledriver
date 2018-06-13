@@ -45,19 +45,31 @@ function receiveWebsocketMessage (mess) {
         }
         else if('config' in json){
             // console.log(json.config.ip)
-            config = json.config
+
         }
     }
     catch(e){}
-    if(config != 0){
-        receiveConfig(config);
+    if(json != 0){
+        receiveBlock(json);
     }
 }
 
-function receiveConfig (config) {
-    document.getElementById("infoline").innerHTML = config.name;
-
-    // console.log(configOptions
+function receiveBlock (block) {
+    var mainBlock = {};
+    for(let x in mainJSON.interface){
+        if(mainJSON.interface[x].name in block){
+            mainBlock = mainJSON.interface[x];
+            // document.getElementById("infoline").innerHTML = block.name;
+        }
+    }
+    var _name;
+    for(property in block){
+        _name = property;
+    }
+    var inblock = block[_name];
+    for(let x in mainBlock.args){
+        mainBlock.args[x].input.value = inblock[mainBlock.args[x].name]
+    }
 }
 
 
@@ -68,7 +80,7 @@ function loadJsonUI(json){
     while (maindiv.hasChildNodes()) {
         maindiv.removeChild(maindiv.lastChild);
     }
-    for(x in mainJSON.interface){
+    for(let x in mainJSON.interface){
         maindiv.appendChild( makeControlBlock(mainJSON.interface[x]) )
     }
 }
@@ -91,10 +103,9 @@ function makeControlBlock(block){
     div.className = "controlBlock";
     // manualy update of inputs
     if(block.update === "button"){
-        for(x in block.args){
+        for(let x in block.args){
             var input = makeControlElement(block.args[x], block, false)
             block.args[x]["input"] = input.children[0]
-            console.log(block.args[x].input)
             div.appendChild(input)
             // input.name = block.args[x].name
             // configOptions[block.args[x].name] = input.children[1];
@@ -107,13 +118,12 @@ function makeControlBlock(block){
         var button = document.createElement("input");
         button.innerHTML = "update";
         button.setAttribute("type", "button")
-        console.log(block.args[3].input)
         button.onclick = function(){
             var mess = {};
             mess[block.name] = {};
             var _i
-            for(x in block.args){
-                console.log(block.args[x].input+" >>> "+getInputValue(block.args[x].input));
+            for(let x in block.args){
+                // console.log(block.args[x].input+" >>> "+getInputValue(block.args[x].input));
                 mess[block.name][block.args[x].name] = getInputValue(block.args[x].input);
             }
             console.log(JSON.stringify(mess));
@@ -126,7 +136,7 @@ function makeControlBlock(block){
     // live update of inputs
     else {
         // make Callback here and pass it to the thing creation?
-        for(x in block.args){
+        for(let x in block.args){
             var input = makeControlElement(block.args[x], block, true)
             block.args[x].input = input.children[0]
             div.appendChild(input)
@@ -162,6 +172,9 @@ function makeControlElement(property, parent, makeCallback){
             break;
         case "select":
             div.appendChild(makeSelect(property, parent, makeCallback));
+            break;
+        case "number":
+            div.appendChild(makeNumber(property, parent, makeCallback));
             break;
         default:
             console.log("unknown control type "+property.type)
@@ -249,12 +262,10 @@ function makeBang(property, parent, makeCallback){
 function makeSelect(property, parent, makeCallback){
     var input = document.createElement("select")
 
-    for(x in property.options){
+    for(let x in property.options){
         var _option = document.createElement("option");
         _option.text = property.options[x];
         input.add(_option)
-        // _option.value = _modeArray[i]["index"];
-        // _option.title = _modeArray[i]["description"];
     }
     // input.setAttribute("type", "button")
     if(makeCallback){
@@ -268,6 +279,22 @@ function makeSelect(property, parent, makeCallback){
     return input;
 }
 
+function makeNumber(property, parent, makeCallback){
+    var input = document.createElement("input")
+    input.setAttribute("type", "number")
+    input.setAttribute("min", property.min)
+    input.setAttribute("max", property.max)
+    if(makeCallback){
+        input.onchange = function(){
+            var mess = {};
+            mess[parent.name] = {};
+            mess[parent.name][property.name] = input.value
+            sendCMD(JSON.stringify(mess));
+        }
+    }
+    // input.value = property.default
+    return input;
+}
 
 // _input.oninput = function (){
 //     // needs downSampling
