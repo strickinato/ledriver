@@ -12,6 +12,8 @@
 #include "Defaults.h"
 #include "Commands.h"
 #include "LrBuffer.h"
+#include "LrDMX.h"
+
 
 #include "SD.h"
 #include "SPI.h"
@@ -22,6 +24,7 @@
 // #include <WebSocket.h>
 #include <Ethernet.h>
 #include <ArduinoJson.h>
+// #include <TeensyDmx.h>
 #include <OSCMessage.h>
 #include <OSCBundle.h>
 #include <OSCBoards.h>
@@ -34,23 +37,6 @@
 
 #define JSON_BUFFER_SIZE 512
 
-enum Modes{
-    DEMO_MODE,
-    ARTNET_MODE,
-    SERIAL_MODE,
-    TEST_MODE,
-    CUSTOM_MODE,
-    SDPLAY_MODE,
-    FUN_MODE
-};
-
-enum Outputs{
-    NONE_OUTPUT,
-    DMX_OUT,
-    DMX_IN,
-    FAST_OCTO,
-    APA_102
-};
 
 
 class LEDriver {
@@ -79,12 +65,15 @@ class LEDriver {
         uint8_t ledOutputMode = FAST_OCTO;
         uint8_t ledStartUniverse;
 
-        uint8_t dmxOneMode = NONE_OUTPUT;
-        uint8_t dmxOneUniverse = 0;
-        uint8_t dmxTwoMode = NONE_OUTPUT;
-        uint8_t dmxTwoUniverse = 0;
-        uint8_t dmxThreeMode = NONE_OUTPUT;
-        uint8_t dmxThreeUniverse = 0;
+        LrDMX dmxOne;
+        LrDMX dmxThree;
+
+        // uint8_t dmxOneMode = NONE_OUTPUT;
+        // uint8_t dmxOneUniverse = 0;
+        // uint8_t dmxTwoMode = NONE_OUTPUT;
+        // uint8_t dmxTwoUniverse = 0;
+        // uint8_t dmxThreeMode = NONE_OUTPUT;
+        // uint8_t dmxThreeUniverse = 0;
 
         // websocket
         WebSocketServer webSocketServer;

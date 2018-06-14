@@ -32,4 +32,27 @@ const char DMX_CONFIG_FILE[] = "dmxcfg.jso";
 
 static uint8_t debug_level = 2;
 
+
+
+
+
+enum Modes{
+    DEMO_MODE,
+    ARTNET_MODE,
+    SERIAL_MODE,
+    TEST_MODE,
+    CUSTOM_MODE,
+    SDPLAY_MODE,
+    FUN_MODE
+};
+
+enum Outputs{
+    NONE_OUTPUT,
+    DMX_OUT,
+    DMX_IN,
+    FAST_OCTO,
+    APA_102
+};
+
+
 #endif

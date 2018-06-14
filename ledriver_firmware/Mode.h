@@ -26,7 +26,7 @@ class Mode {
         static uint16_t pot2;
         static uint8_t buttonPress;
 
-
+        bool newData;
         static uint8_t brightness;
         uint16_t framesPerSecond;
 };

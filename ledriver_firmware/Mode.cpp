@@ -40,6 +40,7 @@ void DemoMode::update(){
     for(int i = 0; i < ledCount; i++){
         leds[i] = CHSV(ha+int(ha+i*2+millis()/10.0)%255,255,255);
     }
+    newData = true;
     FastLED.show();
 }
 
@@ -93,8 +94,11 @@ void ArtNetMode::receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _uni
 
     // check if new sequence, if yes output previous sequence
     // if(_universe == 3) _universe = 7;
+    newData = false;
     if(_sequence != currentSequence){
         FastLED.show();
+        newData = true;
+
         currentSequence = _sequence;
     }
     else {
@@ -115,11 +119,13 @@ SerialMode::SerialMode(){
 
 void SerialMode::update(){
     Mode::update();
+    newData = false;
     if(Serial.available()){
         int startChar = Serial.read();
         if (startChar == '*') {
             // int count = Serial.readBytes((char *)leds, ledCount*3);
             Serial.readBytes((char *)leds, ledCount*3);
+            newData = true;
             FastLED.show();
         }
         else if (startChar == '?') {
@@ -161,6 +167,7 @@ void TestMode::update(){
             for(int y = 0 ; y < ledCount ; y++) leds[y] = CRGB::White;
             break;
     }
+    newData = true;
     FastLED.show();
 }
 
@@ -253,5 +260,6 @@ void FunMode::update(){
             leds[i] = CRGB::White;
         }
     }
+    newData = true;
     FastLED.show();
 }

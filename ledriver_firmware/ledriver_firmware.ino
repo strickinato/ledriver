@@ -16,9 +16,15 @@
 
 LEDriver ledriver;
 EthernetServer serverForSocket(80);
+TeensyDmx dmx1(Serial1);
+// TeensyDmx dmx2(Serial2);
+TeensyDmx dmx3(Serial3);
 
 void setup(){
     Serial.begin(115200);
+    ledriver.dmxOne.dmx = &dmx1;
+    ledriver.dmxThree.dmx = &dmx3;
+
     // initialise the system
     ledriver.begin();
     // set the callback

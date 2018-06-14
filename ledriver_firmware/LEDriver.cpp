@@ -26,6 +26,8 @@ void LEDriver::begin(){
     }
     else {
         loadConfigFile(CONFIG_FILE);
+        loadConfigFile(LED_CONFIG_FILE);
+        loadConfigFile(DMX_CONFIG_FILE);
     }
 
     // setup buffer
@@ -204,21 +206,19 @@ void LEDriver::receiveCommand(uint8_t _cmd, uint8_t _val){
 ///////////////////////////////////////////////////////////////////////////////
 // kind of the main loop
 void LEDriver::update(){
-
+    if(dmxOne.mode == DMX_OUT){
+        uint8_t * _buf =(uint8_t *) dataBuffer.getLEDs();//dataBuffer.getDMX(0);
+        dmxOne.output(_buf);
+    }
     updateCallback();
     if(frameCount % 4 == 1){
         digitalWrite(STATUS_LED_PIN, flasher);
         flasher = !flasher;
     }
-    checkInput();
+
     frameCount++;
-    fpsCount++;
-    if(millis() - timeStamp > 1000){
-        timeStamp = millis();
-        fps = fpsCount;
-        // view.printf("fps %i \n", fpsCount);
-        fpsCount = 0;
-    }
+
+    checkInput();
     Mode::frameCount = frameCount;
     // check for serial connection
     if(currentMode != SERIAL_MODE){
@@ -246,6 +246,16 @@ void LEDriver::update(){
 
     // update Mode
     modePointers[currentMode]->update();
+    if(artnetMode.newData){
+        fpsCount++;
+    }
+    if(millis() - timeStamp > 1000){
+        timeStamp = millis();
+        fps = fpsCount;
+        // view.printf("fps %i \n", fpsCount);
+        fpsCount = 0;
+        view.printf("fps %i \n", fps);
+    }
 
 }
 
@@ -290,7 +300,9 @@ void LEDriver::loadConfigFile(const char * _fileName){
         File _file = SD.open(_fileName);
         StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
         JsonObject &root = jsonBuffer.parseObject(_file);
+
         if(root.success()){
+            // root.printTo(view);
             if(root.containsKey("config")){
                 JsonObject & config = root["config"];
                 // parseConfig(root["config"]);
@@ -309,14 +321,20 @@ void LEDriver::loadConfigFile(const char * _fileName){
                 ledOutputMode = stringMatcher(ledcfg["leds"]);
                 ledColorOrder = stringMatcher(ledcfg["color_order"]);
             }
-            else if(root.containsKey("dmx")){
+            else if(root.containsKey("DMX")){
                 JsonObject & dmxcfg = root["DMX"];
-                dmxOneMode = stringMatcher(dmxcfg["dmx_one"]);
-                if(dmxOneMode == DMX_OUT) dmxOneUniverse = dmxcfg["dmx_one_uni"] | 1;
-                dmxTwoMode = stringMatcher(dmxcfg["dmx_two"]);
-                if(dmxTwoMode == DMX_OUT) dmxTwoUniverse = dmxcfg["dmx_two_uni"] | 1;
-                dmxThreeMode = stringMatcher(dmxcfg["dmx_three"]);
-                if(dmxThreeMode == DMX_OUT) dmxThreeUniverse = dmxcfg["dmx_three_uni"] | 1;
+                dmxcfg.printTo(view);
+                dmxOne.mode = stringMatcher(dmxcfg["dmx_one"]);
+                dmxOne.universe = dmxcfg["dmx_one_uni"] | 1;
+
+                // dmxTwo.mode = stringMatcher(dmxcfg["dmx_two"]);
+                // dmxTwo.universe = dmxcfg["dmx_two_uni"] | 1;
+                dmxThree.mode = stringMatcher(dmxcfg["dmx_three"]);
+                dmxThree.universe = dmxcfg["dmx_three_uni"] | 1;
+
+                dmxOne.begin();
+                dmxThree.begin();
+
             }
         }
         else {
