@@ -18,7 +18,7 @@ class LrDMX {
         // set the above first then call begin
         void setDmx(TeensyDmx * _dmx);
         void begin();
-        void output(uint8_t * data);
+        void update(uint8_t * data);
         TeensyDmx * dmx;//(Serial1, DMX_REDE);
 };
 

@@ -6,6 +6,7 @@ LrDMX::LrDMX(){
     channelCount = 512;
     deviceChannel = 0;
     universe = 1;
+    newData = false;
 }
 
 void LrDMX::setDmx(TeensyDmx * _dmx){
@@ -21,8 +22,17 @@ void LrDMX::begin(){
     }
 }
 
-void LrDMX::output(uint8_t * data){
-    if(mode == DMX_OUT){
+// either grabs data or outputs data to the passed buffer
+void LrDMX::update(uint8_t * data){
+    if(mode == DMX_IN){
+        dmx->loop();
+        if(dmx->newFrame()) {
+            newData = true;
+            memcpy(data, (uint8_t *) dmx->getBuffer()[deviceChannel], channelCount);
+        }
+        else newData = false;
+    }
+    else if(mode == DMX_OUT){
         dmx->setChannels(0, data, channelCount);
     }
 }

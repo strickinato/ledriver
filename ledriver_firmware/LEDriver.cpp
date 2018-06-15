@@ -206,10 +206,7 @@ void LEDriver::receiveCommand(uint8_t _cmd, uint8_t _val){
 ///////////////////////////////////////////////////////////////////////////////
 // kind of the main loop
 void LEDriver::update(){
-    if(dmxOne.mode == DMX_OUT){
-        uint8_t * _buf =(uint8_t *) dataBuffer.getLEDs();//dataBuffer.getDMX(0);
-        dmxOne.output(_buf);
-    }
+
     updateCallback();
     if(frameCount % 4 == 1){
         digitalWrite(STATUS_LED_PIN, flasher);
@@ -221,13 +218,6 @@ void LEDriver::update(){
     checkInput();
     Mode::frameCount = frameCount;
     // check for serial connection
-    if(currentMode != SERIAL_MODE){
-        // auto detect Serial mode
-        // if(Serial.available()){
-        //     view.useSerial = false;
-        //     setMode(SERIAL_MODE);
-        // }
-    }
 
     gotNewData = false;
     if(currentMode == ARTNET_MODE){
@@ -236,7 +226,17 @@ void LEDriver::update(){
         if(network.checkArtnet()){
             gotNewData = true;
             // Serial.printf("u = %i s = %i \n",network.incomingUniverse, network.sequence);
-            artnetMode.receivePacket(network.artnetData, network.sequence, network.incomingUniverse, network.dmxDataLength);
+            if(dmxOne.universe == network.incomingUniverse){
+                memcpy(dataBuffer.getDMX(0), network.artnetData, 512);
+            }
+            // view.println(dmxThree.universe);
+            if(dmxThree.universe == network.incomingUniverse){
+                memcpy(dataBuffer.getDMX(1), network.artnetData, 512);
+            }
+            artnetMode.receivePacket(network.artnetData,
+                                     network.sequence,
+                                     network.incomingUniverse,
+                                     network.dmxDataLength);
         }
     }
 
@@ -244,6 +244,7 @@ void LEDriver::update(){
     if(buttonPress == 1) receiveCommand(SET_MODE_CMD, currentMode+1);
     else if(buttonPress == 3) receiveCommand(SET_MODE_CMD, currentMode-1);
 
+    updateDMX();
     // update Mode
     modePointers[currentMode]->update();
     if(artnetMode.newData){
@@ -254,9 +255,17 @@ void LEDriver::update(){
         fps = fpsCount;
         // view.printf("fps %i \n", fpsCount);
         fpsCount = 0;
-        view.printf("fps %i \n", fps);
+        if(false)view.printf("fps %i \n", fps);
     }
 
+}
+
+void LEDriver::updateDMX(){
+    dmxOne.update((uint8_t *) dataBuffer.getDMX(0));
+    dmxThree.update((uint8_t *) dataBuffer.getDMX(1));
+    // if(dmxThree.newData){
+    //     view.printf("%03i %03i %03i \n", dataBuffer.getDMX(1)[0], dataBuffer.getDMX(1)[1], dataBuffer.getDMX(1)[2]);
+    // }
 }
 
 
@@ -293,6 +302,8 @@ void LEDriver::saveConfigFile(JsonObject &root, const char * _fileName){
         view.println(F("failed to make file"));
     }
     _file.close();
+    view.println("doing me a reboot");
+    CPU_REBOOT;
 }
 
 void LEDriver::loadConfigFile(const char * _fileName){
@@ -323,18 +334,15 @@ void LEDriver::loadConfigFile(const char * _fileName){
             }
             else if(root.containsKey("DMX")){
                 JsonObject & dmxcfg = root["DMX"];
-                dmxcfg.printTo(view);
+                // dmxcfg.printTo(view);
                 dmxOne.mode = stringMatcher(dmxcfg["dmx_one"]);
-                dmxOne.universe = dmxcfg["dmx_one_uni"] | 1;
-
+                dmxOne.universe = dmxcfg["dmx_one_uni"];
                 // dmxTwo.mode = stringMatcher(dmxcfg["dmx_two"]);
                 // dmxTwo.universe = dmxcfg["dmx_two_uni"] | 1;
                 dmxThree.mode = stringMatcher(dmxcfg["dmx_three"]);
-                dmxThree.universe = dmxcfg["dmx_three_uni"] | 1;
-
+                dmxThree.universe = dmxcfg["dmx_three_uni"];
                 dmxOne.begin();
                 dmxThree.begin();
-
             }
         }
         else {

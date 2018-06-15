@@ -37,7 +37,7 @@
 
 #define JSON_BUFFER_SIZE 512
 
-
+#define CPU_REBOOT (_reboot_Teensyduino_());
 
 class LEDriver {
     public:
@@ -67,7 +67,7 @@ class LEDriver {
 
         LrDMX dmxOne;
         LrDMX dmxThree;
-
+        void updateDMX();
         // uint8_t dmxOneMode = NONE_OUTPUT;
         // uint8_t dmxOneUniverse = 0;
         // uint8_t dmxTwoMode = NONE_OUTPUT;

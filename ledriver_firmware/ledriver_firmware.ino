@@ -15,6 +15,7 @@
 #include "Ethernet.h"
 
 LEDriver ledriver;
+// these need to be initialised here unfortunatlyf
 EthernetServer serverForSocket(80);
 TeensyDmx dmx1(Serial1);
 // TeensyDmx dmx2(Serial2);
