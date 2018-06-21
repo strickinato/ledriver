@@ -98,11 +98,13 @@ void ArtNetMode::receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _uni
     if(_sequence != currentSequence){
         FastLED.show();
         newData = true;
-
         currentSequence = _sequence;
     }
     else {
     }
+    // if(_universe >= startUniverse && _universe < startUniverse+7){
+    //     _universe -= startUniverse;
+    // }
     for(int i = 0; i < _dataLenght/3; i++){
         leds[universeToIndex[_universe]+i] = CRGB(_data[i*3], _data[i*3+1], _data[i*3+2]);
     }
