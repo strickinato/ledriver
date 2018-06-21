@@ -225,7 +225,7 @@ void LEDriver::update(){
         }
         if(network.checkArtnet()){
             gotNewData = true;
-            // Serial.printf("u = %i s = %i \n",network.incomingUniverse, network.sequence);
+            // view.printf("u = %i s = %i \n",network.incomingUniverse, network.sequence);
             if(dmxOne.universe == network.incomingUniverse){
                 memcpy(dataBuffer.getDMX(0), network.artnetData, 512);
             }
@@ -327,8 +327,8 @@ void LEDriver::loadConfigFile(const char * _fileName){
             }
             else if(root.containsKey("leds")){
                 JsonObject & ledcfg = root["leds"];
-
-                ledStartUniverse = ledcfg["start_uni"] | 1;
+                artnetMode.startUniverse = ledcfg["start_uni"];
+                view.println(artnetMode.startUniverse);
                 ledOutputMode = stringMatcher(ledcfg["leds"]);
                 ledColorOrder = stringMatcher(ledcfg["color_order"]);
             }

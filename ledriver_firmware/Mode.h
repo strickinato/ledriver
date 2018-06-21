@@ -52,6 +52,7 @@ class ArtNetMode : public Mode {
         uint32_t receivedUniverses; // starts at lowest universe
         uint32_t gotAllUniverses;
         uint16_t currentSequence;
+        uint8_t startUniverse;
 
         uint16_t universeToIndex[MAX_UNIVERSE_SUPPORTED];
         void receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _universe, uint16_t _dataLenght);

@@ -5,7 +5,7 @@
 #include "Defaults.h"
 
 
-#define LR_LED_PER_STRIP 340
+#define LR_LED_PER_STRIP 268
 #define LR_NUM_STRIPS 8
 #define LR_NUM_LEDS LR_NUM_STRIPS * LR_LED_PER_STRIP
 

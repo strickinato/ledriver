@@ -55,7 +55,6 @@ void ArtNetMode::setup(){
     // default setup -> map LEDs to continuous univereses;
     totalUniverseCount = ledCount / 170;
     receivedUniverses = 0;
-    uint8_t _startUniverse = 1;
     memset(universeToIndex, 0, sizeof(universeToIndex));
     // make map of univereses
     for(int i = 0; i < totalUniverseCount; i++){
@@ -102,11 +101,12 @@ void ArtNetMode::receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _uni
     }
     else {
     }
-    // if(_universe >= startUniverse && _universe < startUniverse+7){
-    //     _universe -= startUniverse;
-    // }
-    for(int i = 0; i < _dataLenght/3; i++){
-        leds[universeToIndex[_universe]+i] = CRGB(_data[i*3], _data[i*3+1], _data[i*3+2]);
+    if(_universe >= startUniverse && _universe < startUniverse+9){
+        _universe -= startUniverse;
+        // Serial.printf("%i %i \n", _universe, startUniverse);
+        for(int i = 0; i < _dataLenght/3; i++){
+            leds[universeToIndex[_universe]+i] = CRGB(_data[i*3], _data[i*3+1], _data[i*3+2]);
+        }
     }
     // view.printf("R %03u, G %03u, B %03u \n", _data[0], network.artnetData[1], network.artnetData[2]);
 }
@@ -244,24 +244,54 @@ FunMode::FunMode(){
     flash = 0;
 }
 
+// void FunMode::update(){
+//     Mode::update();
+//     int ha = frameCount/speed;
+//
+//     for(int i = 0; i < ledCount; i++){
+//         leds[i] = blend(colorA,CRGB(10,10,10), ha+int(ha+i*2+millis()/10.0)%255);
+//     }
+//     if(super){
+//         for(int i = 0; i < 20; i++){
+//             leds[(int)random(ledCount) % 20] = colorA;
+//         }
+//     }
+//     if(flash){
+//         --flash;
+//         for(int i = 0; i < ledCount; i++){
+//             leds[i] = CRGB::White;
+//         }
+//     }
+//     newData = true;
+//     FastLED.show();
+// }
 void FunMode::update(){
+
     Mode::update();
-    int ha = frameCount/speed;
+    int output = map(pot2, 0, 1023, 0, 7);
 
     for(int i = 0; i < ledCount; i++){
-        leds[i] = blend(colorA,CRGB(10,10,10), ha+int(ha+i*2+millis()/10.0)%255);
-    }
-    if(super){
-        for(int i = 0; i < 20; i++){
-            leds[(int)random(ledCount) % 20] = colorA;
+        if(i > output*340 && i < output*340+340){
+            leds[i] = CRGB(10,10,10);
+        }
+        else {
+            leds[i] = CRGB(0,0,0);
+
         }
     }
-    if(flash){
-        --flash;
-        for(int i = 0; i < ledCount; i++){
-            leds[i] = CRGB::White;
-        }
-    }
-    newData = true;
+
     FastLED.show();
+    //
+    // if(super){
+    //     for(int i = 0; i < 20; i++){
+    //         leds[(int)random(ledCount) % 20] = colorA;
+    //     }
+    // }
+    // if(flash){
+    //     --flash;
+    //     for(int i = 0; i < ledCount; i++){
+    //         leds[i] = CRGB::White;
+    //     }
+    // }
+    // newData = true;
 }
