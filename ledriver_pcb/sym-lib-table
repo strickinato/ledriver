@@ -1,0 +1,7 @@
+(sym_lib_table
+  (lib (name ledriver_pcb-rescue)(type Legacy)(uri ${KIPRJMOD}/ledriver_pcb-rescue.lib)(options "")(descr ""))
+  (lib (name teensy)(type Legacy)(uri ${KILIBS}/teensy_library/teensy.lib)(options "")(descr ""))
+  (lib (name robocut_schematic)(type Legacy)(uri ${KILIBS}/robocut_kicad_library/robocut_schematic.lib)(options "")(descr ""))
+  (lib (name conn-amphenol)(type Legacy)(uri ${KILIBS}/cpavlina-schlib/library/conn-amphenol.lib)(options "")(descr ""))
+  (lib (name SparkFun-LED)(type Legacy)(uri ${KILIBS}/SparkFun-Kicad-Libraries/SparkFun-LED.lib)(options "")(descr ""))
+)

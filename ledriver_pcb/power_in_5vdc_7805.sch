@@ -1,0 +1,252 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:switches
+LIBS:relays
+LIBS:motors
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:teensy
+LIBS:robocut_schematic
+LIBS:ledriver_pcb-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 2 2
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Conn_01x02 J?
+U 1 1 5A07E144
+P 2700 2550
+F 0 "J?" H 2700 2650 50  0000 C CNN
+F 1 "5-12vdc" H 2700 2350 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-02_02x2.54mm_Straight" H 2700 2550 50  0001 C CNN
+F 3 "" H 2700 2550 50  0001 C CNN
+	1    2700 2550
+	-1   0    0    1   
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5A07E14B
+P 3100 3100
+F 0 "#PWR?" H 3100 2850 50  0001 C CNN
+F 1 "GND" H 3100 2950 50  0000 C CNN
+F 2 "" H 3100 3100 50  0001 C CNN
+F 3 "" H 3100 3100 50  0001 C CNN
+	1    3100 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L +12V #PWR?
+U 1 1 5A07E151
+P 3450 2350
+F 0 "#PWR?" H 3450 2200 50  0001 C CNN
+F 1 "+12V" H 3450 2490 50  0000 C CNN
+F 2 "" H 3450 2350 50  0001 C CNN
+F 3 "" H 3450 2350 50  0001 C CNN
+	1    3450 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L PWR_FLAG #FLG?
+U 1 1 5A07E157
+P 3050 2350
+F 0 "#FLG?" H 3050 2425 50  0001 C CNN
+F 1 "PWR_FLAG" H 3050 2500 50  0000 C CNN
+F 2 "" H 3050 2350 50  0001 C CNN
+F 3 "" H 3050 2350 50  0001 C CNN
+	1    3050 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L D D?
+U 1 1 5A07E15D
+P 3800 2450
+F 0 "D?" H 3800 2550 50  0000 C CNN
+F 1 "1N4004" H 3800 2350 50  0000 C CNN
+F 2 "Diodes_SMD:D_SMA_Handsoldering" H 3800 2450 50  0001 C CNN
+F 3 "" H 3800 2450 50  0001 C CNN
+	1    3800 2450
+	-1   0    0    -1  
+$EndComp
+$Comp
+L PWR_FLAG #FLG?
+U 1 1 5A07E164
+P 4250 2350
+F 0 "#FLG?" H 4250 2425 50  0001 C CNN
+F 1 "PWR_FLAG" H 4250 2500 50  0000 C CNN
+F 2 "" H 4250 2350 50  0001 C CNN
+F 3 "" H 4250 2350 50  0001 C CNN
+	1    4250 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L L7805 U?
+U 1 1 5A07E16A
+P 4750 2450
+F 0 "U?" H 4600 2575 50  0000 C CNN
+F 1 "L7805" H 4750 2575 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:TO-252-2" H 4775 2300 50  0001 L CIN
+F 3 "" H 4750 2400 50  0001 C CNN
+	1    4750 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L CP1 C?
+U 1 1 5A07E171
+P 4250 2750
+F 0 "C?" H 4275 2850 50  0000 L CNN
+F 1 "47uF" H 4275 2650 50  0000 L CNN
+F 2 "Capacitors_THT:CP_Radial_D6.3mm_P2.50mm" H 4250 2750 50  0001 C CNN
+F 3 "" H 4250 2750 50  0001 C CNN
+	1    4250 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5A07E178
+P 4750 3100
+F 0 "#PWR?" H 4750 2850 50  0001 C CNN
+F 1 "GND" H 4750 2950 50  0000 C CNN
+F 2 "" H 4750 3100 50  0001 C CNN
+F 3 "" H 4750 3100 50  0001 C CNN
+	1    4750 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L CP1 C?
+U 1 1 5A07E17E
+P 5250 2750
+F 0 "C?" H 5275 2850 50  0000 L CNN
+F 1 "47uF" H 5275 2650 50  0000 L CNN
+F 2 "Capacitors_THT:CP_Radial_D6.3mm_P2.50mm" H 5250 2750 50  0001 C CNN
+F 3 "" H 5250 2750 50  0001 C CNN
+	1    5250 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 5A07E185
+P 5600 2750
+F 0 "C?" H 5625 2850 50  0000 L CNN
+F 1 "0.1uF" H 5625 2650 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0603_HandSoldering" H 5638 2600 50  0001 C CNN
+F 3 "" H 5600 2750 50  0001 C CNN
+	1    5600 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR?
+U 1 1 5A07E18C
+P 6000 2350
+F 0 "#PWR?" H 6000 2200 50  0001 C CNN
+F 1 "VCC" H 6000 2500 50  0000 C CNN
+F 2 "" H 6000 2350 50  0001 C CNN
+F 3 "" H 6000 2350 50  0001 C CNN
+	1    6000 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D?
+U 1 1 5A07E192
+P 6000 2750
+F 0 "D?" H 6000 2850 50  0000 C CNN
+F 1 "POWER" H 6000 2650 50  0000 C CNN
+F 2 "LEDs:LED_0603_HandSoldering" H 6000 2750 50  0001 C CNN
+F 3 "" H 6000 2750 50  0001 C CNN
+	1    6000 2750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R?
+U 1 1 5A07E199
+P 5800 3000
+F 0 "R?" V 5880 3000 50  0000 C CNN
+F 1 "1K" V 5800 3000 50  0000 C CNN
+F 2 "Resistors_SMD:R_0603_HandSoldering" V 5730 3000 50  0001 C CNN
+F 3 "" H 5800 3000 50  0001 C CNN
+	1    5800 3000
+	0    1    1    0   
+$EndComp
+Text Notes 3050 2000 0    60   ~ 0
+A nice 5v from Propane and Electrons
+Wire Wire Line
+	2900 2550 3100 2550
+Wire Wire Line
+	3100 2550 3100 3100
+Wire Wire Line
+	2900 2450 3650 2450
+Wire Wire Line
+	3450 2450 3450 2350
+Wire Wire Line
+	3050 2350 3050 2450
+Connection ~ 3050 2450
+Connection ~ 3450 2450
+Wire Wire Line
+	3950 2450 4450 2450
+Wire Wire Line
+	4250 2350 4250 2600
+Connection ~ 4250 2450
+Wire Wire Line
+	4750 2750 4750 3100
+Wire Wire Line
+	4250 2900 4250 3000
+Wire Wire Line
+	4250 3000 5650 3000
+Connection ~ 4750 3000
+Wire Wire Line
+	5250 3000 5250 2900
+Wire Wire Line
+	5050 2450 6000 2450
+Wire Wire Line
+	5250 2450 5250 2600
+Wire Wire Line
+	5600 2450 5600 2600
+Connection ~ 5250 2450
+Wire Wire Line
+	5600 3000 5600 2900
+Connection ~ 5250 3000
+Wire Wire Line
+	6000 2350 6000 2600
+Connection ~ 5600 2450
+Connection ~ 6000 2450
+Connection ~ 5600 3000
+Wire Wire Line
+	5950 3000 6000 3000
+Wire Wire Line
+	6000 3000 6000 2900
+$EndSCHEMATC

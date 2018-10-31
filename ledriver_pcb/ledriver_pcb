@@ -1,0 +1,54 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>KiCad BOM Example 5</title>
+    </head>
+    <body>
+    <h1>/home/mxd/robocut/project_ledriver/ledriver_pcb/ledriver_pcb.sch</h1>
+    <p>Thu 22 Mar 2018 10:22:14 AM EDT</p>
+    <p>Eeschema 4.0.7-e2-6376~58~ubuntu16.04.1</p>
+    <p><b>Component Count:</b>48</p>
+    <table>
+    <tr><th style='width:640px'>Ref</th><th>Qnty</th><th>Value</th><th>Part</th><th>Footprint</th><th>Description</th><th>Vendor</th></tr>
+    <tr><td>C1, C2</td><td>2</td><td>47uF</td><td>device:CP1</td><td>Capacitors_THT:CP_Radial_D6.3mm_P2.50mm</td><td>Polarised capacitor</td><td></td></tr>
+    <tr><td>C3, C5, C6</td><td>3</td><td>0.1uF</td><td>device:C</td><td>Capacitors_SMD:C_0603_HandSoldering</td><td>Unpolarized capacitor</td><td></td></tr>
+    <tr><td>C4</td><td>1</td><td>1uf</td><td>device:C</td><td>Capacitors_SMD:C_0603_HandSoldering</td><td>Unpolarized capacitor</td><td></td></tr>
+    <tr><td>D1</td><td>1</td><td>1N4004</td><td>device:D</td><td>Diodes_SMD:D_SMA_Handsoldering</td><td>Diode</td><td></td></tr>
+    <tr><td>D2</td><td>1</td><td>POWER</td><td>device:LED</td><td>LEDs:LED_0603_HandSoldering</td><td>LED generic</td><td></td></tr>
+    <tr><td>D3</td><td>1</td><td>LED</td><td>device:LED</td><td>LEDs:LED_0603_HandSoldering</td><td>LED generic</td><td></td></tr>
+    <tr><td>J1</td><td>1</td><td>5-12vdc</td><td>conn:Conn_01x02</td><td>Connectors_Molex:Molex_KK-6410-02_02x2.54mm_Straight</td><td>Generic connector, single row, 01x02</td><td></td></tr>
+    <tr><td>J2</td><td>1</td><td>USB_B</td><td>conn:USB_B</td><td>Connectors:USB_B</td><td>USB Type B connector</td><td></td></tr>
+    <tr><td>J3</td><td>1</td><td>USB+-</td><td>conn:Conn_01x02</td><td>Connectors_Molex:Molex_KK-6410-02_02x2.54mm_Straight</td><td>Generic connector, single row, 01x02</td><td></td></tr>
+    <tr><td>J4</td><td>1</td><td>USB_EXT</td><td>conn:GS3</td><td>Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm</td><td>3-pin jumper/solder bridge</td><td></td></tr>
+    <tr><td>J5</td><td>1</td><td>RJ2</td><td>conn:Conn_01x08</td><td>robocut_footprint:RJ45_8_54602-908LF</td><td>Generic connector, single row, 01x08</td><td></td></tr>
+    <tr><td>J6</td><td>1</td><td>CONN-114-00841-68-MICROSD</td><td>conn-amphenol:CONN-114-00841-68-MICROSD</td><td>manuf:AMPHENOL-114-00841-68</td><td>Micro SD (push/pull, contacts down)</td><td></td></tr>
+    <tr><td>J7</td><td>1</td><td>RJ1</td><td>conn:Conn_01x08</td><td>robocut_footprint:RJ45_8_54602-908LF</td><td>Generic connector, single row, 01x08</td><td></td></tr>
+    <tr><td>J8</td><td>1</td><td>led_out_clk</td><td>conn:Conn_01x04</td><td>Connectors_Molex:Molex_KK-6410-04_04x2.54mm_Straight</td><td>Generic connector, single row, 01x04</td><td></td></tr>
+    <tr><td>J9</td><td>1</td><td>POT1</td><td>conn:Conn_01x03</td><td>Potentiometers:Potentiometer_Bourns_PTV09A-1_Horizontal</td><td>Generic connector, single row, 01x03</td><td></td></tr>
+    <tr><td>J10</td><td>1</td><td>POT2</td><td>conn:Conn_01x03</td><td>Potentiometers:Potentiometer_Bourns_PTV09A-1_Horizontal</td><td>Generic connector, single row, 01x03</td><td></td></tr>
+    <tr><td>J11</td><td>1</td><td>I2C</td><td>conn:Conn_01x04</td><td>Connectors_Molex:Molex_KK-6410-04_04x2.54mm_Straight</td><td>Generic connector, single row, 01x04</td><td></td></tr>
+    <tr><td>J12</td><td>1</td><td>Serial2</td><td>conn:Conn_01x04</td><td>Connectors_Molex:Molex_KK-6410-04_04x2.54mm_Straight</td><td>Generic connector, single row, 01x04</td><td></td></tr>
+    <tr><td>J13</td><td>1</td><td>Serial1</td><td>conn:Conn_01x04</td><td>Connectors_Molex:Molex_KK-6410-04_04x2.54mm_Straight</td><td>Generic connector, single row, 01x04</td><td></td></tr>
+    <tr><td>J14, J15, J16, J17</td><td>4</td><td>M3</td><td>conn:Conn_01x01</td><td>Mounting_Holes:MountingHole_3mm_Pad</td><td>Generic connector, single row, 01x01</td><td></td></tr>
+    <tr><td>J18</td><td>1</td><td>Serial3</td><td>conn:Conn_01x04</td><td>Connectors_Molex:Molex_KK-6410-04_04x2.54mm_Straight</td><td>Generic connector, single row, 01x04</td><td></td></tr>
+    <tr><td>R1, R2, R6</td><td>3</td><td>1K</td><td>device:R</td><td>Resistors_SMD:R_0603_HandSoldering</td><td>Resistor</td><td></td></tr>
+    <tr><td>R3</td><td>1</td><td>4K</td><td>device:R</td><td>Resistors_SMD:R_0603_HandSoldering</td><td>Resistor</td><td></td></tr>
+    <tr><td>R4, R5</td><td>2</td><td>10k</td><td>device:R</td><td>Resistors_SMD:R_0603_HandSoldering</td><td>Resistor</td><td></td></tr>
+    <tr><td>R7</td><td>1</td><td>2K</td><td>device:R</td><td>Resistors_SMD:R_0603_HandSoldering</td><td>Resistor</td><td></td></tr>
+    <tr><td>R8</td><td>1</td><td>3K</td><td>device:R</td><td>Resistors_SMD:R_0603_HandSoldering</td><td>Resistor</td><td></td></tr>
+    <tr><td>R9</td><td>1</td><td>10K</td><td>device:R</td><td>Resistors_SMD:R_0603_HandSoldering</td><td>Resistor</td><td></td></tr>
+    <tr><td>RN1</td><td>1</td><td>R_100</td><td>device:R_Pack08</td><td>Resistors_SMD:R_Cat16-8</td><td>8 Resistor network, parallel topology, DIP package</td><td></td></tr>
+    <tr><td>RV1, RV2</td><td>2</td><td>POT</td><td>device:POT</td><td></td><td>Potentiometer</td><td></td></tr>
+    <tr><td>SW1, SW2, SW3, SW4</td><td>4</td><td>SW_SPST</td><td>switches:SW_SPST</td><td>Buttons_Switches_THT:SW_Tactile_SPST_Angled_PTS645Vx39-2LFS</td><td>Single Pole Single Throw (SPST) switch</td><td></td></tr>
+    <tr><td>U1</td><td>1</td><td>L7805</td><td>regul:L7805</td><td>TO_SOT_Packages_SMD:TO-252-2</td><td>Positive 1.5A 35V Linear Regulator, Fixed Output 5V, TO-220/TO-263/TO-252</td><td></td></tr>
+    <tr><td>U2</td><td>1</td><td>MCP1825</td><td>regul:MCP1826S</td><td>TO_SOT_Packages_SMD:SOT-223-3_TabPin2</td><td>1000 mA, Low-Voltage, Low Quiescent Current LDO Regulator, SOT-223, TO-220, TO-263</td><td></td></tr>
+    <tr><td>U3</td><td>1</td><td>WIZ820IO</td><td>robocut_schematic:WIZ820IO</td><td>robocut_footprint:WIZ820IO</td><td></td><td></td></tr>
+    <tr><td>U4</td><td>1</td><td>74HC245</td><td>74xx:74HC245</td><td>Housings_SOIC:SOIC-20W_7.5x12.8mm_Pitch1.27mm</td><td>Octal BUS Transceivers, 3 State out</td><td></td></tr>
+    <tr><td>U5</td><td>1</td><td>Teensy3.2</td><td>teensy:Teensy3.2</td><td>teensy:Teensy30_31_32_LC</td><td></td><td></td></tr><!--TABLEROW-->
+    </table>
+    </body>
+</html>
+    

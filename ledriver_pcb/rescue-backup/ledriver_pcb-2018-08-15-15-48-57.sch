@@ -1,6 +1,43 @@
-EESchema Schematic File Version 4
+EESchema Schematic File Version 2
+LIBS:ledriver_pcb-rescue
+LIBS:power
+LIBS:device
+LIBS:switches
+LIBS:relays
+LIBS:motors
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:teensy
+LIBS:robocut_schematic
+LIBS:conn-amphenol
+LIBS:SparkFun-LED
 LIBS:ledriver_pcb-cache
-EELAYER 26 0
+EELAYER 25 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
@@ -15,7 +52,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L ledriver_pcb-rescue:74HC245 U4
+L 74HC245 U4
 U 1 1 59F8C85A
 P 2200 10150
 F 0 "U4" H 2300 10725 50  0000 L BNN
@@ -42,7 +79,7 @@ DATA_7_PIN_21
 Text Label 1500 10350 2    60   ~ 0
 DATA_8_PIN_5
 $Comp
-L power:GND #PWR01
+L GND #PWR01
 U 1 1 59F8CA2B
 P 3000 10850
 F 0 "#PWR01" H 3000 10600 50  0001 C CNN
@@ -73,7 +110,7 @@ RX1
 Text Label 11450 1600 2    60   ~ 0
 TX1
 $Comp
-L robocut_schematic:WIZ820IO U3
+L WIZ820IO U3
 U 1 1 59F8D741
 P 2000 8100
 F 0 "U3" H 2000 7650 60  0000 C CNN
@@ -84,7 +121,7 @@ F 3 "" H 2000 8100 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:Conn_01x08 J5
+L Conn_01x08 J5
 U 1 1 5A00BC25
 P 3750 10900
 F 0 "J5" H 3750 11300 50  0000 C CNN
@@ -95,7 +132,7 @@ F 3 "" H 3750 10900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L ledriver_pcb-rescue:Conn_01x08 J7
+L Conn_01x08 J7
 U 1 1 5A00BCC3
 P 4750 10900
 F 0 "J7" H 4750 11300 50  0000 C CNN
@@ -124,7 +161,7 @@ RX2
 Text Label 11450 2500 2    60   ~ 0
 TX2
 $Comp
-L ledriver_pcb-rescue:MCP1826S U2
+L MCP1826S U2
 U 1 1 5A00F3CC
 P 1400 7100
 F 0 "U2" H 1250 7225 50  0000 C CNN
@@ -135,7 +172,7 @@ F 3 "" H 1400 7350 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR02
+L GND #PWR02
 U 1 1 5A00F5EB
 P 1400 7400
 F 0 "#PWR02" H 1400 7150 50  0001 C CNN
@@ -146,7 +183,7 @@ F 3 "" H 1400 7400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:C C5
+L C C5
 U 1 1 5A00F80F
 P 950 7250
 F 0 "C5" H 975 7350 50  0000 L CNN
@@ -157,7 +194,7 @@ F 3 "" H 950 7250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:C C6
+L C C6
 U 1 1 5A00F87F
 P 1850 7250
 F 0 "C6" H 1875 7350 50  0000 L CNN
@@ -168,7 +205,7 @@ F 3 "" H 1850 7250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR03
+L GND #PWR03
 U 1 1 5A00FD58
 P 1400 8550
 F 0 "#PWR03" H 1400 8300 50  0001 C CNN
@@ -182,7 +219,7 @@ Text Label 2650 8350 0    60   ~ 0
 WIZ_RESET
 NoConn ~ 2500 8250
 $Comp
-L power:GND #PWR04
+L GND #PWR04
 U 1 1 5A0101B5
 P 2600 8550
 F 0 "#PWR04" H 2600 8300 50  0001 C CNN
@@ -204,7 +241,7 @@ NoConn ~ 1500 8450
 Text Label 3650 7750 2    60   ~ 0
 SPI_CS_SDCARD
 $Comp
-L ledriver_pcb-rescue:R R4
+L R R4
 U 1 1 5A0112E7
 P 1300 7750
 F 0 "R4" V 1380 7750 50  0000 C CNN
@@ -215,7 +252,7 @@ F 3 "" H 1300 7750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:R R5
+L R R5
 U 1 1 5A011333
 P 3800 7400
 F 0 "R5" V 3880 7400 50  0000 C CNN
@@ -230,7 +267,7 @@ SPI_DIN
 Text Label 3650 8050 2    60   ~ 0
 SPI_SCK
 $Comp
-L power:GND #PWR05
+L GND #PWR05
 U 1 1 5A0119AC
 P 3800 8900
 F 0 "#PWR05" H 3800 8650 50  0001 C CNN
@@ -245,7 +282,7 @@ SPI_DOUT
 NoConn ~ 3950 7650
 NoConn ~ 3950 8350
 $Comp
-L ledriver_pcb-rescue:R_Pack08 RN1
+L R_Pack08 RN1
 U 1 1 5A014399
 P 3100 10050
 F 0 "RN1" V 2600 10050 50  0000 C CNN
@@ -256,7 +293,7 @@ F 3 "" H 3100 10050 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:VCC #PWR06
+L VCC #PWR06
 U 1 1 5A014E4B
 P 750 9500
 F 0 "#PWR06" H 750 9350 50  0001 C CNN
@@ -267,7 +304,7 @@ F 3 "" H 750 9500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR07
+L GND #PWR07
 U 1 1 5A014F86
 P 1400 10850
 F 0 "#PWR07" H 1400 10600 50  0001 C CNN
@@ -278,7 +315,7 @@ F 3 "" H 1400 10850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:C C4
+L C C4
 U 1 1 5A015760
 P 750 10700
 F 0 "C4" H 775 10800 50  0000 L CNN
@@ -314,7 +351,7 @@ NoConn ~ 14200 3200
 NoConn ~ 14200 3300
 NoConn ~ 14200 3400
 $Comp
-L power:GND #PWR08
+L GND #PWR08
 U 1 1 5A01845A
 P 11000 1550
 F 0 "#PWR08" H 11000 1300 50  0001 C CNN
@@ -330,7 +367,7 @@ NoConn ~ 12200 3000
 NoConn ~ 12200 3100
 NoConn ~ 12200 3200
 $Comp
-L ledriver_pcb-rescue:Conn_01x02 J3
+L Conn_01x02 J3
 U 1 1 5A022A9A
 P 2750 3050
 F 0 "J3" H 2750 3150 50  0000 C CNN
@@ -341,7 +378,7 @@ F 3 "" H 2750 3050 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L ledriver_pcb-rescue:USB_B J2
+L USB_B J2
 U 1 1 5A022F31
 P 1900 2950
 F 0 "J2" H 1700 3400 50  0000 L CNN
@@ -352,7 +389,7 @@ F 3 "" H 2050 2900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR09
+L GND #PWR09
 U 1 1 5A023654
 P 2400 3450
 F 0 "#PWR09" H 2400 3200 50  0001 C CNN
@@ -363,7 +400,7 @@ F 3 "" H 2400 3450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:Conn_01x04 J11
+L Conn_01x04 J11
 U 1 1 5A0242A5
 P 9100 6550
 F 0 "J11" H 9100 6750 50  0000 C CNN
@@ -374,7 +411,7 @@ F 3 "" H 9100 6550 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L power:GND #PWR010
+L GND #PWR010
 U 1 1 5A024650
 P 8400 6750
 F 0 "#PWR010" H 8400 6500 50  0001 C CNN
@@ -385,7 +422,7 @@ F 3 "" H 8400 6750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:VCC #PWR011
+L VCC #PWR011
 U 1 1 5A02480D
 P 8400 6200
 F 0 "#PWR011" H 8400 6050 50  0001 C CNN
@@ -408,7 +445,7 @@ BUTTONS
 Text Label 9500 5600 2    60   ~ 0
 BUTTONS
 $Comp
-L ledriver_pcb-rescue:R R6
+L R R6
 U 1 1 5A026438
 P 10150 4200
 F 0 "R6" V 10230 4200 50  0000 C CNN
@@ -419,7 +456,7 @@ F 3 "" H 10150 4200 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L ledriver_pcb-rescue:R R7
+L R R7
 U 1 1 5A0266E3
 P 10150 4550
 F 0 "R7" V 10230 4550 50  0000 C CNN
@@ -430,7 +467,7 @@ F 3 "" H 10150 4550 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L ledriver_pcb-rescue:R R8
+L R R8
 U 1 1 5A026971
 P 10150 4900
 F 0 "R8" V 10230 4900 50  0000 C CNN
@@ -441,7 +478,7 @@ F 3 "" H 10150 4900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L ledriver_pcb-rescue:R R9
+L R R9
 U 1 1 5A026E6B
 P 10150 5600
 F 0 "R9" V 10230 5600 50  0000 C CNN
@@ -454,7 +491,7 @@ $EndComp
 Text Label 12200 1800 2    60   ~ 0
 STATUS
 $Comp
-L power:VCC #PWR012
+L VCC #PWR012
 U 1 1 5A0309E5
 P 5050 9650
 F 0 "#PWR012" H 5050 9500 50  0001 C CNN
@@ -465,7 +502,7 @@ F 3 "" H 5050 9650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:VCC #PWR013
+L VCC #PWR013
 U 1 1 5A030BFF
 P 14750 3400
 F 0 "#PWR013" H 14750 3250 50  0001 C CNN
@@ -476,7 +513,7 @@ F 3 "" H 14750 3400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:VCC #PWR014
+L VCC #PWR014
 U 1 1 5A0332BB
 P 800 7100
 F 0 "#PWR014" H 800 6950 50  0001 C CNN
@@ -487,7 +524,7 @@ F 3 "" H 800 7100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:Conn_01x04 J8
+L Conn_01x04 J8
 U 1 1 5A035117
 P 5600 10350
 F 0 "J8" H 5600 10550 50  0000 C CNN
@@ -500,7 +537,7 @@ $EndComp
 Text Label 2700 5000 0    60   ~ 0
 STATUS
 $Comp
-L ledriver_pcb-rescue:LED D3
+L LED D3
 U 1 1 5A03618C
 P 2500 5000
 F 0 "D3" H 2500 5100 50  0000 C CNN
@@ -511,7 +548,7 @@ F 3 "" H 2500 5000 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L ledriver_pcb-rescue:R R2
+L R R2
 U 1 1 5A036447
 P 2100 5000
 F 0 "R2" V 2180 5000 50  0000 C CNN
@@ -522,7 +559,7 @@ F 3 "" H 2100 5000 50  0001 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L power:GND #PWR015
+L GND #PWR015
 U 1 1 5A036589
 P 1850 5100
 F 0 "#PWR015" H 1850 4850 50  0001 C CNN
@@ -533,7 +570,7 @@ F 3 "" H 1850 5100 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:SW_SPST SW1
+L SW_SPST SW1
 U 1 1 5A05CEE5
 P 9800 4200
 F 0 "SW1" H 9800 4325 50  0000 C CNN
@@ -544,7 +581,7 @@ F 3 "" H 9800 4200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:SW_SPST SW2
+L SW_SPST SW2
 U 1 1 5A05D07D
 P 9800 4550
 F 0 "SW2" H 9800 4675 50  0000 C CNN
@@ -555,7 +592,7 @@ F 3 "" H 9800 4550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:SW_SPST SW3
+L SW_SPST SW3
 U 1 1 5A05D1E0
 P 9800 4900
 F 0 "SW3" H 9800 5025 50  0000 C CNN
@@ -572,7 +609,7 @@ RX2
 Text Notes 5400 9900 0    60   ~ 0
 now uses pin 7 and 14 for SPI output for APA102
 $Comp
-L ledriver_pcb-rescue:Conn_01x04 J12
+L Conn_01x04 J12
 U 1 1 5A07A271
 P 10200 7000
 F 0 "J12" H 10200 7200 50  0000 C CNN
@@ -583,7 +620,7 @@ F 3 "" H 10200 7000 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L power:GND #PWR016
+L GND #PWR016
 U 1 1 5A07A4D3
 P 9900 7200
 F 0 "#PWR016" H 9900 6950 50  0001 C CNN
@@ -594,7 +631,7 @@ F 3 "" H 9900 7200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:VCC #PWR017
+L VCC #PWR017
 U 1 1 5A07A5AA
 P 9900 6700
 F 0 "#PWR017" H 9900 6550 50  0001 C CNN
@@ -605,7 +642,7 @@ F 3 "" H 9900 6700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:Conn_01x02 J1
+L Conn_01x02 J1
 U 1 1 5A081C26
 P 1250 1700
 F 0 "J1" H 1250 1800 50  0000 C CNN
@@ -616,7 +653,7 @@ F 3 "" H 1250 1700 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L power:+12V #PWR018
+L +12V #PWR018
 U 1 1 5A081C33
 P 2000 1500
 F 0 "#PWR018" H 2000 1350 50  0001 C CNN
@@ -627,7 +664,7 @@ F 3 "" H 2000 1500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:PWR_FLAG #FLG019
+L PWR_FLAG #FLG019
 U 1 1 5A081C39
 P 1600 1500
 F 0 "#FLG019" H 1600 1575 50  0001 C CNN
@@ -638,7 +675,7 @@ F 3 "" H 1600 1500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:D D1
+L D D1
 U 1 1 5A081C3F
 P 2350 1600
 F 0 "D1" H 2350 1700 50  0000 C CNN
@@ -649,7 +686,7 @@ F 3 "" H 2350 1600 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:PWR_FLAG #FLG020
+L PWR_FLAG #FLG020
 U 1 1 5A081C46
 P 2800 1500
 F 0 "#FLG020" H 2800 1575 50  0001 C CNN
@@ -660,7 +697,7 @@ F 3 "" H 2800 1500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:L7805 U1
+L L7805 U1
 U 1 1 5A081C4C
 P 3300 1600
 F 0 "U1" H 3150 1725 50  0000 C CNN
@@ -671,7 +708,7 @@ F 3 "" H 3300 1550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:CP1 C1
+L CP1 C1
 U 1 1 5A081C53
 P 2800 1900
 F 0 "C1" H 2825 2000 50  0000 L CNN
@@ -682,7 +719,7 @@ F 3 "" H 2800 1900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR021
+L GND #PWR021
 U 1 1 5A081C5A
 P 3300 2250
 F 0 "#PWR021" H 3300 2000 50  0001 C CNN
@@ -693,7 +730,7 @@ F 3 "" H 3300 2250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:CP1 C2
+L CP1 C2
 U 1 1 5A081C60
 P 3800 1900
 F 0 "C2" H 3825 2000 50  0000 L CNN
@@ -704,7 +741,7 @@ F 3 "" H 3800 1900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:C C3
+L C C3
 U 1 1 5A081C67
 P 4150 1900
 F 0 "C3" H 4175 2000 50  0000 L CNN
@@ -715,7 +752,7 @@ F 3 "" H 4150 1900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:VCC #PWR022
+L VCC #PWR022
 U 1 1 5A081C6E
 P 5200 2450
 F 0 "#PWR022" H 5200 2300 50  0001 C CNN
@@ -726,7 +763,7 @@ F 3 "" H 5200 2450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:LED D2
+L LED D2
 U 1 1 5A081C74
 P 2500 4400
 F 0 "D2" H 2500 4500 50  0000 C CNN
@@ -737,7 +774,7 @@ F 3 "" H 2500 4400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:R R1
+L R R1
 U 1 1 5A081C7B
 P 2100 4400
 F 0 "R1" V 2180 4400 50  0000 C CNN
@@ -752,7 +789,7 @@ Alternative regulated supply
 Text Notes 1400 2550 0    60   ~ 0
 Power Input\n
 $Comp
-L power:VCC #PWR023
+L VCC #PWR023
 U 1 1 5A089F28
 P 2750 4300
 F 0 "#PWR023" H 2750 4150 50  0001 C CNN
@@ -763,7 +800,7 @@ F 3 "" H 2750 4300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR024
+L GND #PWR024
 U 1 1 5A08A248
 P 1850 4500
 F 0 "#PWR024" H 1850 4250 50  0001 C CNN
@@ -774,7 +811,7 @@ F 3 "" H 1850 4500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:GS3 J4
+L GS3 J4
 U 1 1 5A08B803
 P 4600 2650
 F 0 "J4" H 4650 2850 50  0000 C CNN
@@ -785,7 +822,7 @@ F 3 "" H 4600 2650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:PWR_FLAG #FLG025
+L PWR_FLAG #FLG025
 U 1 1 5A08D784
 P 4900 2450
 F 0 "#FLG025" H 4900 2525 50  0001 C CNN
@@ -796,7 +833,7 @@ F 3 "" H 4900 2450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:Conn_01x01 J14
+L Conn_01x01 J14
 U 1 1 5A091DB6
 P 14200 650
 F 0 "J14" H 14200 750 50  0000 C CNN
@@ -808,7 +845,7 @@ F 3 "" H 14200 650 50  0001 C CNN
 $EndComp
 NoConn ~ 14200 850 
 $Comp
-L ledriver_pcb-rescue:Conn_01x01 J15
+L Conn_01x01 J15
 U 1 1 5A094A2D
 P 14500 650
 F 0 "J15" H 14500 750 50  0000 C CNN
@@ -820,7 +857,7 @@ F 3 "" H 14500 650 50  0001 C CNN
 $EndComp
 NoConn ~ 14500 850 
 $Comp
-L ledriver_pcb-rescue:Conn_01x01 J16
+L Conn_01x01 J16
 U 1 1 5A094B84
 P 14800 650
 F 0 "J16" H 14800 750 50  0000 C CNN
@@ -832,7 +869,7 @@ F 3 "" H 14800 650 50  0001 C CNN
 $EndComp
 NoConn ~ 14800 850 
 $Comp
-L ledriver_pcb-rescue:Conn_01x01 J17
+L Conn_01x01 J17
 U 1 1 5A094B8B
 P 15100 650
 F 0 "J17" H 15100 750 50  0000 C CNN
@@ -844,7 +881,7 @@ F 3 "" H 15100 650 50  0001 C CNN
 $EndComp
 NoConn ~ 15100 850 
 $Comp
-L conn-amphenol:CONN-114-00841-68-MICROSD J6
+L CONN-114-00841-68-MICROSD J6
 U 1 1 5A03FC56
 P 4000 7650
 F 0 "J6" H 4000 7950 50  0000 C CNN
@@ -869,7 +906,7 @@ on daughter board...
 Text Notes 10350 7000 0    60   ~ 0
 to control daughter
 $Comp
-L ledriver_pcb-rescue:Conn_01x04 J13
+L Conn_01x04 J13
 U 1 1 5A5967B2
 P 10200 8000
 F 0 "J13" H 10200 8200 50  0000 C CNN
@@ -880,7 +917,7 @@ F 3 "" H 10200 8000 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L power:GND #PWR026
+L GND #PWR026
 U 1 1 5A5967B8
 P 9900 8200
 F 0 "#PWR026" H 9900 7950 50  0001 C CNN
@@ -891,7 +928,7 @@ F 3 "" H 9900 8200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:VCC #PWR027
+L VCC #PWR027
 U 1 1 5A5967BE
 P 9900 7700
 F 0 "#PWR027" H 9900 7550 50  0001 C CNN
@@ -909,7 +946,7 @@ SD_CARD and WIZNET
 Text Notes 4700 8700 0    60   ~ 0
 add a ws2812 led for debug purpose\n
 $Comp
-L power:+3V3 #PWR028
+L +3V3 #PWR028
 U 1 1 5A68F06D
 P 14950 3400
 F 0 "#PWR028" H 14950 3250 50  0001 C CNN
@@ -920,7 +957,7 @@ F 3 "" H 14950 3400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GNDA #PWR029
+L GNDA #PWR029
 U 1 1 5A68F33C
 P 15100 3850
 F 0 "#PWR029" H 15100 3600 50  0001 C CNN
@@ -931,7 +968,7 @@ F 3 "" H 15100 3850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GNDA #PWR030
+L GNDA #PWR030
 U 1 1 5A6902E9
 P 10400 5700
 F 0 "#PWR030" H 10400 5450 50  0001 C CNN
@@ -942,7 +979,7 @@ F 3 "" H 10400 5700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3V3 #PWR031
+L +3V3 #PWR031
 U 1 1 5A6911E9
 P 10300 4100
 F 0 "#PWR031" H 10300 3950 50  0001 C CNN
@@ -961,7 +998,7 @@ RX3
 Text Label 11500 7500 2    60   ~ 0
 TX3
 $Comp
-L ledriver_pcb-rescue:Conn_01x04 J18
+L Conn_01x04 J18
 U 1 1 5A849A7A
 P 11950 7500
 F 0 "J18" H 11950 7700 50  0000 C CNN
@@ -972,7 +1009,7 @@ F 3 "" H 11950 7500 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L power:GND #PWR032
+L GND #PWR032
 U 1 1 5A849A80
 P 11650 7700
 F 0 "#PWR032" H 11650 7450 50  0001 C CNN
@@ -983,7 +1020,7 @@ F 3 "" H 11650 7700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:VCC #PWR033
+L VCC #PWR033
 U 1 1 5A849A86
 P 11650 7200
 F 0 "#PWR033" H 11650 7050 50  0001 C CNN
@@ -998,7 +1035,7 @@ to control daughter
 Text Notes 5600 8850 0    60   ~ 0
 put it on the underside!!! underglow
 $Comp
-L ledriver_pcb-rescue:SW_SPST SW4
+L SW_SPST SW4
 U 1 1 5A8D9A1F
 P 9800 5250
 F 0 "SW4" H 9800 5375 50  0000 C CNN
@@ -1009,7 +1046,7 @@ F 3 "" H 9800 5250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:R R3
+L R R3
 U 1 1 5A8D9C10
 P 10150 5250
 F 0 "R3" V 10230 5250 50  0000 C CNN
@@ -1028,7 +1065,7 @@ DOWN
 Text Notes 10400 5250 0    60   ~ 0
 BACK
 $Comp
-L ledriver_pcb-rescue:POT RV2
+L POT RV2
 U 1 1 5A8DB502
 P 8450 5000
 F 0 "RV2" V 8275 5000 50  0000 C CNN
@@ -1039,7 +1076,7 @@ F 3 "" H 8450 5000 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L ledriver_pcb-rescue:POT RV1
+L POT RV1
 U 1 1 5A8DB5EA
 P 8450 4500
 F 0 "RV1" V 8275 4500 50  0000 C CNN
@@ -1050,7 +1087,7 @@ F 3 "" H 8450 4500 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+3V3 #PWR034
+L +3V3 #PWR034
 U 1 1 5A8DBDD0
 P 8700 4900
 F 0 "#PWR034" H 8700 4750 50  0001 C CNN
@@ -1061,7 +1098,7 @@ F 3 "" H 8700 4900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+3V3 #PWR035
+L +3V3 #PWR035
 U 1 1 5A8DBECD
 P 8700 4400
 F 0 "#PWR035" H 8700 4250 50  0001 C CNN
@@ -1072,7 +1109,7 @@ F 3 "" H 8700 4400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GNDA #PWR036
+L GNDA #PWR036
 U 1 1 5A8DBF95
 P 8200 5100
 F 0 "#PWR036" H 8200 4850 50  0001 C CNN
@@ -1083,7 +1120,7 @@ F 3 "" H 8200 5100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GNDA #PWR037
+L GNDA #PWR037
 U 1 1 5A8DC187
 P 8200 4600
 F 0 "#PWR037" H 8200 4350 50  0001 C CNN
@@ -1098,7 +1135,7 @@ POT1
 Text Label 8650 5150 0    60   ~ 0
 POT2
 $Comp
-L SparkFun-LED:WS2812B D4
+L WS2812B D4
 U 1 1 5AE90268
 P 7150 10600
 F 0 "D4" H 7060 10930 50  0000 L BNN
@@ -1109,7 +1146,7 @@ F 3 "" H 7150 10600 60  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR038
+L GND #PWR038
 U 1 1 5AE903FD
 P 6350 10950
 F 0 "#PWR038" H 6350 10700 50  0001 C CNN
@@ -1120,7 +1157,7 @@ F 3 "" H 6350 10950 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:VCC #PWR039
+L VCC #PWR039
 U 1 1 5AE905CD
 P 7500 10250
 F 0 "#PWR039" H 7500 10100 50  0001 C CNN
@@ -1131,7 +1168,7 @@ F 3 "" H 7500 10250 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:C C7
+L C C7
 U 1 1 5AE9513E
 P 7500 10550
 F 0 "C7" H 7525 10650 50  0000 L CNN
@@ -1142,7 +1179,7 @@ F 3 "" H 7500 10550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ledriver_pcb-rescue:GS2 J19
+L GS2 J19
 U 1 1 5AE955CE
 P 5850 10700
 F 0 "J19" H 5950 10850 50  0000 C CNN
@@ -1155,7 +1192,7 @@ $EndComp
 Wire Wire Line
 	4050 10550 4050 10700
 Wire Wire Line
-	3000 10550 3450 10550
+	3000 10550 5050 10550
 Wire Wire Line
 	3000 10550 3000 10850
 Wire Wire Line
@@ -1168,7 +1205,7 @@ Wire Wire Line
 	3450 10700 3450 10550
 Connection ~ 3450 10550
 Wire Wire Line
-	5050 10450 5050 10550
+	5050 10450 5050 10700
 Connection ~ 4050 10550
 Wire Wire Line
 	4850 10700 4850 10550
@@ -1182,15 +1219,15 @@ Connection ~ 4450 10550
 Wire Wire Line
 	3300 9650 4950 9650
 Wire Wire Line
-	4950 9650 4950 10650
+	4950 9650 4950 10700
 Wire Wire Line
 	3300 9750 4750 9750
 Wire Wire Line
-	4750 9750 4750 10150
+	4750 9750 4750 10700
 Wire Wire Line
 	3300 9850 4550 9850
 Wire Wire Line
-	4550 9850 4550 10350
+	4550 9850 4550 10700
 Wire Wire Line
 	3300 9950 4350 9950
 Wire Wire Line
@@ -1220,22 +1257,22 @@ Wire Wire Line
 Wire Wire Line
 	12200 2500 11450 2500
 Wire Wire Line
-	950  7400 1400 7400
+	950  7400 1850 7400
 Connection ~ 1400 7400
 Wire Wire Line
-	800  7100 950  7100
+	800  7100 1100 7100
 Wire Wire Line
-	1700 7100 1850 7100
+	1700 7100 3800 7100
 Connection ~ 950  7100
 Wire Wire Line
-	1400 7950 1400 8050
+	1400 7950 1400 8550
 Wire Wire Line
 	1400 7950 1500 7950
 Wire Wire Line
 	1500 8050 1400 8050
 Connection ~ 1400 8050
 Wire Wire Line
-	2650 7100 2650 7600
+	2650 7100 2650 8150
 Wire Wire Line
 	2650 8050 2500 8050
 Connection ~ 1850 7100
@@ -1255,7 +1292,7 @@ Wire Wire Line
 Wire Wire Line
 	1150 8250 1500 8250
 Wire Wire Line
-	1150 8350 1300 8350
+	1150 8350 1500 8350
 Wire Wire Line
 	1300 8350 1300 7900
 Connection ~ 1300 8350
@@ -1263,7 +1300,7 @@ Wire Wire Line
 	1300 7600 2650 7600
 Connection ~ 2650 7600
 Wire Wire Line
-	3650 7750 3800 7750
+	3650 7750 3950 7750
 Wire Wire Line
 	3800 7100 3800 7250
 Connection ~ 2650 7100
@@ -1274,7 +1311,7 @@ Wire Wire Line
 Wire Wire Line
 	3950 8150 3800 8150
 Wire Wire Line
-	3800 8150 3800 8750
+	3800 8150 3800 8900
 Wire Wire Line
 	3650 8250 3950 8250
 Wire Wire Line
@@ -1298,7 +1335,7 @@ Wire Wire Line
 Wire Wire Line
 	2200 2750 4450 2750
 Wire Wire Line
-	1800 3350 1900 3350
+	1800 3350 2400 3350
 Wire Wire Line
 	8400 6450 8400 6750
 Wire Wire Line
@@ -1310,15 +1347,15 @@ Wire Wire Line
 Wire Wire Line
 	8900 6650 8850 6650
 Wire Wire Line
-	10300 4100 10300 4200
+	10300 4100 10300 5250
 Wire Wire Line
 	10300 5600 10400 5600
 Wire Wire Line
 	10400 5600 10400 5700
 Wire Wire Line
-	9500 5600 9600 5600
+	9500 5600 10000 5600
 Wire Wire Line
-	9600 4200 9600 4550
+	9600 4200 9600 5600
 Wire Wire Line
 	12200 3600 11450 3600
 Wire Wire Line
@@ -1376,7 +1413,7 @@ Wire Wire Line
 Wire Wire Line
 	1650 1700 1650 2150
 Wire Wire Line
-	1450 1600 1600 1600
+	1450 1600 2200 1600
 Wire Wire Line
 	2000 1600 2000 1500
 Wire Wire Line
@@ -1384,16 +1421,16 @@ Wire Wire Line
 Connection ~ 1600 1600
 Connection ~ 2000 1600
 Wire Wire Line
-	2500 1600 2800 1600
+	2500 1600 3000 1600
 Wire Wire Line
-	2800 1500 2800 1600
+	2800 1500 2800 1750
 Connection ~ 2800 1600
 Wire Wire Line
-	3300 1900 3300 2150
+	3300 1900 3300 2250
 Wire Wire Line
 	2800 2050 2800 2150
 Wire Wire Line
-	1650 2150 2800 2150
+	1650 2150 4150 2150
 Connection ~ 3300 2150
 Wire Wire Line
 	3800 2150 3800 2050
@@ -1420,9 +1457,9 @@ Wire Wire Line
 Wire Wire Line
 	5200 2650 5200 2450
 Wire Wire Line
-	4750 2650 4900 2650
+	4750 2650 5200 2650
 Wire Wire Line
-	3600 1600 3800 1600
+	3600 1600 4450 1600
 Wire Wire Line
 	4450 1600 4450 2550
 Wire Wire Line
@@ -1517,7 +1554,7 @@ Wire Wire Line
 	6050 10400 6450 10400
 NoConn ~ 7350 10700
 $Comp
-L teensy:Teensy3.2 U5
+L Teensy3.2 U5
 U 1 1 5AE99D57
 P 13200 2700
 F 0 "U5" H 13200 4200 60  0000 C CNN
@@ -1537,86 +1574,4 @@ Wire Wire Line
 Connection ~ 4550 10350
 Text Notes 9750 3150 0    60   ~ 0
 status went from pin 22 to pin 3\nbuttons to pin 22\nwiz CS to 15
-Wire Wire Line
-	3850 10550 4050 10550
-Wire Wire Line
-	3650 10550 3850 10550
-Wire Wire Line
-	3450 10550 3650 10550
-Wire Wire Line
-	4050 10550 4450 10550
-Wire Wire Line
-	4850 10550 5050 10550
-Wire Wire Line
-	4650 10550 4850 10550
-Wire Wire Line
-	4450 10550 4650 10550
-Wire Wire Line
-	1400 7400 1850 7400
-Wire Wire Line
-	950  7100 1100 7100
-Wire Wire Line
-	1400 8050 1400 8550
-Wire Wire Line
-	1850 7100 2650 7100
-Wire Wire Line
-	2650 8050 2650 8150
-Wire Wire Line
-	1300 8350 1500 8350
-Wire Wire Line
-	2650 7600 2650 7950
-Wire Wire Line
-	2650 7100 3800 7100
-Wire Wire Line
-	5050 10550 5050 10700
-Wire Wire Line
-	9600 5600 10000 5600
-Wire Wire Line
-	9600 4550 9600 4900
-Wire Wire Line
-	9600 4900 9600 5250
-Wire Wire Line
-	10300 4550 10300 4900
-Wire Wire Line
-	10300 4200 10300 4550
-Wire Wire Line
-	4750 10150 4750 10700
-Wire Wire Line
-	3800 7750 3950 7750
-Wire Wire Line
-	2650 7950 2650 8050
-Wire Wire Line
-	1900 3350 2400 3350
-Wire Wire Line
-	1600 1600 2000 1600
-Wire Wire Line
-	2000 1600 2200 1600
-Wire Wire Line
-	2800 1600 3000 1600
-Wire Wire Line
-	2800 1600 2800 1750
-Wire Wire Line
-	3300 2150 3300 2250
-Wire Wire Line
-	3300 2150 3800 2150
-Wire Wire Line
-	3800 1600 4150 1600
-Wire Wire Line
-	3800 2150 4150 2150
-Wire Wire Line
-	4150 1600 4450 1600
-Wire Wire Line
-	2800 2150 3300 2150
-Wire Wire Line
-	4900 2650 5200 2650
-Wire Wire Line
-	3800 8750 3800 8900
-Wire Wire Line
-	10300 4900 10300 5250
-Wire Wire Line
-	9600 5250 9600 5600
-Wire Wire Line
-	4950 10650 4950 10700
-Wire Wire Line
-	4550 10350 4550 10700
 $EndSCHEMATC
