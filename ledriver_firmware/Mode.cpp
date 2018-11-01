@@ -95,15 +95,6 @@ void ArtNetMode::receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _uni
     // if(_universe == 3) _universe = 7;
     newData = false;
     if(_sequence != currentSequence){
-        for(int i = 0; i < 10; i++){
-            if(leds[i].r != 0) {
-                Serial.printf("%i: %i %i %i \n",i, leds[i].r, leds[i].g, leds[i].b);
-            }
-            else {
-                Serial.println("nocolor");
-            }
-        }
-
         FastLED.show();
         newData = true;
         currentSequence = _sequence;
@@ -112,14 +103,13 @@ void ArtNetMode::receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _uni
     }
     if(_universe >= startUniverse && _universe < startUniverse+9){
         _universe -= startUniverse;
-        // Serial.printf("%i %i \n", _universe, startUniverse);
         for(int i = 0; i < _dataLenght/3; i++){
             leds[universeToIndex[_universe]+i] = CRGB(_data[i*3], _data[i*3+1], _data[i*3+2]);
         }
-        // FastLED.show();
     }
     // view.printf("R %03u, G %03u, B %03u \n", _data[0], network.artnetData[1], network.artnetData[2]);
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

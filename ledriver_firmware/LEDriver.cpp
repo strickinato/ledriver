@@ -333,6 +333,8 @@ void LEDriver::loadConfigFile(const char * _fileName){
             else if(root.containsKey("leds")){
                 JsonObject & ledcfg = root["leds"];
                 artnetMode.startUniverse = ledcfg["start_uni"];
+                // we need to substract 1 for the stupid artnet zero indexes
+                artnetMode.startUniverse -= 1;
                 view.println(artnetMode.startUniverse);
                 ledOutputMode = stringMatcher(ledcfg["leds"]);
                 ledColorOrder = stringMatcher(ledcfg["color_order"]);
