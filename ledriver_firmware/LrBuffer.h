@@ -8,7 +8,7 @@
 #define LR_LED_PER_STRIP 268
 #define LR_NUM_STRIPS 8
 #define LR_NUM_LEDS LR_NUM_STRIPS * LR_LED_PER_STRIP
-
+// leds * RGB plus 2 dmx universes
 #define LR_MAX_BUFFER_SIZE LR_NUM_LEDS * 3 + 512 * 2
 
 // tmeplate thing that might help
@@ -18,7 +18,7 @@ class LrBuffer {
     public:
         LrBuffer();
         void begin();
-        void enableFastLED();
+        void enableFastLED(const uint8_t _ledOuputType, const uint8_t _colorOrder);
         bool ledsEnabled;
         // this is the main buffer that gets output.
         uint8_t drawBuffer[LR_MAX_BUFFER_SIZE];

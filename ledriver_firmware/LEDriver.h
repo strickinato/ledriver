@@ -99,6 +99,7 @@ class LEDriver {
 
         View view;
 
+        // a variable to signal new data from any source? usb/serial/sd
         bool gotNewData;
         bool gotFullArtnet;
 
@@ -110,6 +111,7 @@ class LEDriver {
         Network network;
         void checkUdpForOSC();
         void checkWebsocket();
+        void checkArtnet();
 
         bool flasher;
         void pushConfig();

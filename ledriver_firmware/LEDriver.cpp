@@ -16,7 +16,6 @@ LEDriver::LEDriver(){
 }
 
 void LEDriver::begin(){
-    dataBuffer.begin();
     view.begin();
     view.printf("ledriver V%f\n", VERSION);
 
@@ -30,6 +29,7 @@ void LEDriver::begin(){
         loadConfigFile(DMX_CONFIG_FILE);
     }
 
+    dataBuffer.begin();
     // setup buffer
     leds = dataBuffer.getLEDs();
     Mode::leds = dataBuffer.getLEDs();
@@ -42,10 +42,13 @@ void LEDriver::begin(){
     artnetMode.setup();
 
     // enable FastLED
-    if(ledOutputMode == FAST_OCTO){
-        dataBuffer.enableFastLED();
-        if(debug_level > 0) view.println("- fastocto go");
-    }
+    dataBuffer.enableFastLED(ledOutputMode, ledColorOrder);
+    // if(ledOutputMode == FAST_OCTO){
+    //     if(debug_level > 0) view.println("- fastocto go");
+    // } else if (ledOutputMode == FAST_WS2801) {
+    //     dataBuffer.enableFastLED(WS2801);
+    //     if(debug_level > 0) view.println("- fastws go");
+    // }
 
     network.reset();
 
@@ -78,15 +81,14 @@ void LEDriver::begin(){
 // Messaging
 ///////////////////////////////////////////////////////////////////////////////
 
-
+// this is needed to keep the websocket connection active and output to leds
 void LEDriver::runWithWebsocket(EthernetServer * serverForSocket){
     EthernetClient client = serverForSocket->available();
     if(client.connected() && webSocketServer.handshake(client)){
         if(debug_level > 0) view.println(F("- ws cnnctn"));
-        // push config :
+        // on new connection push config :
         pushConfig();
         while(client.connected()){
-
             checkUdpForOSC();
             checkWebsocket();
             // call the regular update
@@ -204,40 +206,25 @@ void LEDriver::receiveCommand(uint8_t _cmd, uint8_t _val){
 ///////////////////////////////////////////////////////////////////////////////
 // Update
 ///////////////////////////////////////////////////////////////////////////////
-// kind of the main loop
-void LEDriver::update(){
 
+//
+void LEDriver::update(){
+    // the callback to the parent arduino file, for project specific code
     updateCallback();
+    // status light blinking to indicate operation
     if(frameCount % 4 == 1){
         digitalWrite(STATUS_LED_PIN, flasher);
         flasher = !flasher;
     }
-
     frameCount++;
-
-    checkInput();
     Mode::frameCount = frameCount;
-    // check for serial connection
+    // check pots and buttons
+    checkInput();
 
-    gotNewData = false;
+    // check for serial connection?
+    // check artnet
     if(currentMode == ARTNET_MODE){
-        if(buttonPress == 1){
-        }
-        if(network.checkArtnet()){
-            gotNewData = true;
-            // view.printf("u = %i s = %i \n",network.incomingUniverse, network.sequence);
-            if(dmxOne.universe == network.incomingUniverse){
-                memcpy(dataBuffer.getDMX(0), network.artnetData, 512);
-            }
-            // view.println(dmxThree.universe);
-            if(dmxThree.universe == network.incomingUniverse){
-                memcpy(dataBuffer.getDMX(1), network.artnetData, 512);
-            }
-            artnetMode.receivePacket(network.artnetData,
-                                     network.sequence,
-                                     network.incomingUniverse,
-                                     network.dmxDataLength);
-        }
+        checkArtnet();
     }
 
     // interpret input
@@ -253,11 +240,29 @@ void LEDriver::update(){
     if(millis() - timeStamp > 1000){
         timeStamp = millis();
         fps = fpsCount;
-        // view.printf("fps %i \n", fpsCount);
         fpsCount = 0;
-        if(false)view.printf("fps %i \n", fps);
+        if(false) view.printf("fps %i \n", fps);
     }
+}
 
+void LEDriver::checkArtnet(){
+    gotNewData = false;
+    if(network.checkArtnet()){
+        gotNewData = true;
+        // view.printf("u = %i s = %i \n",network.incomingUniverse, network.sequence);
+        // view.printf("%i %i %i \n",network.artnetData[0],network.artnetData[1],network.artnetData[2]);
+        if(dmxOne.universe == network.incomingUniverse){
+            memcpy(dataBuffer.getDMX(0), network.artnetData, 512);
+        }
+        // view.println(dmxThree.universe);
+        if(dmxThree.universe == network.incomingUniverse){
+            memcpy(dataBuffer.getDMX(1), network.artnetData, 512);
+        }
+        artnetMode.receivePacket(network.artnetData,
+                                 network.sequence,
+                                 network.incomingUniverse,
+                                 network.dmxDataLength);
+    }
 }
 
 void LEDriver::updateDMX(){
@@ -375,13 +380,15 @@ uint8_t LEDriver::stringMatcher(const char * _str){
         view.printf("! APA102 not implemented");
         return  NONE_OUTPUT;
     }
+    else if(strcmp(_str, "FAST_WS2801") == 0){
+        return  FAST_WS2801;
+    }
     else if(strcmp(_str, "input") == 0){
         return DMX_IN;
     }
     else if(strcmp(_str, "output") == 0){
         return DMX_OUT;
     }
-
     else if(strcmp(_str, "RGB") == 0){
         return RGB;
     }
@@ -394,7 +401,6 @@ uint8_t LEDriver::stringMatcher(const char * _str){
     else if(strcmp(_str, "GBR") == 0){
         return GBR;
     }
-
     else if(strcmp(_str, "demo") == 0){
         return DEMO_MODE;
     }

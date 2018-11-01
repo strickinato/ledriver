@@ -9,8 +9,6 @@
  // FastLED
 
 
-
-
 #include "LEDriver.h"
 #include "Ethernet.h"
 
@@ -41,9 +39,7 @@ void loop(){
 }
 
 void updateCallback(){
-    if(ledriver.gotNewData){
-        // dmx_output_1.setChannels(0, (const uint8_t *)leds, 512);
-    }
+    
 }
 
 
