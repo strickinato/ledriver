@@ -249,7 +249,7 @@ void LEDriver::checkArtnet(){
     gotNewData = false;
     if(network.checkArtnet()){
         gotNewData = true;
-        // view.printf("u = %i s = %i \n",network.incomingUniverse, network.sequence);
+        view.printf("u = %i s = %i \n",network.incomingUniverse, network.sequence);
         // view.printf("%i %i %i \n",network.artnetData[0],network.artnetData[1],network.artnetData[2]);
         if(dmxOne.universe == network.incomingUniverse){
             memcpy(dataBuffer.getDMX(0), network.artnetData, 512);
