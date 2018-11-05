@@ -5,8 +5,7 @@
 
 #define NO_POTS 0
 
-LEDriver::LEDriver() : jsonBuffer(new StaticJsonBuffer<JSON_BUFFER_SIZE>())
-{
+LEDriver::LEDriver() {
     modePointers[DEMO_MODE] = &demoMode;
     modePointers[ARTNET_MODE] = &artnetMode;
     modePointers[SERIAL_MODE] = &serialMode;
@@ -125,13 +124,17 @@ void LEDriver::checkWebsocket(){
 
 // parse river_setup.json file in order to make menus for buttons and oled??
 void LEDriver::receiveJson(const char * _received, size_t _size){
+    StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
+
+    view.println("RECEIVING JSON!!");
     if(_size > JSON_BUFFER_SIZE) {
         view.println("! JSON buffer size to small");
         return;
     }
 
-    JsonObject &root = jsonBuffer->parseObject(_received);
+    JsonObject &root = jsonBuffer.parseObject(_received);
     if(root.success()){
+        view.println("WE GOT THE GOOD STUFF!");
         if(debug_level > 1){
             // view.println("- receivedJson");
             // root.printTo(view);
@@ -229,7 +232,14 @@ void LEDriver::update(){
     }
     if(currentMode == WEBSOCKET_CONTROL_MODE){
         // get data from socket and save it into websocketControlMode
-        websocketControlMode.receiveData(socket_data, jsonBuffer);
+
+        StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
+        JsonObject &jsonObject = jsonBuffer.parseObject(socket_data);
+
+        view.println("SUCCESS?");
+        view.println(jsonObject.success());
+
+        websocketControlMode.receiveData(socket_data, jsonObject);
     }
 
     // interpret input
@@ -413,6 +423,9 @@ uint8_t LEDriver::stringMatcher(const char * _str){
     }
     else if(strcmp(_str, "artnet") == 0){
         return ARTNET_MODE;
+    }
+    else if(strcmp(_str, "websocketcontrolmode") == 0){
+      return WEBSOCKET_CONTROL_MODE;
     }
     else if(strcmp(_str, "serial") == 0){
         return SERIAL_MODE;

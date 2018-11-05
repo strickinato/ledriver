@@ -7,7 +7,7 @@
                 {"name":"name", "type":"text", "default":"controllerName"},
                 {"name":"DHCP", "type":"toggle", "default":0},
                 {"name":"ip", "type":"text", "default":"10.0.0.42"},
-                {"name":"mode", "type":"select", "options":["demo","artnet","serial","test","custom","sdplay","fun"]}
+              {"name":"mode", "type":"select", "options":["demo","artnet","serial","test","custom","sdplay","fun", "websocketcontrolmode"]}
             ]
         },
         {

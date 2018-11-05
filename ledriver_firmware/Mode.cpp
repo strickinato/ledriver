@@ -12,6 +12,7 @@ CRGB *Mode::leds = 0;
 
 Mode::Mode(){
     name = "mode";
+    view.begin();
 }
 
 void Mode::update(){
@@ -119,21 +120,21 @@ WebsocketControlMode::WebsocketControlMode(){
 }
 
 // receive new JSON data
-void WebsocketControlMode::receiveData(String data, StaticJsonBuffer<JSON_BUFFER_SIZE> *jsonBuffer){
-    // TODO DRY JSON handling
-    JsonObject &root = jsonBuffer->parseObject(data.c_str());
-    JsonObject& ledData = root.get<JsonObject>("led-data");
-
-
+void WebsocketControlMode::receiveData(String data, JsonObject &root){
     if(root.success() && root.containsKey("led-data")){
       JsonObject& ledData = root.get<JsonObject>("led-data");
+      view.println("parsedJson");
 
       if(!ledData.containsKey("data")) { return; }
-      JsonArray& jsonData = root.get<JsonArray>("data");
-      uint8_t data[512];
-      jsonData.copyTo(data);
+      view.println("HAS KEY 'data'");
 
-      memcpy(data, _data, 512);
+      JsonArray& jsonData = ledData.get<JsonArray>("data");
+      uint8_t data_array[512];
+      jsonData.copyTo(data_array);
+
+      view.println("Debugging: Receive Data");
+      view.println(data_array[0]);
+      memcpy(data_array, _data, 512);
     }
 }
 

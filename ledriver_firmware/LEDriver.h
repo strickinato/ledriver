@@ -76,7 +76,6 @@ class LEDriver {
         // websocket
         WebSocketServer webSocketServer;
         EthernetClient client;
-        StaticJsonBuffer<JSON_BUFFER_SIZE> *jsonBuffer;
         String socket_data;
         // EthernetServer * serverForSocket;
 

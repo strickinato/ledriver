@@ -7,6 +7,8 @@
 // #include "LEDriver.h"
 #include "SD.h"
 
+#include "View.h"
+
 // TODO Delete when we extract JSON Parsing stuff
 #include <ArduinoJson.h>
 
@@ -32,6 +34,9 @@ class Mode {
         bool newData;
         static uint8_t brightness;
         uint16_t framesPerSecond;
+
+        View view;
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +84,7 @@ class WebsocketControlMode : public Mode {
         virtual void update();
 
         uint8_t _data[512];
-        void receiveData(String data, StaticJsonBuffer<JSON_BUFFER_SIZE> *jsonBuffer);
+        void receiveData(String data, JsonObject &root);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
