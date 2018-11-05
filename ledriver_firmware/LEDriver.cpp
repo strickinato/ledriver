@@ -115,7 +115,7 @@ void LEDriver::checkUdpForOSC(){
 void LEDriver::checkWebsocket(){
     String _data = webSocketServer.getData();
     if(_data.length()> 0){
-        if(debug_level > 1) view.println(_data);
+      //if(debug_level > 1) view.println(_data);
         receiveJson(_data.c_str(), _data.length());
         // webSocketServer.sendData("ahhaha");
     }
@@ -159,6 +159,17 @@ void LEDriver::receiveJson(const char * _received, size_t _size){
             if(mode.containsKey("flash")){
                 funMode.flash = mode["flash"];
             }
+        }
+        else if(root.containsKey("led-data")){
+          JsonObject& ledData = root.get<JsonObject>("led-data");
+
+          if(!ledData.containsKey("data")) { return; }
+          JsonArray& jsonData = root.get<JsonArray>("data");
+          uint8_t data[512];
+          jsonData.copyTo(data);
+          uint8_t sequence = ledData.get<uint8_t>("sequence");
+
+          artnetMode.receivePacket(data, sequence, 0, 512);
         }
     }
 }

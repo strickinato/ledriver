@@ -35,7 +35,9 @@
 #define MODE_COUNT 7
 #define INPUT_POLL_RATE 100
 
-#define JSON_BUFFER_SIZE 512
+// This is is set to 3000 because the js client for websocket mode
+// Sends a JSON stringified array that is close to that size
+#define JSON_BUFFER_SIZE 3000
 
 #define CPU_REBOOT (_reboot_Teensyduino_());
 
