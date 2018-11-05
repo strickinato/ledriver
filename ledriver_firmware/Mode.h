@@ -7,6 +7,9 @@
 // #include "LEDriver.h"
 #include "SD.h"
 
+// TODO Delete when we extract JSON Parsing stuff
+#include <ArduinoJson.h>
+
 #define MAX_UNIVERSE_SUPPORTED 32
 
 
@@ -66,6 +69,17 @@ class ArtNetMode : public Mode {
         //     // reverse??
         // };
         // OutputMapping mappings[8];
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+class WebsocketControlMode : public Mode {
+    public:
+        WebsocketControlMode();
+        virtual void update();
+
+        uint8_t _data[512];
+        void receiveData(String data, StaticJsonBuffer<JSON_BUFFER_SIZE> *jsonBuffer);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

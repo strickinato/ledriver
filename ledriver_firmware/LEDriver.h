@@ -32,12 +32,8 @@
 #define VERSION 0.00001
 
 #define SD_HEADER_SIZE 2
-#define MODE_COUNT 7
+#define MODE_COUNT 8
 #define INPUT_POLL_RATE 100
-
-// This is is set to 3000 because the js client for websocket mode
-// Sends a JSON stringified array that is close to that size
-#define JSON_BUFFER_SIZE 3000
 
 #define CPU_REBOOT (_reboot_Teensyduino_());
 
@@ -80,6 +76,8 @@ class LEDriver {
         // websocket
         WebSocketServer webSocketServer;
         EthernetClient client;
+        StaticJsonBuffer<JSON_BUFFER_SIZE> *jsonBuffer;
+        String socket_data;
         // EthernetServer * serverForSocket;
 
         // modes
@@ -91,6 +89,7 @@ class LEDriver {
         CustomMode customMode;
         SDCardPlaybackMode sdPlaybackMode;
         FunMode funMode;
+        WebsocketControlMode websocketControlMode;
         void setMode(uint8_t _mode);
 
         // sync and timming

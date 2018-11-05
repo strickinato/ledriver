@@ -5,7 +5,8 @@
 
 #define NO_POTS 0
 
-LEDriver::LEDriver(){
+LEDriver::LEDriver() : jsonBuffer(new StaticJsonBuffer<JSON_BUFFER_SIZE>())
+{
     modePointers[DEMO_MODE] = &demoMode;
     modePointers[ARTNET_MODE] = &artnetMode;
     modePointers[SERIAL_MODE] = &serialMode;
@@ -13,6 +14,7 @@ LEDriver::LEDriver(){
     modePointers[CUSTOM_MODE] = &customMode;
     modePointers[SDPLAY_MODE] = &sdPlaybackMode;
     modePointers[FUN_MODE] = &funMode;
+    modePointers[WEBSOCKET_CONTROL_MODE] = &websocketControlMode;
 }
 
 void LEDriver::begin(){
@@ -113,10 +115,10 @@ void LEDriver::checkUdpForOSC(){
 }
 
 void LEDriver::checkWebsocket(){
-    String _data = webSocketServer.getData();
-    if(_data.length()> 0){
+    socket_data = webSocketServer.getData();
+    if(socket_data.length()> 0){
       //if(debug_level > 1) view.println(_data);
-        receiveJson(_data.c_str(), _data.length());
+        receiveJson(socket_data.c_str(), socket_data.length());
         // webSocketServer.sendData("ahhaha");
     }
 }
@@ -128,8 +130,7 @@ void LEDriver::receiveJson(const char * _received, size_t _size){
         return;
     }
 
-    StaticJsonBuffer<JSON_BUFFER_SIZE> jsonBuffer;
-    JsonObject &root = jsonBuffer.parseObject(_received);
+    JsonObject &root = jsonBuffer->parseObject(_received);
     if(root.success()){
         if(debug_level > 1){
             // view.println("- receivedJson");
@@ -159,17 +160,6 @@ void LEDriver::receiveJson(const char * _received, size_t _size){
             if(mode.containsKey("flash")){
                 funMode.flash = mode["flash"];
             }
-        }
-        else if(root.containsKey("led-data")){
-          JsonObject& ledData = root.get<JsonObject>("led-data");
-
-          if(!ledData.containsKey("data")) { return; }
-          JsonArray& jsonData = root.get<JsonArray>("data");
-          uint8_t data[512];
-          jsonData.copyTo(data);
-          uint8_t sequence = ledData.get<uint8_t>("sequence");
-
-          artnetMode.receivePacket(data, sequence, 0, 512);
         }
     }
 }
@@ -236,6 +226,10 @@ void LEDriver::update(){
     // check artnet
     if(currentMode == ARTNET_MODE){
         checkArtnet();
+    }
+    if(currentMode == WEBSOCKET_CONTROL_MODE){
+        // get data from socket and save it into websocketControlMode
+        websocketControlMode.receiveData(socket_data, jsonBuffer);
     }
 
     // interpret input

@@ -114,6 +114,42 @@ void ArtNetMode::receivePacket(uint8_t * _data, uint8_t _sequence, uint16_t _uni
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
+WebsocketControlMode::WebsocketControlMode(){
+    name = "websocketControlMode";
+}
+
+// receive new JSON data
+void WebsocketControlMode::receiveData(String data, StaticJsonBuffer<JSON_BUFFER_SIZE> *jsonBuffer){
+    // TODO DRY JSON handling
+    JsonObject &root = jsonBuffer->parseObject(data.c_str());
+    JsonObject& ledData = root.get<JsonObject>("led-data");
+
+
+    if(root.success() && root.containsKey("led-data")){
+      JsonObject& ledData = root.get<JsonObject>("led-data");
+
+      if(!ledData.containsKey("data")) { return; }
+      JsonArray& jsonData = root.get<JsonArray>("data");
+      uint8_t data[512];
+      jsonData.copyTo(data);
+
+      memcpy(data, _data, 512);
+    }
+}
+
+void WebsocketControlMode::update(){
+    Mode::update();
+
+    // 100 comes from the amount of leds at recurse center
+    for(int i = 0; i < 100; i++){
+      leds[i] = CRGB(_data[i*3], _data[i*3+1], _data[i*3+2]);
+    }
+
+    FastLED.show();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 SerialMode::SerialMode(){
     name = "serialMode";
     errorCount = 0;

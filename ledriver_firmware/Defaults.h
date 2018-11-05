@@ -17,6 +17,10 @@
 #define CLOCK_PIN 14
 
 
+// This is is set to 3000 because the js client for websocket mode
+// Sends a JSON stringified array that is close to that size
+#define JSON_BUFFER_SIZE 3000
+
 #define DHCP_DEFAULT 1
 // static const uint8_t DEFAULT_STATIC_IP[4] = {10,0,0,42};
 const char DEFAULT_STATIC_IP[] = "10.0.0.41";
@@ -38,7 +42,8 @@ enum Modes{
     TEST_MODE,
     CUSTOM_MODE,
     SDPLAY_MODE,
-    FUN_MODE
+    FUN_MODE,
+    WEBSOCKET_CONTROL_MODE
 };
 
 enum Outputs{
